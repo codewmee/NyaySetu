@@ -1,14 +1,88 @@
-from flask import Flask, render_template, session, redirect, url_for
+import os
+
+from dotenv import load_dotenv
+from flask import Flask, render_template, session, redirect, url_for, request, flash
+
+from db import db, init_db, User
+
+load_dotenv()  # reads .env into os.environ, if the file exists
 
 app = Flask(__name__)
-app.secret_key = "dev-secret-key-change-this-later"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this-later")
+
+init_db(app)
+
+
+def current_user():
+    """Return the logged-in User, or None. Uses Session.get (the
+    SQLAlchemy 2.x replacement for the deprecated Query.get)."""
+    user_id = session.get("user_id")
+    if user_id is None:
+        return None
+    return db.session.get(User, user_id)
 
 
 @app.route("/")
 def home():
-    return render_template("index.html", active_page="home")
+    return render_template("index.html", active_page="home", user=current_user())
 
 
+# ---------------- Local login/signup ----------------
+@app.route("/login")
+def login_page():
+    if current_user():
+        return redirect(url_for("home"))
+    return render_template("login.html")
+
+
+@app.route("/signup", methods=["POST"])
+def signup():
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+    name = request.form.get("name", "").strip()
+
+    if not email or not password:
+        flash("Email and password are required.")
+        return redirect(url_for("login_page"))
+
+    if len(password) < 6:
+        flash("Password must be at least 6 characters long.")
+        return redirect(url_for("login_page"))
+
+    if User.query.filter_by(email=email).first():
+        flash("An account with this email already exists.")
+        return redirect(url_for("login_page"))
+
+    user = User(email=email, name=name)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+
+    session["user_id"] = user.id
+    return redirect(url_for("home"))
+
+
+@app.route("/login", methods=["POST"])
+def login_submit():
+    email = request.form.get("email", "").strip().lower()
+    password = request.form.get("password", "")
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not user.check_password(password):
+        flash("Invalid email or password.")
+        return redirect(url_for("login_page"))
+
+    session["user_id"] = user.id
+    return redirect(url_for("home"))
+
+
+@app.route("/logout")
+def logout():
+    session.pop("user_id", None)
+    return redirect(url_for("home"))
+
+
+# ---------------- placeholder routes ----------------
 @app.route("/my-issues")
 def my_issues():
     return "My Issues page (coming soon)"
@@ -51,8 +125,9 @@ def issue_category(category):
 
 @app.route("/set-language/<lang>")
 def set_language(lang):
-    session["current_language"] = lang
-    return redirect(url_for("home"))
+    if lang in ("en", "hi", "mr"):
+        session["current_language"] = lang
+    return redirect(request.referrer or url_for("home"))
 
 
 if __name__ == "__main__":

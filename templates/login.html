@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in - NyaySetu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple: #5b4dee;
+            --purple-dark: #4a3dd9;
+            --text-dark: #1a1a2e;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --bg-soft: #f8f8fc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #eef0ff 0%, #f5eefc 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        a { text-decoration: none; color: inherit; }
+
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 36px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 22px;
+        }
+
+        .logo-icon { font-size: 28px; }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: var(--text-gray);
+            display: block;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-soft);
+            border-radius: 10px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            border: none;
+            background: none;
+            padding: 9px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-gray);
+        }
+
+        .tab-btn.active {
+            background: #fff;
+            color: var(--purple);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        form { display: none; flex-direction: column; gap: 14px; }
+        form.active { display: flex; }
+
+        .field label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .field input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 11px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .field input:focus { border-color: var(--purple); }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--purple);
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        .submit-btn:hover { background: var(--purple-dark); }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 22px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .back-link:hover { color: var(--purple); }
+
+        .flash {
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="logo">
+            <span class="logo-icon">⚖️</span>
+        </div>
+        <div class="logo-text">
+            <h1>NyaySetu</h1>
+            <span>Understand Your Rights</span>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for msg in messages %}
+                    <div class="flash">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2 style="margin-top:18px;">Welcome back</h2>
+        <p class="sub">Sign in to save your issues and get personalised guidance.</p>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabLogin" type="button">Sign in</button>
+            <button class="tab-btn" id="tabSignup" type="button">Sign up</button>
+        </div>
+
+        <form id="loginForm" class="active" action="/login" method="POST">
+            <div class="field">
+                <label>Email address</label>
+                <input type="email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password" required placeholder="••••••••">
+            </div>
+            <button type="submit" class="submit-btn">Sign in</button>
+        </form>
+
+        <form id="signupForm" action="/signup" method="POST">
+            <div class="field">
+                <label>Full name</label>
+                <input type="text" name="name" required placeholder="Your name">
+            </div>
+            <div class="field">
+                <label>Email address</label>
+                <input type="email" name="email" required placeholder="you@example.com">
+            </div>
+            <div class="field">
+                <label>Password</label>
+                <input type="password" name="password" required placeholder="••••••••" minlength="6">
+            </div>
+            <button type="submit" class="submit-btn">Create account</button>
+        </form>
+
+        <a href="/" class="back-link">← Back to home</a>
+    </div>
+
+    <script>
+        const tabLogin = document.getElementById('tabLogin');
+        const tabSignup = document.getElementById('tabSignup');
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+
+        tabLogin.addEventListener('click', () => {
+            tabLogin.classList.add('active');
+            tabSignup.classList.remove('active');
+            loginForm.classList.add('active');
+            signupForm.classList.remove('active');
+        });
+
+        tabSignup.addEventListener('click', () => {
+            tabSignup.classList.add('active');
+            tabLogin.classList.remove('active');
+            signupForm.classList.add('active');
+            loginForm.classList.remove('active');
+        });
+    </script>
+</body>
+
+</html>

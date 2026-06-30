@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyaySetu - Understand Your Rights</title>
     <style>
-        /* ---------- Reset & base ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -16,6 +16,7 @@
         :root {
             --purple: #5b4dee;
             --purple-dark: #4a3dd9;
+            --purple-light: #ecebfe;
             --text-dark: #1a1a2e;
             --text-gray: #6b7280;
             --border: #e5e7eb;
@@ -23,50 +24,131 @@
             --green: #16a34a;
         }
 
+        html { scroll-behavior: smooth; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
             background: #fafafb;
             color: var(--text-dark);
+            line-height: 1.5;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+        a { text-decoration: none; color: inherit; }
 
         button {
             font-family: inherit;
             cursor: pointer;
             border: none;
             background: none;
+            transition: all 0.15s ease;
         }
 
-        /* ---------- Layout shell ---------- */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--purple);
+            outline-offset: 2px;
+        }
+
+        /* ========== LAYOUT SHELL ========== */
         .app {
             display: grid;
-            grid-template-columns: 260px 1fr 300px;
+            grid-template-columns: 260px minmax(0, 1fr) 300px;
+            align-items: start;
             min-height: 100vh;
         }
 
-        /* ---------- Sidebar ---------- */
+        /* ========== MOBILE TOPBAR (hidden on desktop) ========== */
+        .mobile-topbar {
+            display: none;
+            grid-column: 1 / -1;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .mobile-topbar .mobile-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .hamburger {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover { background: var(--bg-soft); }
+
+        .mobile-logo {
+            font-size: 16px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 20, 35, 0.45);
+            z-index: 149;
+        }
+
+        .sidebar-backdrop.open { display: block; }
+
+        /* ========== SIDEBAR ========== */
         .sidebar {
             border-right: 1px solid var(--border);
             padding: 24px 18px;
             display: flex;
             flex-direction: column;
             background: #fff;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
         }
+
+        .sidebar-close {
+            display: none;
+            align-self: flex-end;
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-close:hover { background: var(--bg-soft); }
 
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 28px;
+            min-width: 0;
         }
 
-        .logo-icon {
-            font-size: 28px;
-        }
+        .logo-icon { font-size: 28px; flex-shrink: 0; }
+
+        .logo-text { min-width: 0; }
 
         .logo-text h1 {
             font-size: 18px;
@@ -77,6 +159,9 @@
         .logo-text span {
             font-size: 11px;
             color: var(--text-gray);
+            display: block;
+            white-space: normal;
+            overflow-wrap: break-word;
         }
 
         .new-issue-btn {
@@ -92,57 +177,48 @@
             justify-content: center;
             gap: 8px;
             margin-bottom: 18px;
-            transition: background .15s;
         }
 
-        .new-issue-btn:hover {
-            background: var(--purple-dark);
-        }
-
-        .new-issue-btn:active {
-            transform: scale(0.98);
-        }
+        .new-issue-btn:hover { background: var(--purple-dark); transform: translateY(-1px); }
+        .new-issue-btn:active { transform: scale(0.98); }
 
         .nav {
             display: flex;
             flex-direction: column;
             gap: 2px;
-            flex: 1;
+            min-width: 0;
         }
 
         .nav-item {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
             padding: 10px 12px;
             border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
             color: #374151;
-            cursor: pointer;
+            white-space: normal;
+            overflow-wrap: break-word;
+            min-width: 0;
         }
 
-        .nav-item:hover {
-            background: var(--bg-soft);
-        }
+        .nav-item:hover { background: var(--bg-soft); }
 
         .nav-item.active {
-            background: #ecebfe;
+            background: var(--purple-light);
             color: var(--purple);
             font-weight: 600;
         }
 
-        .nav-item .icon {
-            width: 20px;
-            text-align: center;
-        }
+        .nav-item .icon { width: 20px; flex-shrink: 0; text-align: center; }
 
         .privacy-box {
             background: var(--bg-soft);
             border-radius: 12px;
             padding: 18px;
             text-align: center;
-            margin-top: 18px;
+            margin-top: 24px;
         }
 
         .privacy-box .icon-circle {
@@ -158,33 +234,23 @@
             font-size: 18px;
         }
 
-        .privacy-box h4 {
-            font-size: 13px;
-            margin-bottom: 4px;
-        }
+        .privacy-box h4 { font-size: 13px; margin-bottom: 4px; font-weight: 600; }
+        .privacy-box p { font-size: 12px; color: var(--text-gray); line-height: 1.4; }
+        .privacy-box p + p { margin-top: 2px; }
 
-        .privacy-box p {
-            font-size: 12px;
-            color: var(--text-gray);
-            line-height: 1.4;
-        }
-
-        /* ---------- Main content ---------- */
-        .main {
-            padding: 24px 32px;
-        }
+        /* ========== MAIN CONTENT ========== */
+        .main { padding: 24px 32px; min-width: 0; }
 
         .topbar {
             display: flex;
             justify-content: flex-end;
             gap: 12px;
             margin-bottom: 18px;
+            flex-wrap: wrap;
         }
 
-        /* Shared language dropdown styles (used in topbar + right panel) */
-        .lang-dropdown {
-            position: relative;
-        }
+        /* Language dropdown (reused in topbar, mobile bar, and right panel) */
+        .lang-dropdown { position: relative; min-width: 0; }
 
         .lang-dropdown-toggle {
             display: flex;
@@ -196,20 +262,17 @@
             font-size: 14px;
             background: #fff;
             justify-content: space-between;
+            white-space: nowrap;
+            width: 100%;
         }
 
-        .lang-dropdown-toggle:hover {
-            background: var(--bg-soft);
-        }
-
-        .topbar .lang-dropdown-toggle {
-            min-width: 130px;
-        }
+        .lang-dropdown-toggle:hover { background: var(--bg-soft); }
 
         .lang-dropdown-toggle .left {
             display: flex;
             align-items: center;
             gap: 8px;
+            min-width: 0;
         }
 
         .lang-menu {
@@ -220,15 +283,17 @@
             overflow: hidden;
             display: none;
             position: absolute;
+            right: 0;
             background: #fff;
             width: 100%;
-            z-index: 50;
+            min-width: 170px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 250;
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .lang-menu.open {
-            display: block;
-        }
+        .lang-menu.open { display: block; }
 
         .lang-menu li {
             padding: 10px 14px;
@@ -237,13 +302,11 @@
             white-space: nowrap;
         }
 
-        .lang-menu li:hover {
-            background: var(--bg-soft);
-        }
+        .lang-menu li:hover { background: var(--bg-soft); }
 
         .lang-menu li.selected {
             color: var(--purple);
-            background: #ecebfe;
+            background: var(--purple-light);
             font-weight: 600;
         }
 
@@ -254,17 +317,16 @@
             border-radius: 8px;
             font-size: 14px;
             font-weight: 600;
+            white-space: nowrap;
         }
 
-        .signin-btn:hover {
-            background: var(--purple-dark);
-        }
+        .signin-btn:hover { background: var(--purple-dark); }
 
-        /* Hero */
+        /* Hero section */
         .hero {
             background: linear-gradient(135deg, #eef0ff 0%, #f5eefc 100%);
             border-radius: 18px;
-            padding: 36px 36px 28px;
+            padding: 36px;
             position: relative;
             overflow: hidden;
             margin-bottom: 24px;
@@ -274,33 +336,25 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 24px;
         }
+
+        .hero-text { min-width: 0; }
 
         .hero-text h2 {
-            font-size: 34px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 8px;
+            line-height: 1.2;
         }
 
-        .hero-text h2 .accent {
-            color: var(--purple);
-        }
+        .hero-text h2 .accent { color: var(--purple); }
 
-        .hero-text p {
-            color: var(--text-gray);
-            font-size: 15px;
-        }
+        .hero-text p { color: var(--text-gray); font-size: 15px; max-width: 500px; }
 
-        .hero-illustration {
-            width: 260px;
-            flex-shrink: 0;
-        }
+        .hero-illustration { width: 200px; flex-shrink: 0; }
 
-        .hero-illustration img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
+        .hero-illustration svg { width: 100%; height: auto; display: block; }
 
         .search-box {
             background: #fff;
@@ -318,12 +372,11 @@
             font-size: 15px;
             color: var(--text-dark);
             font-family: inherit;
-            height: 28px;
+            height: 80px;
+            line-height: 1.5;
         }
 
-        .search-box textarea::placeholder {
-            color: #9ca3af;
-        }
+        .search-box textarea::placeholder { color: #9ca3af; }
 
         .search-actions {
             display: flex;
@@ -334,12 +387,7 @@
             gap: 10px;
         }
 
-        .search-actions-left {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+        .search-actions-left { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
         .pill-btn {
             display: flex;
@@ -351,11 +399,10 @@
             font-size: 13px;
             color: #374151;
             background: #fff;
+            white-space: nowrap;
         }
 
-        .pill-btn:hover {
-            background: var(--bg-soft);
-        }
+        .pill-btn:hover { background: var(--bg-soft); }
 
         .pill-btn.recording {
             background: #fee2e2;
@@ -363,16 +410,9 @@
             color: #dc2626;
         }
 
-        .search-actions-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
+        .search-actions-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 
-        .char-count {
-            font-size: 13px;
-            color: var(--text-gray);
-        }
+        .char-count { font-size: 13px; color: var(--text-gray); white-space: nowrap; }
 
         .analyze-btn {
             background: var(--purple);
@@ -384,16 +424,11 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            white-space: nowrap;
         }
 
-        .analyze-btn:hover {
-            background: var(--purple-dark);
-        }
-
-        .analyze-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+        .analyze-btn:hover { background: var(--purple-dark); }
+        .analyze-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
         .tip {
             font-size: 13px;
@@ -407,7 +442,7 @@
         .file-chip {
             font-size: 12px;
             color: var(--purple);
-            background: #ecebfe;
+            background: var(--purple-light);
             border-radius: 6px;
             padding: 6px 10px;
             display: none;
@@ -415,16 +450,10 @@
             gap: 6px;
         }
 
-        .file-chip.visible {
-            display: inline-flex;
-        }
+        .file-chip.visible { display: inline-flex; }
+        .file-chip button { color: var(--purple); font-weight: 700; }
 
-        .file-chip button {
-            color: var(--purple);
-            font-weight: 700;
-        }
-
-        /* How it works */
+        /* Section cards */
         .section-card {
             background: #fff;
             border: 1px solid var(--border);
@@ -433,25 +462,17 @@
             margin-bottom: 24px;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 28px;
-        }
+        .section-title { text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 28px; }
 
         .steps {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .step {
-            text-align: center;
-            flex: 1;
-            position: relative;
-        }
+        .step { text-align: center; flex: 1; min-width: 140px; position: relative; }
 
         .step-icon-wrap {
             width: 64px;
@@ -484,10 +505,7 @@
             border: 2px solid #fff;
         }
 
-        .step h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
+        .step h4 { font-size: 14px; margin-bottom: 4px; font-weight: 600; min-height: 1.4em; overflow-wrap: break-word; }
 
         .step p {
             font-size: 12px;
@@ -495,12 +513,15 @@
             line-height: 1.4;
             max-width: 160px;
             margin: 0 auto;
+            min-height: 2.8em;
+            overflow-wrap: break-word;
         }
 
         .step-arrow {
             font-size: 20px;
             color: #c7c9f5;
             margin-top: 22px;
+            flex-shrink: 0;
         }
 
         /* Popular issues */
@@ -509,25 +530,13 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 4px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
-        .popular-header h3 {
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .view-all {
-            font-size: 13px;
-            color: var(--purple);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .popular-sub {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 18px;
-        }
+        .popular-header h3 { font-size: 18px; font-weight: 800; }
+        .view-all { font-size: 13px; color: var(--purple); font-weight: 600; cursor: pointer; }
+        .popular-sub { font-size: 13px; color: var(--text-gray); margin-bottom: 18px; }
 
         .issue-grid {
             display: grid;
@@ -540,23 +549,19 @@
             border-radius: 12px;
             padding: 16px;
             display: flex;
+            flex-direction: column;
             gap: 12px;
             align-items: flex-start;
-            transition: box-shadow .15s, border-color .15s;
+            transition: box-shadow 0.15s, border-color 0.15s;
             cursor: pointer;
             text-align: left;
             width: 100%;
             background: #fff;
+            min-height: 100px;
         }
 
-        .issue-card:hover {
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-            border-color: #d6d6fb;
-        }
-
-        .issue-card:active {
-            transform: scale(0.98);
-        }
+        .issue-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06); border-color: #d6d6fb; }
+        .issue-card:active { transform: scale(0.98); }
 
         .issue-icon {
             width: 38px;
@@ -569,20 +574,14 @@
             flex-shrink: 0;
         }
 
-        .issue-card h5 {
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
+        .issue-card > div { min-width: 0; }
+        .issue-card h5 { font-size: 14px; margin-bottom: 2px; font-weight: 600; min-height: 1.4em; overflow-wrap: break-word; }
+        .issue-card p { font-size: 12px; color: var(--text-gray); line-height: 1.3; min-height: 2.4em; overflow-wrap: break-word; }
 
-        .issue-card p {
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-
-        /* Bottom trust strip */
+        /* Trust strip */
         .trust-strip {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
             background: #fff;
             border: 1px solid var(--border);
@@ -590,31 +589,24 @@
             padding: 24px 32px;
         }
 
-        .trust-item {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
+        .trust-item { display: flex; gap: 12px; align-items: flex-start; }
+        .trust-icon { font-size: 22px; flex-shrink: 0; }
+        .trust-item > div { min-width: 0; }
+        .trust-item h5 { font-size: 14px; margin-bottom: 2px; font-weight: 600; overflow-wrap: break-word; }
+        .trust-item p { font-size: 12px; color: var(--text-gray); line-height: 1.4; overflow-wrap: break-word; }
 
-        .trust-icon {
-            font-size: 22px;
-        }
-
-        .trust-item h5 {
-            font-size: 14px;
-            margin-bottom: 2px;
-        }
-
-        .trust-item p {
-            font-size: 12px;
-            color: var(--text-gray);
-        }
-
-        /* ---------- Right sidebar ---------- */
+        /* ========== RIGHT PANEL ========== */
         .right-panel {
             border-left: 1px solid var(--border);
             padding: 24px 20px;
             background: #fff;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 90;
         }
 
         .panel-card {
@@ -624,26 +616,11 @@
             margin-bottom: 20px;
         }
 
-        .panel-card h4 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
+        .panel-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 14px; overflow-wrap: break-word; }
 
-        .why-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .why-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
 
-        .why-list li {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #374151;
-        }
+        .why-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #374151; }
 
         .check {
             color: #fff;
@@ -656,13 +633,10 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            margin-top: 2px;
         }
 
-        .panel-card p.sub {
-            font-size: 12px;
-            color: var(--text-gray);
-            margin-bottom: 14px;
-        }
+        .panel-card p.sub { font-size: 12px; color: var(--text-gray); margin-bottom: 14px; overflow-wrap: break-word; }
 
         .lawyer-icon-wrap {
             width: 42px;
@@ -689,11 +663,9 @@
             gap: 8px;
         }
 
-        .find-lawyer-btn:hover {
-            background: var(--bg-soft);
-        }
+        .find-lawyer-btn:hover { background: var(--bg-soft); }
 
-        /* ---------- Modal ---------- */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -705,9 +677,7 @@
             padding: 16px;
         }
 
-        .modal-overlay.open {
-            display: flex;
-        }
+        .modal-overlay.open { display: flex; }
 
         .modal-box {
             background: #fff;
@@ -733,25 +703,10 @@
             border-radius: 50%;
         }
 
-        .modal-close:hover {
-            background: var(--bg-soft);
-        }
-
-        .modal-box h3 {
-            font-size: 19px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .modal-box p.modal-sub {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 18px;
-        }
-
-        .modal-field {
-            margin-bottom: 14px;
-        }
+        .modal-close:hover { background: var(--bg-soft); }
+        .modal-box h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
+        .modal-box p.modal-sub { font-size: 13px; color: var(--text-gray); margin-bottom: 18px; }
+        .modal-field { margin-bottom: 14px; }
 
         .modal-field label {
             font-size: 12px;
@@ -771,9 +726,7 @@
             outline: none;
         }
 
-        .modal-field input:focus {
-            border-color: var(--purple);
-        }
+        .modal-field input:focus { border-color: var(--purple); }
 
         .modal-submit {
             width: 100%;
@@ -786,11 +739,9 @@
             margin-top: 4px;
         }
 
-        .modal-submit:hover {
-            background: var(--purple-dark);
-        }
+        .modal-submit:hover { background: var(--purple-dark); }
 
-        /* ---------- Toast ---------- */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -803,45 +754,76 @@
             font-size: 14px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity .25s, transform .25s;
+            transition: opacity 0.25s, transform 0.25s;
             z-index: 2000;
             max-width: 90vw;
             text-align: center;
         }
 
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* ---------- Responsive ---------- */
-        @media (max-width: 1200px) {
-            .app {
-                grid-template-columns: 220px 1fr 260px;
-            }
-
-            .issue-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .trust-strip {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1300px) {
+            .app { grid-template-columns: 240px minmax(0, 1fr); }
+            .right-panel { display: none; }
         }
 
         @media (max-width: 900px) {
-            .app {
-                grid-template-columns: 1fr;
+            .app { grid-template-columns: 1fr; }
+
+            .mobile-topbar { display: flex; }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 270px;
+                max-width: 84vw;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                z-index: 150;
             }
 
-            .sidebar,
-            .right-panel {
-                display: none;
-            }
+            .sidebar.open { transform: translateX(0); }
+            .sidebar-close { display: flex; align-items: center; justify-content: center; }
 
-            .steps {
-                flex-wrap: wrap;
-            }
+            .topbar { display: none; }
+
+            .main { padding: 20px 16px; }
+
+            .hero-illustration { display: none; }
+            .step-arrow { display: none; }
+
+            .hero-text h2 { font-size: 26px; }
+            .hero { padding: 24px; }
+            .section-card { padding: 20px; }
+            .trust-strip { padding: 16px 20px; }
+
+            .issue-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps { flex-direction: column; }
+        }
+
+        @media (max-width: 560px) {
+            .hero-text h2 { font-size: 22px; }
+            .hero-text p { font-size: 14px; }
+            .main { padding: 16px; }
+            .section-card { padding: 16px; border-radius: 12px; }
+            .hero { border-radius: 12px; padding: 16px; }
+
+            .search-actions { flex-direction: column; align-items: stretch; }
+            .search-actions-right { width: 100%; justify-content: space-between; }
+            .analyze-btn { width: 100%; justify-content: center; }
+            .pill-btn { font-size: 12px; padding: 6px 10px; }
+
+            .issue-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .issue-card { padding: 12px; min-height: 90px; }
+
+            .trust-strip { grid-template-columns: 1fr; padding: 16px; gap: 12px; }
+        }
+
+        @media (max-width: 380px) {
+            .issue-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -850,8 +832,27 @@
 
     <div class="app">
 
+        <!-- ================= MOBILE TOPBAR ================= -->
+        <div class="mobile-topbar">
+            <div class="mobile-left">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
+                <span class="mobile-logo">⚖️ NyaySetu</span>
+            </div>
+            <div class="lang-dropdown" id="mobileLangDropdown">
+                <button class="lang-dropdown-toggle" id="mobileLangToggle">
+                    <span class="left">🌐 <span class="mobileLangSelected">English</span></span>
+                    <span>▾</span>
+                </button>
+                <ul class="lang-menu lang-menu-instance" id="mobileLangMenu"></ul>
+            </div>
+        </div>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
         <!-- ================= LEFT SIDEBAR ================= -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+
             <div class="logo">
                 <span class="logo-icon">⚖️</span>
                 <div class="logo-text">
@@ -865,26 +866,27 @@
             </button>
 
             <nav class="nav">
-                <a href="#" class="nav-item active" data-page="home"><span class="icon">🏠</span> <span
+                <a href="/" class="nav-item active" data-page="home"><span class="icon">🏠</span> <span
                         data-i18n="navHome">Home</span></a>
-                <a href="#" class="nav-item" data-page="myissues"><span class="icon">🗂️</span> <span
+                <a href="/my-issues" class="nav-item" data-page="myissues"><span class="icon">🗂️</span> <span
                         data-i18n="navMyIssues">My Issues</span></a>
-                <a href="#" class="nav-item" data-page="dochelper"><span class="icon">📄</span> <span
+                <a href="/document-helper" class="nav-item" data-page="dochelper"><span class="icon">📄</span> <span
                         data-i18n="navDocHelper">Document Helper</span></a>
-                <a href="#" class="nav-item" data-page="rights"><span class="icon">⚖️</span> <span
+                <a href="/know-your-rights" class="nav-item" data-page="rights"><span class="icon">⚖️</span> <span
                         data-i18n="navKnowRights">Know Your Rights</span></a>
-                <a href="#" class="nav-item" data-page="saved"><span class="icon">📌</span> <span
-                        data-i18n="navSaved">Saved Reports</span></a>
-                <a href="#" class="nav-item" data-page="govt"><span class="icon">🏛️</span> <span
-                        data-i18n="navGovt">Government Services</span></a>
-                <a href="#" class="nav-item" data-page="help"><span class="icon">❓</span> <span data-i18n="navHelp">Help
-                        &amp; Support</span></a>
+                <a href="/saved-reports" class="nav-item" data-page="saved"><span class="icon">📑</span> <span
+                        data-i18n="navSavedReports">Saved Reports</span></a>
+                <a href="/government-services" class="nav-item" data-page="gov"><span class="icon">🏛️</span> <span
+                        data-i18n="navGovServices">Government Services</span></a>
+                <a href="/help-support" class="nav-item" data-page="help"><span class="icon">❓</span> <span
+                        data-i18n="navHelpSupport">Help & Support</span></a>
             </nav>
 
             <div class="privacy-box">
                 <div class="icon-circle">🔒</div>
                 <h4 data-i18n="privacyTitle">Your information is private</h4>
-                <p data-i18n="privacyText">We never share your data. Everything is confidential.</p>
+                <p data-i18n="privacyText">We never share your data.</p>
+                <p data-i18n="privacyText2">Everything is confidential.</p>
             </div>
         </aside>
 
@@ -892,31 +894,55 @@
         <main class="main">
 
             <div class="topbar">
-                <!-- Topbar language dropdown (functional, 3 languages) -->
                 <div class="lang-dropdown" id="topbarLangDropdown">
                     <button class="lang-dropdown-toggle" id="topbarLangToggle">
-                        <span class="left">🌐 <span id="topbarLangSelected">English</span></span>
+                        <span class="left">🌐 <span class="topbarLangSelected">English</span></span>
                         <span>▾</span>
                     </button>
-                    <ul class="lang-menu" id="topbarLangMenu">
-                        <li class="selected" data-lang="en">English</li>
-                        <li data-lang="hi">हिंदी (Hindi)</li>
-                        <li data-lang="mr">मराठी (Marathi)</li>
+                    <ul class="lang-menu lang-menu-instance" id="topbarLangMenu"></ul>
+                </div>
+
+                {% if user %}
+                <div class="lang-dropdown" id="userMenuDropdown">
+                    <button class="lang-dropdown-toggle" id="userMenuToggle">
+                        <span class="left">👤 <span>{{ user.name or user.email }}</span></span>
+                        <span>▾</span>
+                    </button>
+                    <ul class="lang-menu" id="userMenu">
+                        <li><a href="/logout">Logout</a></li>
                     </ul>
                 </div>
-                <button class="signin-btn" id="signinBtn" data-i18n="signIn">Sign in / Sign up</button>
+                {% else %}
+                <a href="/login" class="signin-btn" id="signinBtn" data-i18n="signInSignUp">Sign in / Sign up</a>
+                {% endif %}
             </div>
 
-            <!-- Hero / search section -->
+            <!-- Hero section -->
             <section class="hero">
                 <div class="hero-top">
                     <div class="hero-text">
                         <h2 data-i18n-html="heroTitle">How can we <span class="accent">help</span> you today?</h2>
-                        <p data-i18n="heroSub">Describe your issue in simple words. We'll help you understand your legal
-                            position.</p>
+                        <p data-i18n="heroSub">Describe your issue in simple words. We'll help you understand your legal position.</p>
                     </div>
-                    <div class="hero-illustration"><img id="heroImg" src="../static/woman.png"
-                            alt="Woman with clipboard and scales of justice"></div>
+                    <div class="hero-illustration" aria-hidden="true">
+                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="100" cy="100" r="92" fill="#ffffff" opacity="0.5"/>
+                            <rect x="120" y="40" width="6" height="80" fill="#7c6ef0"/>
+                            <line x1="78" y1="58" x2="162" y2="58" stroke="#7c6ef0" stroke-width="4" stroke-linecap="round"/>
+                            <line x1="78" y1="58" x2="60" y2="92" stroke="#7c6ef0" stroke-width="3"/>
+                            <line x1="78" y1="58" x2="96" y2="92" stroke="#7c6ef0" stroke-width="3"/>
+                            <path d="M60 92 a18 14 0 0 0 36 0 Z" fill="none" stroke="#7c6ef0" stroke-width="3"/>
+                            <line x1="162" y1="58" x2="144" y2="92" stroke="#7c6ef0" stroke-width="3"/>
+                            <line x1="162" y1="58" x2="180" y2="92" stroke="#7c6ef0" stroke-width="3"/>
+                            <path d="M144 92 a18 14 0 0 0 36 0 Z" fill="none" stroke="#7c6ef0" stroke-width="3"/>
+                            <rect x="98" y="120" width="56" height="10" rx="3" fill="#7c6ef0"/>
+                            <circle cx="55" cy="130" r="28" fill="#2a2a44"/>
+                            <circle cx="55" cy="118" r="16" fill="#ffd9b3"/>
+                            <path d="M40 112 q15 -22 30 0 q-2 -18 -15 -18 q-15 0 -15 18 Z" fill="#2a2a44"/>
+                            <rect x="33" y="140" width="44" height="50" rx="14" fill="#7c6ef0"/>
+                            <rect x="40" y="150" width="30" height="22" rx="3" fill="#f3f1ff"/>
+                        </svg>
+                    </div>
                 </div>
 
                 <div class="search-box">
@@ -924,23 +950,23 @@
                         placeholder="Example: My landlord is not returning my security deposit."></textarea>
                     <div class="search-actions">
                         <div class="search-actions-left">
-                            <button class="pill-btn" id="speakBtn">🎤 <span data-i18n="speak">Speak</span></button>
-                            <button class="pill-btn" id="attachBtn">📎 <span data-i18n="attach">Attach document
-                                    (optional)</span></button>
+                            <button class="pill-btn" id="speakBtn" type="button">🎤 <span
+                                    data-i18n="speak">Speak</span></button>
+                            <button class="pill-btn" id="attachBtn" type="button">📎 <span
+                                    data-i18n="attachOptional">Attach document (optional)</span></button>
                             <input type="file" id="fileInput" style="display:none;">
-                            <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button
+                            <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button type="button"
                                     id="fileChipRemove">✕</button></span>
                         </div>
                         <div class="search-actions-right">
                             <span class="char-count"><span id="charCount">0</span>/1000</span>
-                            <button class="analyze-btn" id="analyzeBtn"><span data-i18n="analyze">Analyze Issue</span>
-                                →</button>
+                            <button class="analyze-btn" id="analyzeBtn" type="button"><span
+                                    id="analyzeBtnLabel">Analyze Issue</span> →</button>
                         </div>
                     </div>
                 </div>
 
-                <p class="tip">💡 <span data-i18n="tip">Tip: Be specific about what happened, when, and with
-                        whom.</span></p>
+                <p class="tip">💡 <span data-i18n="tip">Be specific about what, when, and with whom.</span></p>
             </section>
 
             <!-- How it works -->
@@ -977,61 +1003,61 @@
             <section class="section-card">
                 <div class="popular-header">
                     <h3 data-i18n="popularIssues">Popular Issues</h3>
-                    <a href="#" class="view-all" id="viewAllBtn" data-i18n="viewAll">View all</a>
+                    <a href="#" class="view-all" id="viewAllBtn" data-i18n="viewAll">View all →</a>
                 </div>
                 <p class="popular-sub" data-i18n="popularSub">Select a common issue or ask your own.</p>
 
                 <div class="issue-grid" id="issueGrid">
-                    <button class="issue-card" data-example="exJob">
+                    <button class="issue-card" data-example="exJob" type="button">
                         <div class="issue-icon" style="background:#e3e8ff;color:#4a4ad9;">💼</div>
                         <div>
-                            <h5 data-i18n="issueJobTitle">Job &amp; Employment</h5>
+                            <h5 data-i18n="issueJobTitle">Job & Employment</h5>
                             <p data-i18n="issueJobText">Salary, termination, contracts</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exLandlord">
+                    <button class="issue-card" data-example="exLandlord" type="button">
                         <div class="issue-icon" style="background:#ffe9d6;color:#d97706;">🏠</div>
                         <div>
-                            <h5 data-i18n="issueLandlordTitle">Landlord &amp; Tenant</h5>
+                            <h5 data-i18n="issueLandlordTitle">Landlord & Tenant</h5>
                             <p data-i18n="issueLandlordText">Rent, deposit, eviction</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exConsumer">
+                    <button class="issue-card" data-example="exConsumer" type="button">
                         <div class="issue-icon" style="background:#ffe1e1;color:#dc2626;">🛡️</div>
                         <div>
                             <h5 data-i18n="issueConsumerTitle">Consumer Complaints</h5>
                             <p data-i18n="issueConsumerText">Refunds, defective products</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exCyber">
+                    <button class="issue-card" data-example="exCyber" type="button">
                         <div class="issue-icon" style="background:#d8f3f0;color:#0d9488;">💻</div>
                         <div>
                             <h5 data-i18n="issueCyberTitle">Cyber Fraud</h5>
                             <p data-i18n="issueCyberText">Online scams, hacking</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exPolice">
+                    <button class="issue-card" data-example="exPolice" type="button">
                         <div class="issue-icon" style="background:#ede7ff;color:#7c3aed;">👮</div>
                         <div>
-                            <h5 data-i18n="issuePoliceTitle">Police &amp; FIR</h5>
+                            <h5 data-i18n="issuePoliceTitle">Police & FIR</h5>
                             <p data-i18n="issuePoliceText">FIR, complaints, procedures</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exLoans">
+                    <button class="issue-card" data-example="exLoans" type="button">
                         <div class="issue-icon" style="background:#dafbe8;color:#16a34a;">💰</div>
                         <div>
-                            <h5 data-i18n="issueLoansTitle">Loans &amp; Recovery</h5>
+                            <h5 data-i18n="issueLoansTitle">Loans & Recovery</h5>
                             <p data-i18n="issueLoansText">Harassment, illegal recovery</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exFamily">
+                    <button class="issue-card" data-example="exFamily" type="button">
                         <div class="issue-icon" style="background:#ffe3ec;color:#db2777;">👨‍👩‍👧</div>
                         <div>
-                            <h5 data-i18n="issueFamilyTitle">Family &amp; Personal</h5>
+                            <h5 data-i18n="issueFamilyTitle">Family & Personal</h5>
                             <p data-i18n="issueFamilyText">Divorce, maintenance, etc.</p>
                         </div>
                     </button>
-                    <button class="issue-card" data-example="exProperty">
+                    <button class="issue-card" data-example="exProperty" type="button">
                         <div class="issue-icon" style="background:#ede4ff;color:#7c3aed;">🏘️</div>
                         <div>
                             <h5 data-i18n="issuePropertyTitle">Property Disputes</h5>
@@ -1060,7 +1086,7 @@
                 <div class="trust-item">
                     <span class="trust-icon">🛡️</span>
                     <div>
-                        <h5 data-i18n="trust3Title">Secure &amp; Confidential</h5>
+                        <h5 data-i18n="trust3Title">Secure & Confidential</h5>
                         <p data-i18n="trust3Text">Your privacy is our priority</p>
                     </div>
                 </div>
@@ -1075,9 +1101,8 @@
 
         </main>
 
-        <!-- ================= RIGHT SIDEBAR ================= -->
+        <!-- ================= RIGHT PANEL ================= -->
         <aside class="right-panel">
-
             <div class="panel-card">
                 <h4 data-i18n="whyTitle">Why NyaySetu?</h4>
                 <ul class="why-list">
@@ -1089,63 +1114,34 @@
             </div>
 
             <div class="panel-card">
-                <h4 data-i18n="langTitle">Language / भाषा</h4>
-                <p class="sub" data-i18n="langSub">Choose your preferred language</p>
-
+                <h4 data-i18n="langPanelTitle">Language / भाषा</h4>
+                <p class="sub" data-i18n="langPanelSub">Choose your preferred language</p>
                 <div class="lang-dropdown" id="panelLangDropdown">
                     <button class="lang-dropdown-toggle" id="panelLangToggle">
-                        <span class="left">🌐 <span id="panelLangSelected">English</span></span>
+                        <span class="left">🌐 <span class="panelLangSelected">English</span></span>
                         <span>▾</span>
                     </button>
-                    <ul class="lang-menu" id="panelLangMenu">
-                        <li class="selected" data-lang="en">English</li>
-                        <li data-lang="hi">हिंदी (Hindi)</li>
-                        <li data-lang="mr">मराठी (Marathi)</li>
-                    </ul>
+                    <ul class="lang-menu lang-menu-instance" id="panelLangMenu"></ul>
                 </div>
             </div>
 
             <div class="panel-card">
-                <div class="lawyer-icon-wrap">👤</div>
-                <h4 data-i18n="lawyerTitle">Need help from a lawyer?</h4>
-                <p class="sub" data-i18n="lawyerSub">Connect with verified lawyers in your area if you need expert help.
-                </p>
-                <button class="find-lawyer-btn" id="findLawyerBtn">👤 <span data-i18n="findLawyer">Find a
-                        Lawyer</span></button>
+                <div class="lawyer-icon-wrap">⚖️</div>
+                <h4 data-i18n="lawyerPanelTitle">Need help from a lawyer?</h4>
+                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need expert help.</p>
+                <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
+                        data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
             </div>
-
         </aside>
 
     </div>
 
-    <!-- ================= Sign in / Sign up modal ================= -->
-    <div class="modal-overlay" id="signinModal">
-        <div class="modal-box">
-            <button class="modal-close" id="signinModalClose">✕</button>
-            <h3 data-i18n="signinModalTitle">Welcome to NyaySetu</h3>
-            <p class="modal-sub" data-i18n="signinModalSub">Sign in to save your issues and get personalised guidance.
-            </p>
-            <form id="signinForm">
-                <div class="modal-field">
-                    <label data-i18n="emailLabel">Email address</label>
-                    <input type="email" required placeholder="you@example.com">
-                </div>
-                <div class="modal-field">
-                    <label data-i18n="passwordLabel">Password</label>
-                    <input type="password" required placeholder="••••••••">
-                </div>
-                <button type="submit" class="modal-submit" data-i18n="continueBtn">Continue</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- ================= Find a Lawyer modal ================= -->
+    <!-- ================= MODALS ================= -->
     <div class="modal-overlay" id="lawyerModal">
         <div class="modal-box">
-            <button class="modal-close" id="lawyerModalClose">✕</button>
+            <button class="modal-close" id="lawyerModalClose" type="button">✕</button>
             <h3 data-i18n="lawyerModalTitle">Find a Lawyer</h3>
-            <p class="modal-sub" data-i18n="lawyerModalSub">Tell us your city and area of law, we'll match you with
-                verified lawyers.</p>
+            <p class="modal-sub" data-i18n="lawyerModalSub">Tell us your city and legal area.</p>
             <form id="lawyerForm">
                 <div class="modal-field">
                     <label data-i18n="cityLabel">City</label>
@@ -1155,50 +1151,64 @@
                     <label data-i18n="areaLabel">Area of law</label>
                     <input type="text" required placeholder="e.g. Property dispute">
                 </div>
-                <button type="submit" class="modal-submit" data-i18n="findLawyerSubmit">Find Lawyers</button>
+                <button type="submit" class="modal-submit" data-i18n="findLawyerSubmit2">Find Lawyers</button>
             </form>
         </div>
     </div>
 
-    <!-- ================= Toast ================= -->
     <div class="toast" id="toast"></div>
 
     <script>
-        /* ======================================================
-           TRANSLATIONS — English / Hindi / Marathi
-           ====================================================== */
+        /* ========== LANGUAGES ==========
+           Full UI translations exist for en / hi / mr. The remaining
+           languages are listed (matching the design) so users can select
+           them, but text falls back to English until full translations are
+           added — see getText() below. */
+        const LANGUAGES = [
+            { code: 'en', label: 'English' },
+            { code: 'hi', label: 'हिंदी (Hindi)' },
+            { code: 'mr', label: 'मराठी (Marathi)' },
+            { code: 'ta', label: 'தமிழ் (Tamil)' },
+            { code: 'te', label: 'తెలుగు (Telugu)' },
+            { code: 'bn', label: 'বাংলা (Bengali)' },
+            { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
+            { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
+        ];
+
         const TRANSLATIONS = {
-            tagline: { en: "Understand Your Rights", hi: "अपने अधिकार जानिए", mr: "तुमचे हक्क समजून घ्या" },
+            tagline: { en: "Understand Your Rights", hi: "अपने अधिकार समझें", mr: "तुमचे हक्क समजून घ्या" },
             newIssue: { en: "New Issue", hi: "नई समस्या", mr: "नवीन समस्या" },
             navHome: { en: "Home", hi: "होम", mr: "होम" },
             navMyIssues: { en: "My Issues", hi: "मेरी समस्याएँ", mr: "माझ्या समस्या" },
             navDocHelper: { en: "Document Helper", hi: "दस्तावेज़ सहायक", mr: "कागदपत्र सहाय्यक" },
             navKnowRights: { en: "Know Your Rights", hi: "अपने अधिकार जानें", mr: "तुमचे हक्क जाणून घ्या" },
-            navSaved: { en: "Saved Reports", hi: "सहेजी गई रिपोर्ट", mr: "जतन केलेले अहवाल" },
-            navGovt: { en: "Government Services", hi: "सरकारी सेवाएँ", mr: "शासकीय सेवा" },
-            navHelp: { en: "Help & Support", hi: "सहायता और समर्थन", mr: "मदत आणि समर्थन" },
-            privacyTitle: { en: "Your information is private", hi: "आपकी जानकारी निजी है", mr: "तुमची माहिती खाजगी आहे" },
-            privacyText: { en: "We never share your data. Everything is confidential.", hi: "हम आपका डेटा कभी साझा नहीं करते। सब कुछ गोपनीय है।", mr: "आम्ही तुमचा डेटा कधीही शेअर करत नाही. सर्व काही गोपनीय आहे." },
-            signIn: { en: "Sign in / Sign up", hi: "साइन इन / साइन अप", mr: "साइन इन / साइन अप" },
+            navSavedReports: { en: "Saved Reports", hi: "सहेजी गई रिपोर्ट", mr: "जतन केलेले अहवाल" },
+            navGovServices: { en: "Government Services", hi: "सरकारी सेवाएं", mr: "सरकारी सेवा" },
+            navHelpSupport: { en: "Help & Support", hi: "सहायता और समर्थन", mr: "मदत आणि समर्थन" },
+            privacyTitle: { en: "Your information is private", hi: "आपकी जानकारी निजी है", mr: "तुमची माहिती गोपनीय आहे" },
+            privacyText: { en: "We never share your data.", hi: "हम कभी शेयर नहीं करते।", mr: "आम्ही कधीही शेअर करत नाही." },
+            privacyText2: { en: "Everything is confidential.", hi: "सब कुछ गोपनीय है।", mr: "सर्व काही गोपनीय आहे." },
+            signInSignUp: { en: "Sign in / Sign up", hi: "साइन इन / साइन अप", mr: "साइन इन / साइन अप" },
             heroTitle: { en: 'How can we <span class="accent">help</span> you today?', hi: 'आज हम आपकी <span class="accent">मदद</span> कैसे कर सकते हैं?', mr: 'आज आम्ही तुम्हाला <span class="accent">कशी मदत</span> करू शकतो?' },
-            heroSub: { en: "Describe your issue in simple words. We'll help you understand your legal position.", hi: "अपनी समस्या सरल शब्दों में बताएं। हम आपकी कानूनी स्थिति समझने में मदद करेंगे।", mr: "तुमची समस्या सोप्या शब्दांत सांगा. आम्ही तुम्हाला तुमची कायदेशीर स्थिती समजून घेण्यास मदत करू." },
-            issuePlaceholder: { en: "Example: My landlord is not returning my security deposit.", hi: "उदाहरण: मेरा मकान मालिक मेरी सुरक्षा जमा राशि वापस नहीं कर रहा है।", mr: "उदाहरण: माझा घरमालक माझी सुरक्षा ठेव परत करत नाही." },
+            heroSub: { en: "Describe your issue in simple words. We'll help you understand your legal position.", hi: "अपनी समस्या सरल शब्दों में बताएं। हम आपको आपकी कानूनी स्थिति समझने में मदद करेंगे।", mr: "तुमची समस्या सोप्या शब्दांत सांगा. आम्ही तुम्हाला तुमची कायदेशीर स्थिती समजून घेण्यास मदत करू." },
+            issuePlaceholder: { en: "Example: My landlord is not returning my security deposit.", hi: "उदाहरण: मेरा मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है।", mr: "उदाहरण: माझा घरमालक माझी ठेव परत करत नाही." },
             speak: { en: "Speak", hi: "बोलें", mr: "बोला" },
-            attach: { en: "Attach document (optional)", hi: "दस्तावेज़ संलग्न करें (वैकल्पिक)", mr: "कागदपत्र जोडा (पर्यायी)" },
-            analyze: { en: "Analyze Issue", hi: "समस्या का विश्लेषण करें", mr: "समस्येचे विश्लेषण करा" },
-            tip: { en: "Tip: Be specific about what happened, when, and with whom.", hi: "सुझाव: क्या हुआ, कब हुआ और किसके साथ हुआ — स्पष्ट रूप से बताएं।", mr: "टीप: काय घडले, केव्हा आणि कोणासोबत — हे स्पष्टपणे सांगा." },
+            attachOptional: { en: "Attach document (optional)", hi: "दस्तावेज़ जोड़ें (वैकल्पिक)", mr: "कागदपत्र जोडा (पर्यायी)" },
+            analyzeIssue: { en: "Analyze Issue", hi: "समस्या का विश्लेषण करें", mr: "समस्येचे विश्लेषण करा" },
+            analyzing: { en: "Analyzing…", hi: "विश्लेषण हो रहा है…", mr: "विश्लेषण सुरू आहे…" },
+            tip: { en: "Be specific about what, when, and with whom.", hi: "क्या, कब और किसके साथ — स्पष्ट बताएं।", mr: "काय, केव्हा आणि कोणासोबत — स्पष्ट सांगा." },
             howItWorks: { en: "How it works", hi: "यह कैसे काम करता है", mr: "हे कसे कार्य करते" },
             step1Title: { en: "Tell us your issue", hi: "अपनी समस्या बताएं", mr: "तुमची समस्या सांगा" },
-            step1Text: { en: "Describe in your own words.", hi: "अपने शब्दों में बताएं।", mr: "तुमच्या स्वतःच्या शब्दांत सांगा." },
-            step2Title: { en: "We analyze it", hi: "हम इसका विश्लेषण करते हैं", mr: "आम्ही त्याचे विश्लेषण करतो" },
-            step2Text: { en: "Our AI finds relevant laws and information.", hi: "हमारा AI संबंधित कानून और जानकारी ढूंढता है।", mr: "आमचे AI संबंधित कायदे आणि माहिती शोधते." },
+            step1Text: { en: "Describe in your own words.", hi: "अपने शब्दों में बताएं।", mr: "तुमच्या शब्दांत सांगा." },
+            step2Title: { en: "We analyze it", hi: "हम विश्लेषण करते हैं", mr: "आम्ही विश्लेषण करतो" },
+            step2Text: { en: "Our AI finds relevant laws and information.", hi: "हमारा AI प्रासंगिक कानून और जानकारी ढूंढता है।", mr: "आमचे AI संबंधित कायदे आणि माहिती शोधते." },
             step3Title: { en: "Get clear guidance", hi: "स्पष्ट मार्गदर्शन पाएं", mr: "स्पष्ट मार्गदर्शन मिळवा" },
-            step3Text: { en: "Know your rights, next steps, and important evidence.", hi: "अपने अधिकार, अगले कदम और महत्वपूर्ण सबूत जानें।", mr: "तुमचे हक्क, पुढील पावले आणि महत्त्वाचे पुरावे जाणून घ्या." },
+            step3Text: { en: "Know your rights, next steps, and important evidence.", hi: "अपने अधिकार, अगले कदम और जरूरी सबूत जानें।", mr: "तुमचे हक्क, पुढील पावले आणि महत्त्वाचे पुरावे जाणा." },
             step4Title: { en: "Take action", hi: "कार्रवाई करें", mr: "कृती करा" },
             step4Text: { en: "Use the guidance or connect with the right authority.", hi: "मार्गदर्शन का उपयोग करें या सही प्राधिकरण से जुड़ें।", mr: "मार्गदर्शनाचा वापर करा किंवा योग्य प्राधिकरणाशी संपर्क साधा." },
             popularIssues: { en: "Popular Issues", hi: "लोकप्रिय समस्याएँ", mr: "लोकप्रिय समस्या" },
-            viewAll: { en: "View all", hi: "सभी देखें", mr: "सर्व पहा" },
-            popularSub: { en: "Select a common issue or ask your own.", hi: "एक सामान्य समस्या चुनें या अपनी समस्या पूछें।", mr: "सामान्य समस्या निवडा किंवा तुमची स्वतःची विचारा." },
+            viewAll: { en: "View all →", hi: "सभी देखें →", mr: "सर्व पहा →" },
+            popularSub: { en: "Select a common issue or ask your own.", hi: "एक सामान्य समस्या चुनें या अपनी पूछें।", mr: "एक सामान्य समस्या निवडा किंवा तुमची विचारा." },
             issueJobTitle: { en: "Job & Employment", hi: "नौकरी और रोजगार", mr: "नोकरी आणि रोजगार" },
             issueJobText: { en: "Salary, termination, contracts", hi: "वेतन, बर्खास्तगी, अनुबंध", mr: "पगार, नोकरीतून काढणे, करार" },
             issueLandlordTitle: { en: "Landlord & Tenant", hi: "मकान मालिक और किरायेदार", mr: "घरमालक आणि भाडेकरू" },
@@ -1216,78 +1226,84 @@
             issuePropertyTitle: { en: "Property Disputes", hi: "संपत्ति विवाद", mr: "मालमत्ता वाद" },
             issuePropertyText: { en: "Ownership, inheritance", hi: "स्वामित्व, विरासत", mr: "मालकी, वारसा" },
             trust1Title: { en: "Trusted by Users", hi: "उपयोगकर्ताओं का भरोसा", mr: "वापरकर्त्यांचा विश्वास" },
-            trust1Text: { en: "Built for everyday Indians", hi: "आम भारतीयों के लिए बनाया गया", mr: "सामान्य भारतीयांसाठी बनवलेले" },
-            trust2Title: { en: "Based on Indian Laws", hi: "भारतीय कानूनों पर आधारित", mr: "भारतीय कायद्यांवर आधारित" },
+            trust1Text: { en: "Built for everyday Indians", hi: "आम भारतीयों के लिए", mr: "सामान्य भारतीयांसाठी" },
+            trust2Title: { en: "Based on Indian Laws", hi: "भारतीय कानूनों पर", mr: "भारतीय कायद्यांवर" },
             trust2Text: { en: "Information from verified sources", hi: "सत्यापित स्रोतों से जानकारी", mr: "सत्यापित स्रोतांकडून माहिती" },
             trust3Title: { en: "Secure & Confidential", hi: "सुरक्षित और गोपनीय", mr: "सुरक्षित आणि गोपनीय" },
             trust3Text: { en: "Your privacy is our priority", hi: "आपकी निजता हमारी प्राथमिकता है", mr: "तुमची गोपनीयता आमचे प्राधान्य आहे" },
-            trust4Title: { en: "Always Improving", hi: "हमेशा सुधार करते रहना", mr: "सतत सुधारणा" },
-            trust4Text: { en: "We're here to serve you better", hi: "हम आपकी बेहतर सेवा के लिए यहां हैं", mr: "आम्ही तुम्हाला अधिक चांगली सेवा देण्यासाठी आहोत" },
-            whyTitle: { en: "Why NyaySetu?", hi: "न्यायसेतु क्यों?", mr: "न्यायसेतु का?" },
+            trust4Title: { en: "Always Improving", hi: "हमेशा सुधार", mr: "सतत सुधारणा" },
+            trust4Text: { en: "We're here to serve you better", hi: "आपकी बेहतर सेवा के लिए", mr: "तुम्हाला अधिक चांगली सेवा देण्यासाठी" },
+            whyTitle: { en: "Why NyaySetu?", hi: "नयायसेतु क्यों?", mr: "न्यायसेतु का?" },
             why1: { en: "Plain language explanations", hi: "सरल भाषा में स्पष्टीकरण", mr: "सोप्या भाषेत स्पष्टीकरण" },
             why2: { en: "Reliable legal information", hi: "विश्वसनीय कानूनी जानकारी", mr: "विश्वासार्ह कायदेशीर माहिती" },
-            why3: { en: "Neutral and non-judgmental", hi: "निष्पक्ष और बिना पूर्वाग्रह के", mr: "निःपक्षपाती आणि निर्णायक नसलेले" },
+            why3: { en: "Neutral and non-judgmental", hi: "तटस्थ और निष्पक्ष", mr: "तटस्थ आणि निष्पक्ष" },
             why4: { en: "Helps you take the right steps", hi: "सही कदम उठाने में मदद करता है", mr: "योग्य पावले उचलण्यास मदत करते" },
-            langTitle: { en: "Language / भाषा", hi: "भाषा / Language", mr: "भाषा / Language" },
-            langSub: { en: "Choose your preferred language", hi: "अपनी पसंदीदा भाषा चुनें", mr: "तुमची आवडती भाषा निवडा" },
-            lawyerTitle: { en: "Need help from a lawyer?", hi: "वकील से मदद चाहिए?", mr: "वकिलाची मदत हवी आहे का?" },
-            lawyerSub: { en: "Connect with verified lawyers in your area if you need expert help.", hi: "विशेषज्ञ सहायता के लिए अपने क्षेत्र के सत्यापित वकीलों से जुड़ें।", mr: "तज्ञांच्या मदतीसाठी तुमच्या भागातील सत्यापित वकिलांशी संपर्क साधा." },
-            findLawyer: { en: "Find a Lawyer", hi: "वकील खोजें", mr: "वकील शोधा" },
-            signinModalTitle: { en: "Welcome to NyaySetu", hi: "न्यायसेतु में आपका स्वागत है", mr: "न्यायसेतुमध्ये आपले स्वागत आहे" },
-            signinModalSub: { en: "Sign in to save your issues and get personalised guidance.", hi: "अपनी समस्याएं सहेजने और व्यक्तिगत मार्गदर्शन पाने के लिए साइन इन करें।", mr: "तुमच्या समस्या जतन करण्यासाठी आणि वैयक्तिक मार्गदर्शन मिळवण्यासाठी साइन इन करा." },
-            emailLabel: { en: "Email address", hi: "ईमेल पता", mr: "ईमेल पत्ता" },
-            passwordLabel: { en: "Password", hi: "पासवर्ड", mr: "पासवर्ड" },
-            continueBtn: { en: "Continue", hi: "जारी रखें", mr: "सुरू ठेवा" },
+            langPanelTitle: { en: "Language / भाषा", hi: "भाषा / Language", mr: "भाषा / Language" },
+            langPanelSub: { en: "Choose your preferred language", hi: "अपनी पसंदीदा भाषा चुनें", mr: "तुमची आवडती भाषा निवडा" },
+            lawyerPanelTitle: { en: "Need help from a lawyer?", hi: "वकील से मदद चाहिए?", mr: "वकिलाची मदत हवी आहे?" },
+            lawyerPanelSub: { en: "Connect with verified lawyers in your area if you need expert help.", hi: "विशेषज्ञ सहायता के लिए अपने क्षेत्र के सत्यापित वकीलों से जुड़ें।", mr: "तज्ज्ञ मदतीसाठी तुमच्या भागातील सत्यापित वकिलांशी संपर्क साधा." },
             lawyerModalTitle: { en: "Find a Lawyer", hi: "वकील खोजें", mr: "वकील शोधा" },
-            lawyerModalSub: { en: "Tell us your city and area of law, we'll match you with verified lawyers.", hi: "अपना शहर और कानून का क्षेत्र बताएं, हम आपको सत्यापित वकीलों से मिलाएंगे।", mr: "तुमचे शहर आणि कायद्याचे क्षेत्र सांगा, आम्ही तुम्हाला सत्यापित वकिलांशी जोडू." },
+            lawyerModalSub: { en: "Tell us your city and legal area.", hi: "अपना शहर और क्षेत्र बताएं।", mr: "तुमचे शहर आणि क्षेत्र सांगा." },
             cityLabel: { en: "City", hi: "शहर", mr: "शहर" },
             areaLabel: { en: "Area of law", hi: "कानून का क्षेत्र", mr: "कायद्याचे क्षेत्र" },
-            findLawyerSubmit: { en: "Find Lawyers", hi: "वकील खोजें", mr: "वकील शोधा" },
+            findLawyerSubmit: { en: "Find a Lawyer", hi: "वकील खोजें", mr: "वकील शोधा" },
+            findLawyerSubmit2: { en: "Find Lawyers", hi: "वकील खोजें", mr: "वकील शोधा" },
         };
 
-        /* Example issue text inserted into the textarea when a popular-issue card is clicked */
+        function getText(key, lang) {
+            const entry = TRANSLATIONS[key];
+            if (!entry) return '';
+            return entry[lang] || entry.en;
+        }
+
         const EXAMPLES = {
-            exJob: { en: "My employer terminated me without notice and hasn't paid my final salary.", hi: "मेरे नियोक्ता ने बिना सूचना के मुझे नौकरी से निकाल दिया और मेरा अंतिम वेतन नहीं दिया।", mr: "माझ्या मालकाने मला सूचना न देता कामावरून काढले आणि माझा अंतिम पगार दिला नाही." },
-            exLandlord: { en: "My landlord is not returning my security deposit even after I vacated the house.", hi: "घर खाली करने के बाद भी मेरा मकान मालिक मेरी सुरक्षा जमा राशि वापस नहीं कर रहा है।", mr: "घर रिकामे केल्यानंतरही माझा घरमालक माझी सुरक्षा ठेव परत करत नाही." },
-            exConsumer: { en: "I received a defective product online and the seller refuses to refund me.", hi: "मुझे ऑनलाइन एक दोषपूर्ण उत्पाद मिला और विक्रेता मुझे धनवापसी करने से मना कर रहा है।", mr: "मला ऑनलाइन सदोष उत्पादन मिळाले आणि विक्रेता परतावा देण्यास नकार देत आहे." },
-            exCyber: { en: "I was scammed online and my bank account was hacked. What should I do?", hi: "मुझे ऑनलाइन ठगा गया और मेरा बैंक खाता हैक हो गया। मुझे क्या करना चाहिए?", mr: "माझी ऑनलाइन फसवणूक झाली आणि माझे बँक खाते हॅक झाले. मी काय करावे?" },
-            exPolice: { en: "The police are refusing to file my FIR. What are my rights?", hi: "पुलिस मेरी एफआईआर दर्ज करने से मना कर रही है। मेरे अधिकार क्या हैं?", mr: "पोलीस माझा एफआयआर नोंदवण्यास नकार देत आहेत. माझे अधिकार काय आहेत?" },
-            exLoans: { en: "A loan recovery agent is harassing me with threatening calls.", hi: "एक ऋण वसूली एजेंट धमकी भरे कॉल से मुझे परेशान कर रहा है।", mr: "एक कर्ज वसुली एजंट मला धमकीचे कॉल करून त्रास देत आहे." },
-            exFamily: { en: "I want to understand the process for filing for divorce and maintenance.", hi: "मैं तलाक और गुजारा भत्ता दाखिल करने की प्रक्रिया को समझना चाहता हूं।", mr: "मला घटस्फोट आणि पोटगीसाठी अर्ज करण्याची प्रक्रिया समजून घ्यायची आहे." },
-            exProperty: { en: "There is a dispute over inherited property among family members.", hi: "पारिवारिक सदस्यों के बीच विरासत में मिली संपत्ति को लेकर विवाद है।", mr: "वारसा हक्काच्या मालमत्तेवरून कुटुंबातील सदस्यांमध्ये वाद आहे." },
+            exJob: { en: "My employer terminated me without notice and hasn't paid my final salary.", hi: "मेरे नियोक्ता ने बिना सूचना के मुझे निकाल दिया।", mr: "माझ्या मालकाने मला सूचना न देता कामावरून काढले." },
+            exLandlord: { en: "My landlord is not returning my security deposit even after I vacated.", hi: "घर खाली करने के बाद भी मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है।", mr: "घर रिकामे केल्यानंतरही घरमालक ठेव परत करत नाही." },
+            exConsumer: { en: "I received a defective product online and the seller refuses to refund me.", hi: "मुझे दोषपूर्ण उत्पाद मिला और विक्रेता धनवापसी से मना कर रहा है।", mr: "मला सदोष उत्पादन मिळाले आणि विक्रेता परतावा देण्यास नकार देत आहे." },
+            exCyber: { en: "I was scammed online and my bank account was hacked. What should I do?", hi: "मुझे ऑनलाइन ठगा गया और मेरा बैंक खाता हैक हो गया।", mr: "माझी ऑनलाइन फसवणूक झाली आणि माझे बँक खाते हॅक झाले." },
+            exPolice: { en: "The police are refusing to file my FIR. What are my rights?", hi: "पुलिस मेरी एफआईआर दर्ज करने से मना कर रही है।", mr: "पोलीस माझा एफआयआर नोंदवण्यास नकार देत आहेत." },
+            exLoans: { en: "A loan recovery agent is harassing me with threatening calls.", hi: "एक ऋण वसूली एजेंट मुझे परेशान कर रहा है।", mr: "एक कर्ज वसुली एजंट मला त्रास देत आहे." },
+            exFamily: { en: "I want to understand the process for filing for divorce and maintenance.", hi: "मैं तलाक और गुजारा भत्ता की प्रक्रिया समझना चाहता हूं।", mr: "मला घटस्फोट आणि पोटगीच्या प्रक्रियेचा ज्ञान हवा आहे." },
+            exProperty: { en: "There is a dispute over inherited property among family members.", hi: "विरासत में मिली संपत्ति को लेकर परिवार में विवाद है।", mr: "वारसा मालमत्तेवरून कुटुंबातील सदस्यांमध्ये वाद आहे." },
         };
 
         let currentLang = 'en';
+        let analyzeBtnBusy = false;
 
-        /* Apply a language across every translatable element on the page */
         function applyLanguage(lang) {
             currentLang = lang;
 
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (TRANSLATIONS[key]) el.textContent = TRANSLATIONS[key][lang];
+                if (TRANSLATIONS[key]) el.textContent = getText(key, lang);
             });
+
             document.querySelectorAll('[data-i18n-html]').forEach(el => {
                 const key = el.getAttribute('data-i18n-html');
-                if (TRANSLATIONS[key]) el.innerHTML = TRANSLATIONS[key][lang];
+                if (TRANSLATIONS[key]) el.innerHTML = getText(key, lang);
             });
+
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
-                if (TRANSLATIONS[key]) el.placeholder = TRANSLATIONS[key][lang];
+                if (TRANSLATIONS[key]) el.placeholder = getText(key, lang);
             });
 
-            const label = { en: 'English', hi: 'हिंदी', mr: 'मराठी' }[lang];
-            document.getElementById('topbarLangSelected').textContent = label;
-            document.getElementById('panelLangSelected').textContent = label;
+            const analyzeLabel = document.getElementById('analyzeBtnLabel');
+            if (analyzeLabel && !analyzeBtnBusy) {
+                analyzeLabel.textContent = getText('analyzeIssue', lang);
+            }
 
-            document.querySelectorAll('.lang-menu li').forEach(li => {
+            const langInfo = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+            document.querySelectorAll('.topbarLangSelected, .mobileLangSelected, .panelLangSelected')
+                .forEach(el => { el.textContent = langInfo.label; });
+
+            document.querySelectorAll('.lang-menu-instance li').forEach(li => {
                 li.classList.toggle('selected', li.dataset.lang === lang);
             });
 
             document.documentElement.lang = lang;
         }
 
-        /* Toast helper */
         let toastTimer;
         function showToast(message) {
             const toast = document.getElementById('toast');
@@ -1297,10 +1313,23 @@
             toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
         }
 
-        /* Language dropdowns (topbar + right panel, kept in sync) */
+        function buildLangMenu(menuEl) {
+            menuEl.innerHTML = '';
+            LANGUAGES.forEach(({ code, label }) => {
+                const li = document.createElement('li');
+                li.dataset.lang = code;
+                li.textContent = label;
+                if (code === currentLang) li.classList.add('selected');
+                menuEl.appendChild(li);
+            });
+        }
+
+        document.querySelectorAll('.lang-menu-instance').forEach(buildLangMenu);
+
         function wireLangDropdown(toggleId, menuId) {
             const toggle = document.getElementById(toggleId);
             const menu = document.getElementById(menuId);
+            if (!toggle || !menu) return;
 
             toggle.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1308,15 +1337,18 @@
                 menu.classList.toggle('open');
             });
 
-            menu.querySelectorAll('li').forEach(item => {
-                item.addEventListener('click', () => {
-                    applyLanguage(item.dataset.lang);
-                    menu.classList.remove('open');
-                });
+            menu.addEventListener('click', (e) => {
+                const item = e.target.closest('li[data-lang]');
+                if (!item) return;
+                applyLanguage(item.dataset.lang);
+                menu.classList.remove('open');
             });
         }
+
         wireLangDropdown('topbarLangToggle', 'topbarLangMenu');
+        wireLangDropdown('mobileLangToggle', 'mobileLangMenu');
         wireLangDropdown('panelLangToggle', 'panelLangMenu');
+        wireLangDropdown('userMenuToggle', 'userMenu');
 
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.lang-dropdown')) {
@@ -1324,26 +1356,45 @@
             }
         });
 
-        /* Character counter for issue textarea */
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarBackdrop.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarBackdrop.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        hamburgerBtn.addEventListener('click', openSidebar);
+        sidebarCloseBtn.addEventListener('click', closeSidebar);
+        sidebarBackdrop.addEventListener('click', closeSidebar);
+
         const issueInput = document.getElementById('issueInput');
         const charCount = document.getElementById('charCount');
         issueInput.addEventListener('input', () => {
             charCount.textContent = issueInput.value.length;
         });
 
-        /* New Issue button — clears the box and focuses it */
         document.getElementById('newIssueBtn').addEventListener('click', () => {
+            closeSidebar();
             issueInput.value = '';
             charCount.textContent = '0';
             issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
             issueInput.focus();
         });
 
-        /* Popular issue cards — fill the textarea with an example */
         document.querySelectorAll('.issue-card').forEach(card => {
             card.addEventListener('click', () => {
                 const key = card.dataset.example;
-                const text = EXAMPLES[key] ? EXAMPLES[key][currentLang] : '';
+                const text = EXAMPLES[key] ? (EXAMPLES[key][currentLang] || EXAMPLES[key].en) : '';
                 issueInput.value = text;
                 charCount.textContent = text.length;
                 issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1351,38 +1402,40 @@
             });
         });
 
-        /* Analyze Issue button */
         const analyzeBtn = document.getElementById('analyzeBtn');
+        const analyzeBtnLabel = document.getElementById('analyzeBtnLabel');
+
         analyzeBtn.addEventListener('click', () => {
             if (!issueInput.value.trim()) {
-                showToast({ en: 'Please describe your issue first.', hi: 'कृपया पहले अपनी समस्या बताएं।', mr: 'कृपया आधी तुमची समस्या सांगा.' }[currentLang]);
+                showToast({ en: 'Please describe your issue first.', hi: 'कृपया पहले अपनी समस्या बताएं।', mr: 'कृपया आधी तुमची समस्या सांगा.' }[currentLang] || 'Please describe your issue first.');
                 issueInput.focus();
                 return;
             }
-            const originalHTML = analyzeBtn.innerHTML;
+            analyzeBtnBusy = true;
             analyzeBtn.disabled = true;
-            analyzeBtn.innerHTML = { en: 'Analyzing…', hi: 'विश्लेषण हो रहा है…', mr: 'विश्लेषण सुरू आहे…' }[currentLang];
+            analyzeBtnLabel.textContent = getText('analyzing', currentLang);
+
             setTimeout(() => {
+                analyzeBtnBusy = false;
                 analyzeBtn.disabled = false;
-                analyzeBtn.innerHTML = originalHTML;
-                showToast({ en: 'Analysis complete — guidance ready below (demo).', hi: 'विश्लेषण पूर्ण — मार्गदर्शन तैयार है (डेमो)।', mr: 'विश्लेषण पूर्ण — मार्गदर्शन तयार आहे (डेमो).' }[currentLang]);
+                analyzeBtnLabel.textContent = getText('analyzeIssue', currentLang);
+                showToast({ en: 'Analysis complete — guidance ready below (demo).', hi: 'विश्लेषण पूर्ण (डेमो)।', mr: 'विश्लेषण पूर्ण (डेमो).' }[currentLang] || 'Analysis complete (demo).');
             }, 1400);
         });
 
-        /* Speak button — uses Web Speech API when available */
         const speakBtn = document.getElementById('speakBtn');
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         speakBtn.addEventListener('click', () => {
             if (!SpeechRecognition) {
-                showToast({ en: 'Voice input is not supported in this browser.', hi: 'इस ब्राउज़र में वॉइस इनपुट समर्थित नहीं है।', mr: 'या ब्राउझरमध्ये व्हॉइस इनपुट समर्थित नाही.' }[currentLang]);
+                showToast({ en: 'Voice input not supported.', hi: 'वॉइस इनपुट समर्थित नहीं है।', mr: 'व्हॉइस इनपुट समर्थित नाही.' }[currentLang] || 'Voice input not supported.');
                 return;
             }
             const recognition = new SpeechRecognition();
-            recognition.lang = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN' }[currentLang];
+            recognition.lang = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN' }[currentLang] || 'en-IN';
             recognition.interimResults = false;
 
             speakBtn.classList.add('recording');
-            speakBtn.querySelector('span').textContent = { en: 'Listening…', hi: 'सुन रहे हैं…', mr: 'ऐकत आहे…' }[currentLang];
+            speakBtn.querySelector('span').textContent = { en: 'Listening…', hi: 'सुन रहे हैं…', mr: 'ऐकत आहे…' }[currentLang] || 'Listening…';
 
             recognition.start();
 
@@ -1392,15 +1445,14 @@
                 charCount.textContent = issueInput.value.length;
             };
             recognition.onerror = () => {
-                showToast({ en: 'Could not capture audio. Please try again.', hi: 'ऑडियो कैप्चर नहीं हो सका। कृपया पुनः प्रयास करें।', mr: 'ऑडिओ कॅप्चर करता आले नाही. कृपया पुन्हा प्रयत्न करा.' }[currentLang]);
+                showToast({ en: 'Could not capture audio.', hi: 'ऑडियो कैप्चर नहीं हो सका।', mr: 'ऑडिओ कॅप्चर करता आले नाही.' }[currentLang] || 'Could not capture audio.');
             };
             recognition.onend = () => {
                 speakBtn.classList.remove('recording');
-                speakBtn.querySelector('span').textContent = TRANSLATIONS.speak[currentLang];
+                speakBtn.querySelector('span').textContent = getText('speak', currentLang);
             };
         });
 
-        /* Attach document button */
         const attachBtn = document.getElementById('attachBtn');
         const fileInput = document.getElementById('fileInput');
         const fileChip = document.getElementById('fileChip');
@@ -1420,53 +1472,37 @@
             fileChip.classList.remove('visible');
         });
 
-        /* Generic modal open/close helper */
-        function wireModal(openTriggerId, overlayId, closeBtnId, formId, successMsg) {
-            const overlay = document.getElementById(overlayId);
-            document.getElementById(openTriggerId).addEventListener('click', (e) => {
-                e.preventDefault();
-                overlay.classList.add('open');
-            });
-            document.getElementById(closeBtnId).addEventListener('click', () => overlay.classList.remove('open'));
-            overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+        const lawyerModal = document.getElementById('lawyerModal');
+        const findLawyerBtn = document.getElementById('findLawyerBtn');
+        const lawyerModalClose = document.getElementById('lawyerModalClose');
+        const lawyerForm = document.getElementById('lawyerForm');
 
-            const form = document.getElementById(formId);
-            if (form) {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    overlay.classList.remove('open');
-                    form.reset();
-                    showToast(successMsg[currentLang]);
-                });
-            }
-        }
+        findLawyerBtn.addEventListener('click', () => {
+            lawyerModal.classList.add('open');
+        });
 
-        wireModal('signinBtn', 'signinModal', 'signinModalClose', 'signinForm',
-            { en: 'Signed in successfully (demo).', hi: 'सफलतापूर्वक साइन इन हुआ (डेमो)।', mr: 'यशस्वीरित्या साइन इन झाले (डेमो).' });
+        lawyerModalClose.addEventListener('click', () => lawyerModal.classList.remove('open'));
+        lawyerModal.addEventListener('click', (e) => { if (e.target === lawyerModal) lawyerModal.classList.remove('open'); });
 
-        wireModal('findLawyerBtn', 'lawyerModal', 'lawyerModalClose', 'lawyerForm',
-            { en: "We'll connect you with a lawyer shortly (demo).", hi: 'हम जल्द ही आपको वकील से जोड़ेंगे (डेमो)।', mr: 'आम्ही लवकरच तुम्हाला वकिलाशी जोडू (डेमो).' });
+        lawyerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            lawyerModal.classList.remove('open');
+            lawyerForm.reset();
+            showToast({ en: "We'll connect you with a lawyer shortly (demo).", hi: 'हम जल्द ही आपको वकील से जोड़ेंगे (डेमो)।', mr: 'आम्ही लवकरच तुम्हाला वकिलाशी जोडू (डेमो).' }[currentLang] || "We'll connect you with a lawyer shortly (demo).");
+        });
 
-        /* View all (popular issues) — placeholder action */
         document.getElementById('viewAllBtn').addEventListener('click', (e) => {
             e.preventDefault();
-            showToast({ en: 'Full issue directory coming soon.', hi: 'पूरी समस्या सूची जल्द आ रही है।', mr: 'संपूर्ण समस्या यादी लवकरच येत आहे.' }[currentLang]);
+            showToast({ en: 'Full issue directory coming soon.', hi: 'पूरी समस्या सूची जल्द आ रही है।', mr: 'संपूर्ण समस्या यादी लवकरच येत आहे.' }[currentLang] || 'Full issue directory coming soon.');
         });
 
-        /* Sidebar nav active state */
         document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.preventDefault();
+            item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
+                closeSidebar();
             });
         });
-
-        /* Init */
-        
-
-
-        
     </script>
 
 </body>
