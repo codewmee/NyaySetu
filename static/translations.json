@@ -1,0 +1,217 @@
+{
+  "languages": [
+    { "code": "en", "label": "English" },
+    { "code": "hi", "label": "हिंदी" },
+    { "code": "mr", "label": "मराठी" }
+  ],
+  "voice_locales": {
+    "en": "en-IN",
+    "hi": "hi-IN",
+    "mr": "mr-IN"
+  },
+  "translations": {
+    "tagline": { "en": "Understand Your Rights", "hi": "अपने अधिकार समझें", "mr": "तुमचे हक्क समजून घ्या" },
+
+    "newIssue": { "en": "New Issue", "hi": "नई समस्या", "mr": "नवीन समस्या" },
+    "navHome": { "en": "Home", "hi": "होम", "mr": "होम" },
+    "navMyIssues": { "en": "My Issues", "hi": "मेरी समस्याएँ", "mr": "माझ्या समस्या" },
+    "navDocHelper": { "en": "Document Helper", "hi": "दस्तावेज़ सहायक", "mr": "कागदपत्र सहाय्यक" },
+    "navKnowRights": { "en": "Know Your Rights", "hi": "अपने अधिकार जानें", "mr": "तुमचे हक्क जाणून घ्या" },
+    "navSavedReports": { "en": "Saved Reports", "hi": "सहेजी गई रिपोर्ट", "mr": "जतन केलेले अहवाल" },
+    "navGovServices": { "en": "Government Services", "hi": "सरकारी सेवाएं", "mr": "सरकारी सेवा" },
+    "navHelpSupport": { "en": "Help & Support", "hi": "सहायता और समर्थन", "mr": "मदत आणि समर्थन" },
+
+    "navDashboard": { "en": "Dashboard", "hi": "डैशबोर्ड", "mr": "डॅशबोर्ड" },
+    "navMyCases": { "en": "My Cases", "hi": "मेरे मामले", "mr": "माझी प्रकरणे" },
+    "navNewIssue": { "en": "New Issue", "hi": "नई समस्या", "mr": "नवीन समस्या" },
+    "navDocAnalysis": { "en": "Document Analysis", "hi": "दस्तावेज़ विश्लेषण", "mr": "कागदपत्र विश्लेषण" },
+    "navFindLawyer": { "en": "Find a Lawyer", "hi": "वकील खोजें", "mr": "वकील शोधा" },
+    "navSettings": { "en": "Settings", "hi": "सेटिंग्स", "mr": "सेटिंग्ज" },
+
+    "privacyTitle": { "en": "Your information is private", "hi": "आपकी जानकारी निजी है", "mr": "तुमची माहिती गोपनीय आहे" },
+    "privacyText": { "en": "We never share your data.", "hi": "हम कभी शेयर नहीं करते।", "mr": "आम्ही कधीही शेअर करत नाही." },
+    "privacyText2": { "en": "Everything is confidential.", "hi": "सब कुछ गोपनीय है।", "mr": "सर्व काही गोपनीय आहे." },
+
+    "sidebarCtaTitle": { "en": "Your legal journey starts with knowledge.", "hi": "आपकी कानूनी यात्रा ज्ञान से शुरू होती है।", "mr": "तुमचा कायदेशीर प्रवास ज्ञानाने सुरू होतो." },
+    "sidebarCtaText": { "en": "NyaySetu helps you understand your rights and take the right step.", "hi": "न्यायसेतु आपको अपने अधिकार समझने और सही कदम उठाने में मदद करता है।", "mr": "न्यायसेतु तुम्हाला तुमचे हक्क समजून घेण्यास आणि योग्य पाऊल उचलण्यास मदत करते." },
+    "sidebarCtaBtn": { "en": "Know Your Rights", "hi": "अपने अधिकार जानें", "mr": "तुमचे हक्क जाणून घ्या" },
+
+    "signInSignUp": { "en": "Sign in / Sign up", "hi": "साइन इन / साइन अप", "mr": "साइन इन / साइन अप" },
+
+    "greetingMorning": { "en": "Good morning", "hi": "सुप्रभात", "mr": "सुप्रभात" },
+    "greetingAfternoon": { "en": "Good afternoon", "hi": "नमस्कार", "mr": "नमस्कार" },
+    "greetingEvening": { "en": "Good evening", "hi": "शुभ संध्या", "mr": "शुभ संध्याकाळ" },
+    "dashboardSubtitle": { "en": "We're here to help you understand your legal rights.", "hi": "हम आपको आपके कानूनी अधिकार समझने में मदद के लिए यहाँ हैं।", "mr": "आम्ही तुम्हाला तुमचे कायदेशीर हक्क समजून घेण्यास मदत करण्यासाठी येथे आहोत." },
+
+    "accountProfile": { "en": "My Profile", "hi": "मेरी प्रोफ़ाइल", "mr": "माझी प्रोफाइल" },
+    "accountSettings": { "en": "Settings", "hi": "सेटिंग्स", "mr": "सेटिंग्ज" },
+    "accountLogout": { "en": "Logout", "hi": "लॉग आउट", "mr": "लॉगआउट" },
+
+    "whatWouldYouLike": { "en": "What would you like to do today?", "hi": "आज आप क्या करना चाहेंगे?", "mr": "आज तुम्हाला काय करायचे आहे?" },
+
+    "qaAddIssueTitle": { "en": "Add New Issue", "hi": "नई समस्या जोड़ें", "mr": "नवीन समस्या जोडा" },
+    "qaAddIssueText": { "en": "Describe your legal issue in simple words.", "hi": "अपनी कानूनी समस्या सरल शब्दों में बताएं।", "mr": "तुमची कायदेशीर समस्या सोप्या शब्दांत सांगा." },
+    "qaAddIssueBtn": { "en": "Start Now", "hi": "अभी शुरू करें", "mr": "आत्ता सुरू करा" },
+
+    "qaAnalyzeTitle": { "en": "Analyze Document", "hi": "दस्तावेज़ का विश्लेषण करें", "mr": "कागदपत्राचे विश्लेषण करा" },
+    "qaAnalyzeText": { "en": "Upload any legal document for simple explanation.", "hi": "सरल व्याख्या के लिए कोई भी कानूनी दस्तावेज़ अपलोड करें।", "mr": "सोप्या स्पष्टीकरणासाठी कोणतेही कायदेशीर कागदपत्र अपलोड करा." },
+    "qaAnalyzeBtn": { "en": "Upload Document", "hi": "दस्तावेज़ अपलोड करें", "mr": "कागदपत्र अपलोड करा" },
+
+    "qaMyCasesTitle": { "en": "My Cases", "hi": "मेरे मामले", "mr": "माझी प्रकरणे" },
+    "qaMyCasesText": { "en": "View and manage all your legal cases.", "hi": "अपने सभी कानूनी मामलों को देखें और प्रबंधित करें।", "mr": "तुमची सर्व कायदेशीर प्रकरणे पहा आणि व्यवस्थापित करा." },
+    "qaMyCasesBtn": { "en": "View Cases", "hi": "मामले देखें", "mr": "प्रकरणे पहा" },
+
+    "qaKnowRightsTitle": { "en": "Know Your Rights", "hi": "अपने अधिकार जानें", "mr": "तुमचे हक्क जाणून घ्या" },
+    "qaKnowRightsText": { "en": "Explore legal information on various topics.", "hi": "विभिन्न विषयों पर कानूनी जानकारी देखें।", "mr": "विविध विषयांवरील कायदेशीर माहिती पहा." },
+    "qaKnowRightsBtn": { "en": "Explore Now", "hi": "अभी देखें", "mr": "आत्ता पहा" },
+
+    "myCasesTitle": { "en": "My Cases", "hi": "मेरे मामले", "mr": "माझी प्रकरणे" },
+    "viewAllCases": { "en": "View all cases →", "hi": "सभी मामले देखें →", "mr": "सर्व प्रकरणे पहा →" },
+    "tabAll": { "en": "All Cases", "hi": "सभी मामले", "mr": "सर्व प्रकरणे" },
+    "tabInProgress": { "en": "In Progress", "hi": "प्रगति पर", "mr": "प्रगतीपथावर" },
+    "tabAwaiting": { "en": "Awaiting Action", "hi": "कार्रवाई की प्रतीक्षा में", "mr": "कारवाईची प्रतीक्षा" },
+    "tabResolved": { "en": "Resolved", "hi": "हल हो गया", "mr": "निकाली" },
+    "tabClosed": { "en": "Closed", "hi": "बंद", "mr": "बंद" },
+    "caseStrength": { "en": "Case Strength", "hi": "मामले की मजबूती", "mr": "प्रकरणाची ताकद" },
+
+    "footerPrivacyNote": { "en": "Your information is private and secure. We do not share your data with anyone.", "hi": "आपकी जानकारी निजी और सुरक्षित है। हम आपका डेटा किसी के साथ साझा नहीं करते।", "mr": "तुमची माहिती खाजगी आणि सुरक्षित आहे. आम्ही तुमचा डेटा कोणाशीही शेअर करत नाही." },
+
+    "quickToolsTitle": { "en": "Quick Tools", "hi": "त्वरित उपकरण", "mr": "क्विक टूल्स" },
+    "qt1Title": { "en": "Document Analysis", "hi": "दस्तावेज़ विश्लेषण", "mr": "कागदपत्र विश्लेषण" },
+    "qt1Text": { "en": "Upload and analyze any legal document", "hi": "कोई भी कानूनी दस्तावेज़ अपलोड करें और उसका विश्लेषण करें", "mr": "कोणतेही कायदेशीर कागदपत्र अपलोड करा आणि विश्लेषण करा" },
+    "qt2Title": { "en": "AI Legal Assistant", "hi": "एआई कानूनी सहायक", "mr": "एआय कायदेशीर सहाय्यक" },
+    "qt2Text": { "en": "Ask any legal question", "hi": "कोई भी कानूनी प्रश्न पूछें", "mr": "कोणताही कायदेशीर प्रश्न विचारा" },
+    "qt3Title": { "en": "Complaint Templates", "hi": "शिकायत टेम्पलेट्स", "mr": "तक्रार टेम्प्लेट्स" },
+    "qt3Text": { "en": "Get templates for common issues", "hi": "सामान्य समस्याओं के लिए टेम्पलेट प्राप्त करें", "mr": "सामान्य समस्यांसाठी टेम्प्लेट्स मिळवा" },
+    "qt4Title": { "en": "Evidence Checklist", "hi": "साक्ष्य चेकलिस्ट", "mr": "पुरावा चेकलिस्ट" },
+    "qt4Text": { "en": "Know what documents you need", "hi": "जानें आपको कौन से दस्तावेज़ चाहिए", "mr": "तुम्हाला कोणती कागदपत्रे हवीत ते जाणून घ्या" },
+
+    "recentActivityTitle": { "en": "Recent Activity", "hi": "हाल की गतिविधि", "mr": "अलीकडील क्रियाकलाप" },
+    "viewAllActivity": { "en": "View all activity →", "hi": "सभी गतिविधि देखें →", "mr": "सर्व क्रियाकलाप पहा →" },
+
+    "needExpertTitle": { "en": "Need Expert Help?", "hi": "विशेषज्ञ सहायता चाहिए?", "mr": "तज्ज्ञांची मदत हवी आहे?" },
+    "needExpertText": { "en": "Connect with verified lawyers in your area for professional legal assistance.", "hi": "व्यावसायिक कानूनी सहायता के लिए अपने क्षेत्र के सत्यापित वकीलों से जुड़ें।", "mr": "व्यावसायिक कायदेशीर मदतीसाठी तुमच्या भागातील सत्यापित वकिलांशी संपर्क साधा." },
+
+    "heroTitle": {
+      "en": "How can we <span class=\"accent\">help</span> you today?",
+      "hi": "आज हम आपकी <span class=\"accent\">मदद</span> कैसे कर सकते हैं?",
+      "mr": "आज आम्ही तुम्हाला <span class=\"accent\">कशी मदत</span> करू शकतो?"
+    },
+    "heroSub": { "en": "Describe your issue in simple words. We'll help you understand your legal position.", "hi": "अपनी समस्या सरल शब्दों में बताएं। हम आपको आपकी कानूनी स्थिति समझने में मदद करेंगे।", "mr": "तुमची समस्या सोप्या शब्दांत सांगा. आम्ही तुम्हाला तुमची कायदेशीर स्थिती समजून घेण्यास मदत करू." },
+    "issuePlaceholder": { "en": "Example: My landlord is not returning my security deposit.", "hi": "उदाहरण: मेरा मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है।", "mr": "उदाहरण: माझा घरमालक माझी ठेव परत करत नाही." },
+    "speak": { "en": "Speak", "hi": "बोलें", "mr": "बोला" },
+    "attachOptional": { "en": "Attach document (optional)", "hi": "दस्तावेज़ जोड़ें (वैकल्पिक)", "mr": "कागदपत्र जोडा (पर्यायी)" },
+    "analyzeIssue": { "en": "Analyze Issue", "hi": "समस्या का विश्लेषण करें", "mr": "समस्येचे विश्लेषण करा" },
+    "analyzing": { "en": "Analyzing…", "hi": "विश्लेषण हो रहा है…", "mr": "विश्लेषण सुरू आहे…" },
+    "tip": { "en": "Be specific about what, when, and with whom.", "hi": "क्या, कब और किसके साथ — स्पष्ट बताएं।", "mr": "काय, केव्हा आणि कोणासोबत — स्पष्ट सांगा." },
+
+    "howItWorks": { "en": "How it works", "hi": "यह कैसे काम करता है", "mr": "हे कसे कार्य करते" },
+    "step1Title": { "en": "Tell us your issue", "hi": "अपनी समस्या बताएं", "mr": "तुमची समस्या सांगा" },
+    "step1Text": { "en": "Describe in your own words.", "hi": "अपने शब्दों में बताएं।", "mr": "तुमच्या शब्दांत सांगा." },
+    "step2Title": { "en": "We analyze it", "hi": "हम विश्लेषण करते हैं", "mr": "आम्ही विश्लेषण करतो" },
+    "step2Text": { "en": "Our AI finds relevant laws and information.", "hi": "हमारा AI प्रासंगिक कानून और जानकारी ढूंढता है।", "mr": "आमचे AI संबंधित कायदे आणि माहिती शोधते." },
+    "step3Title": { "en": "Get clear guidance", "hi": "स्पष्ट मार्गदर्शन पाएं", "mr": "स्पष्ट मार्गदर्शन मिळवा" },
+    "step3Text": { "en": "Know your rights, next steps, and important evidence.", "hi": "अपने अधिकार, अगले कदम और जरूरी सबूत जानें।", "mr": "तुमचे हक्क, पुढील पावले आणि महत्त्वाचे पुरावे जाणा." },
+    "step4Title": { "en": "Take action", "hi": "कार्रवाई करें", "mr": "कृती करा" },
+    "step4Text": { "en": "Use the guidance or connect with the right authority.", "hi": "मार्गदर्शन का उपयोग करें या सही प्राधिकरण से जुड़ें।", "mr": "मार्गदर्शनाचा वापर करा किंवा योग्य प्राधिकरणाशी संपर्क साधा." },
+
+    "popularIssues": { "en": "Popular Issues", "hi": "लोकप्रिय समस्याएँ", "mr": "लोकप्रिय समस्या" },
+    "viewAll": { "en": "View all →", "hi": "सभी देखें →", "mr": "सर्व पहा →" },
+    "popularSub": { "en": "Select a common issue or ask your own.", "hi": "एक सामान्य समस्या चुनें या अपनी पूछें।", "mr": "एक सामान्य समस्या निवडा किंवा तुमची विचारा." },
+
+    "issueJobTitle": { "en": "Job & Employment", "hi": "नौकरी और रोजगार", "mr": "नोकरी आणि रोजगार" },
+    "issueJobText": { "en": "Salary, termination, contracts", "hi": "वेतन, बर्खास्तगी, अनुबंध", "mr": "पगार, नोकरीतून काढणे, करार" },
+    "issueLandlordTitle": { "en": "Landlord & Tenant", "hi": "मकान मालिक और किरायेदार", "mr": "घरमालक आणि भाडेकरू" },
+    "issueLandlordText": { "en": "Rent, deposit, eviction", "hi": "किराया, जमा, बेदखली", "mr": "भाडे, ठेव, बेदखल करणे" },
+    "issueConsumerTitle": { "en": "Consumer Complaints", "hi": "उपभोक्ता शिकायतें", "mr": "ग्राहक तक्रारी" },
+    "issueConsumerText": { "en": "Refunds, defective products", "hi": "धनवापसी, दोषपूर्ण उत्पाद", "mr": "परतावा, सदोष उत्पादने" },
+    "issueCyberTitle": { "en": "Cyber Fraud", "hi": "साइबर धोखाधड़ी", "mr": "सायबर फसवणूक" },
+    "issueCyberText": { "en": "Online scams, hacking", "hi": "ऑनलाइन घोटाले, हैकिंग", "mr": "ऑनलाइन फसवणूक, हॅकिंग" },
+    "issuePoliceTitle": { "en": "Police & FIR", "hi": "पुलिस और एफआईआर", "mr": "पोलीस आणि एफआयआर" },
+    "issuePoliceText": { "en": "FIR, complaints, procedures", "hi": "एफआईआर, शिकायतें, प्रक्रियाएं", "mr": "एफआयआर, तक्रारी, प्रक्रिया" },
+    "issueLoansTitle": { "en": "Loans & Recovery", "hi": "ऋण और वसूली", "mr": "कर्ज आणि वसुली" },
+    "issueLoansText": { "en": "Harassment, illegal recovery", "hi": "उत्पीड़न, अवैध वसूली", "mr": "त्रास, बेकायदेशीर वसुली" },
+    "issueFamilyTitle": { "en": "Family & Personal", "hi": "पारिवारिक और व्यक्तिगत", "mr": "कौटुंबिक आणि वैयक्तिक" },
+    "issueFamilyText": { "en": "Divorce, maintenance, etc.", "hi": "तलाक, गुजारा भत्ता, आदि।", "mr": "घटस्फोट, पोटगी, इ." },
+    "issuePropertyTitle": { "en": "Property Disputes", "hi": "संपत्ति विवाद", "mr": "मालमत्ता वाद" },
+    "issuePropertyText": { "en": "Ownership, inheritance", "hi": "स्वामित्व, विरासत", "mr": "मालकी, वारसा" },
+
+    "trust1Title": { "en": "Trusted by Users", "hi": "उपयोगकर्ताओं का भरोसा", "mr": "वापरकर्त्यांचा विश्वास" },
+    "trust1Text": { "en": "Built for everyday Indians", "hi": "आम भारतीयों के लिए", "mr": "सामान्य भारतीयांसाठी" },
+    "trust2Title": { "en": "Based on Indian Laws", "hi": "भारतीय कानूनों पर", "mr": "भारतीय कायद्यांवर" },
+    "trust2Text": { "en": "Information from verified sources", "hi": "सत्यापित स्रोतों से जानकारी", "mr": "सत्यापित स्रोतांकडून माहिती" },
+    "trust3Title": { "en": "Secure & Confidential", "hi": "सुरक्षित और गोपनीय", "mr": "सुरक्षित आणि गोपनीय" },
+    "trust3Text": { "en": "Your privacy is our priority", "hi": "आपकी निजता हमारी प्राथमिकता है", "mr": "तुमची गोपनीयता आमचे प्राधान्य आहे" },
+    "trust4Title": { "en": "Always Improving", "hi": "हमेशा सुधार", "mr": "सतत सुधारणा" },
+    "trust4Text": { "en": "We're here to serve you better", "hi": "आपकी बेहतर सेवा के लिए", "mr": "तुम्हाला अधिक चांगली सेवा देण्यासाठी" },
+
+    "whyTitle": { "en": "Why NyaySetu?", "hi": "न्यायसेतु क्यों?", "mr": "न्यायसेतु का?" },
+    "why1": { "en": "Plain language explanations", "hi": "सरल भाषा में स्पष्टीकरण", "mr": "सोप्या भाषेत स्पष्टीकरण" },
+    "why2": { "en": "Reliable legal information", "hi": "विश्वसनीय कानूनी जानकारी", "mr": "विश्वासार्ह कायदेशीर माहिती" },
+    "why3": { "en": "Neutral and non-judgmental", "hi": "तटस्थ और निष्पक्ष", "mr": "तटस्थ आणि निष्पक्ष" },
+    "why4": { "en": "Helps you take the right steps", "hi": "सही कदम उठाने में मदद करता है", "mr": "योग्य पावले उचलण्यास मदत करते" },
+
+    "langPanelTitle": { "en": "Language / भाषा", "hi": "भाषा / Language", "mr": "भाषा / Language" },
+    "langPanelSub": { "en": "Choose your preferred language", "hi": "अपनी पसंदीदा भाषा चुनें", "mr": "तुमची आवडती भाषा निवडा" },
+
+    "lawyerPanelTitle": { "en": "Need help from a lawyer?", "hi": "वकील से मदद चाहिए?", "mr": "वकिलाची मदत हवी आहे?" },
+    "lawyerPanelSub": { "en": "Connect with verified lawyers in your area if you need expert help.", "hi": "विशेषज्ञ सहायता के लिए अपने क्षेत्र के सत्यापित वकीलों से जुड़ें।", "mr": "तज्ज्ञ मदतीसाठी तुमच्या भागातील सत्यापित वकिलांशी संपर्क साधा." },
+    "lawyerModalTitle": { "en": "Find a Lawyer", "hi": "वकील खोजें", "mr": "वकील शोधा" },
+    "lawyerModalSub": { "en": "Tell us your city and legal area.", "hi": "अपना शहर और क्षेत्र बताएं।", "mr": "तुमचे शहर आणि क्षेत्र सांगा." },
+    "cityLabel": { "en": "City", "hi": "शहर", "mr": "शहर" },
+    "areaLabel": { "en": "Area of law", "hi": "कानून का क्षेत्र", "mr": "कायद्याचे क्षेत्र" },
+    "findLawyerSubmit": { "en": "Find a Lawyer", "hi": "वकील खोजें", "mr": "वकील शोधा" },
+    "findLawyerSubmit2": { "en": "Find Lawyers", "hi": "वकील खोजें", "mr": "वकील शोधा" },
+
+    "toastEmptyIssue": { "en": "Please describe your issue first.", "hi": "कृपया पहले अपनी समस्या बताएं।", "mr": "कृपया प्रथम तुमची समस्या सांगा." },
+    "toastAnalysisComplete": { "en": "Analysis complete (demo).", "hi": "विश्लेषण पूर्ण (डेमो)।", "mr": "विश्लेषण पूर्ण (डेमो)." },
+    "toastVoiceNotSupported": { "en": "Voice input not supported on this browser.", "hi": "इस ब्राउज़र पर आवाज़ इनपुट समर्थित नहीं है।", "mr": "या ब्राउझरवर आवाज इनपुट समर्थित नाही." },
+    "toastListening": { "en": "Listening…", "hi": "सुन रहे हैं…", "mr": "ऐकत आहे…" },
+    "toastAudioError": { "en": "Could not capture audio.", "hi": "ऑडियो कैप्चर नहीं हो सका।", "mr": "ऑडिओ कॅप्चर करता आले नाही." },
+    "toastLawyerConnect": { "en": "We'll connect you with a lawyer shortly (demo).", "hi": "हम जल्द ही आपको एक वकील से जोड़ेंगे (डेमो)।", "mr": "आम्ही लवकरच तुम्हाला वकिलाशी जोडू (डेमो)." },
+    "toastViewAllSoon": { "en": "Full issue directory coming soon.", "hi": "पूर्ण समस्या सूची जल्द आ रही है।", "mr": "संपूर्ण समस्या यादी लवकरच येत आहे." },
+    "toastNotifications": { "en": "You have 2 new notifications.", "hi": "आपके पास 2 नई सूचनाएँ हैं।", "mr": "तुमच्याकडे 2 नवीन सूचना आहेत." }
+  },
+  "examples": {
+    "exJob": {
+      "en": "My employer has not paid my salary for the last two months and is not responding to my messages.",
+      "hi": "मेरे नियोक्ता ने पिछले दो महीनों से मेरा वेतन नहीं दिया है और मेरे संदेशों का जवाब नहीं दे रहे हैं।",
+      "mr": "माझ्या मालकाने गेल्या दोन महिन्यांपासून माझा पगार दिलेला नाही आणि माझ्या संदेशांना उत्तर देत नाही."
+    },
+    "exLandlord": {
+      "en": "My landlord is not returning my security deposit even though I vacated the flat two months ago.",
+      "hi": "मेरा मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है, जबकि मैंने दो महीने पहले फ्लैट खाली कर दिया था।",
+      "mr": "माझा घरमालक माझी ठेव परत करत नाही, जरी मी दोन महिन्यांपूर्वी फ्लॅट रिकामा केला होता."
+    },
+    "exConsumer": {
+      "en": "I received a defective product online and the seller is refusing to give a refund or replacement.",
+      "hi": "मुझे ऑनलाइन एक दोषपूर्ण उत्पाद मिला और विक्रेता धनवापसी या बदलने से इनकार कर रहा है।",
+      "mr": "मला ऑनलाइन एक सदोष उत्पादन मिळाले आणि विक्रेता परतावा किंवा बदली देण्यास नकार देत आहे."
+    },
+    "exCyber": {
+      "en": "I lost money in an online scam where someone impersonated a bank official and asked for my OTP.",
+      "hi": "मैंने एक ऑनलाइन घोटाले में पैसे गंवाए, जहाँ किसी ने बैंक अधिकारी बनकर मुझसे OTP माँगा।",
+      "mr": "मी ऑनलाइन फसवणुकीत पैसे गमावले, जिथे कोणीतरी बँक अधिकारी बनून माझा OTP मागितला."
+    },
+    "exPolice": {
+      "en": "I want to file an FIR but the police station is refusing to register my complaint.",
+      "hi": "मैं एफआईआर दर्ज करना चाहता हूँ लेकिन पुलिस स्टेशन मेरी शिकायत दर्ज करने से इनकार कर रहा है।",
+      "mr": "मला एफआयआर नोंदवायचा आहे पण पोलीस ठाणे माझी तक्रार नोंदवण्यास नकार देत आहे."
+    },
+    "exLoans": {
+      "en": "Recovery agents from a loan app are harassing me and my family with threatening calls.",
+      "hi": "एक लोन ऐप के वसूली एजेंट मुझे और मेरे परिवार को धमकी भरे कॉल से परेशान कर रहे हैं।",
+      "mr": "एका कर्ज अ‍ॅपचे वसुली एजंट मला आणि माझ्या कुटुंबाला धमकीचे कॉल करून त्रास देत आहेत."
+    },
+    "exFamily": {
+      "en": "I need to understand my rights regarding maintenance after filing for divorce.",
+      "hi": "मुझे तलाक दायर करने के बाद गुजारा भत्ते से जुड़े अपने अधिकार समझने हैं।",
+      "mr": "घटस्फोटासाठी अर्ज केल्यानंतर पोटगीसंबंधी माझे हक्क मला समजून घ्यायचे आहेत."
+    },
+    "exProperty": {
+      "en": "My relatives are disputing my share of an ancestral property after my father's death.",
+      "hi": "मेरे पिता की मृत्यु के बाद मेरे रिश्तेदार पैतृक संपत्ति में मेरे हिस्से पर विवाद कर रहे हैं।",
+      "mr": "माझ्या वडिलांच्या निधनानंतर माझे नातेवाईक वडिलोपार्जित मालमत्तेतील माझ्या हिश्श्यावर वाद घालत आहेत."
+    }
+  }
+}

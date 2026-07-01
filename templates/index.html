@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NyaySetu - Understand Your Rights</title>
+    <title>{% if user %}Dashboard{% else %}NyaySetu - Understand Your Rights{% endif %}</title>
     <style>
         * {
             margin: 0;
@@ -22,9 +21,13 @@
             --border: #e5e7eb;
             --bg-soft: #f8f8fc;
             --green: #16a34a;
+            --sidebar-dark: #13122a;
+            --sidebar-dark-2: #1c1a3a;
         }
 
-        html { scroll-behavior: smooth; }
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
@@ -33,7 +36,10 @@
             line-height: 1.5;
         }
 
-        a { text-decoration: none; color: inherit; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
         button {
             font-family: inherit;
@@ -59,7 +65,7 @@
             min-height: 100vh;
         }
 
-        /* ========== MOBILE TOPBAR (hidden on desktop) ========== */
+        /* ========== MOBILE TOPBAR ========== */
         .mobile-topbar {
             display: none;
             grid-column: 1 / -1;
@@ -81,6 +87,12 @@
             min-width: 0;
         }
 
+        .mobile-topbar .mobile-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .hamburger {
             font-size: 20px;
             width: 36px;
@@ -92,7 +104,9 @@
             flex-shrink: 0;
         }
 
-        .hamburger:hover { background: var(--bg-soft); }
+        .hamburger:hover {
+            background: var(--bg-soft);
+        }
 
         .mobile-logo {
             font-size: 16px;
@@ -110,7 +124,9 @@
             z-index: 149;
         }
 
-        .sidebar-backdrop.open { display: block; }
+        .sidebar-backdrop.open {
+            display: block;
+        }
 
         /* ========== SIDEBAR ========== */
         .sidebar {
@@ -126,6 +142,13 @@
             z-index: 100;
         }
 
+        /* Dashboard variant: dark theme */
+        .sidebar.sidebar-dark {
+            background: var(--sidebar-dark);
+            border-right: none;
+            color: #fff;
+        }
+
         .sidebar-close {
             display: none;
             align-self: flex-end;
@@ -134,9 +157,16 @@
             height: 32px;
             border-radius: 8px;
             margin-bottom: 8px;
+            color: inherit;
         }
 
-        .sidebar-close:hover { background: var(--bg-soft); }
+        .sidebar-close:hover {
+            background: var(--bg-soft);
+        }
+
+        .sidebar-dark .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
 
         .logo {
             display: flex;
@@ -146,9 +176,14 @@
             min-width: 0;
         }
 
-        .logo-icon { font-size: 28px; flex-shrink: 0; }
+        .logo-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
 
-        .logo-text { min-width: 0; }
+        .logo-text {
+            min-width: 0;
+        }
 
         .logo-text h1 {
             font-size: 18px;
@@ -162,6 +197,10 @@
             display: block;
             white-space: normal;
             overflow-wrap: break-word;
+        }
+
+        .sidebar-dark .logo-text span {
+            color: #9a98c4;
         }
 
         .new-issue-btn {
@@ -179,8 +218,14 @@
             margin-bottom: 18px;
         }
 
-        .new-issue-btn:hover { background: var(--purple-dark); transform: translateY(-1px); }
-        .new-issue-btn:active { transform: scale(0.98); }
+        .new-issue-btn:hover {
+            background: var(--purple-dark);
+            transform: translateY(-1px);
+        }
+
+        .new-issue-btn:active {
+            transform: scale(0.98);
+        }
 
         .nav {
             display: flex;
@@ -203,7 +248,9 @@
             min-width: 0;
         }
 
-        .nav-item:hover { background: var(--bg-soft); }
+        .nav-item:hover {
+            background: var(--bg-soft);
+        }
 
         .nav-item.active {
             background: var(--purple-light);
@@ -211,7 +258,25 @@
             font-weight: 600;
         }
 
-        .nav-item .icon { width: 20px; flex-shrink: 0; text-align: center; }
+        .sidebar-dark .nav-item {
+            color: #c3c1e6;
+        }
+
+        .sidebar-dark .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+
+        .sidebar-dark .nav-item.active {
+            background: var(--purple);
+            color: #fff;
+        }
+
+        .nav-item .icon {
+            width: 20px;
+            flex-shrink: 0;
+            text-align: center;
+        }
 
         .privacy-box {
             background: var(--bg-soft);
@@ -234,12 +299,79 @@
             font-size: 18px;
         }
 
-        .privacy-box h4 { font-size: 13px; margin-bottom: 4px; font-weight: 600; }
-        .privacy-box p { font-size: 12px; color: var(--text-gray); line-height: 1.4; }
-        .privacy-box p + p { margin-top: 2px; }
+        .privacy-box h4 {
+            font-size: 13px;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .privacy-box p {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.4;
+        }
+
+        .privacy-box p+p {
+            margin-top: 2px;
+        }
+
+        /* Dashboard sidebar CTA card */
+        .sidebar-cta {
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .sidebar-cta .icon-circle {
+            width: 36px;
+            height: 36px;
+            background: var(--purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .sidebar-cta h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .sidebar-cta p {
+            font-size: 12px;
+            color: #b7b5db;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .sidebar-cta-btn {
+            width: 100%;
+            background: var(--purple);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sidebar-cta-btn:hover {
+            background: var(--purple-dark);
+        }
 
         /* ========== MAIN CONTENT ========== */
-        .main { padding: 24px 32px; min-width: 0; }
+        .main {
+            padding: 24px 32px;
+            min-width: 0;
+        }
 
         .topbar {
             display: flex;
@@ -249,8 +381,164 @@
             flex-wrap: wrap;
         }
 
-        /* Language dropdown (reused in topbar, mobile bar, and right panel) */
-        .lang-dropdown { position: relative; min-width: 0; }
+        .topbar.topbar-dashboard {
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 26px;
+        }
+
+        .topbar-greeting h1 {
+            font-size: 24px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-greeting p {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        /* Notification bell */
+        .bell-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            background: #fff;
+        }
+
+        .bell-btn:hover {
+            background: var(--bg-soft);
+        }
+
+        .bell-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        /* Account area (shared: shows sign-in button OR avatar dropdown) */
+        .account-area {
+            position: relative;
+        }
+
+        .signin-btn {
+            background: var(--purple);
+            color: #fff;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .signin-btn:hover {
+            background: var(--purple-dark);
+        }
+
+        .account-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 6px 12px 6px 6px;
+            background: #fff;
+        }
+
+        .account-toggle:hover {
+            background: var(--bg-soft);
+        }
+
+        .account-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--purple);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .account-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .account-menu {
+            list-style: none;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #fff;
+            width: 180px;
+            z-index: 250;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .account-menu.open {
+            display: block;
+        }
+
+        .account-menu li a {
+            display: block;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .account-menu li a:hover {
+            background: var(--bg-soft);
+        }
+
+        .account-menu li.divider {
+            border-top: 1px solid var(--border);
+        }
+
+        .account-menu li a.danger {
+            color: #dc2626;
+        }
+
+        /* Language dropdown (shared) */
+        .lang-dropdown {
+            position: relative;
+            min-width: 0;
+        }
 
         .lang-dropdown-toggle {
             display: flex;
@@ -266,7 +554,9 @@
             width: 100%;
         }
 
-        .lang-dropdown-toggle:hover { background: var(--bg-soft); }
+        .lang-dropdown-toggle:hover {
+            background: var(--bg-soft);
+        }
 
         .lang-dropdown-toggle .left {
             display: flex;
@@ -293,7 +583,9 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .lang-menu.open { display: block; }
+        .lang-menu.open {
+            display: block;
+        }
 
         .lang-menu li {
             padding: 10px 14px;
@@ -302,7 +594,9 @@
             white-space: nowrap;
         }
 
-        .lang-menu li:hover { background: var(--bg-soft); }
+        .lang-menu li:hover {
+            background: var(--bg-soft);
+        }
 
         .lang-menu li.selected {
             color: var(--purple);
@@ -310,19 +604,7 @@
             font-weight: 600;
         }
 
-        .signin-btn {
-            background: var(--purple);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .signin-btn:hover { background: var(--purple-dark); }
-
-        /* Hero section */
+        /* Hero (guest) */
         .hero {
             background: linear-gradient(135deg, #eef0ff 0%, #f5eefc 100%);
             border-radius: 18px;
@@ -335,11 +617,13 @@
         .hero-top {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: flex-end;
             gap: 24px;
         }
 
-        .hero-text { min-width: 0; }
+        .hero-text {
+            min-width: 0;
+        }
 
         .hero-text h2 {
             font-size: 32px;
@@ -348,13 +632,27 @@
             line-height: 1.2;
         }
 
-        .hero-text h2 .accent { color: var(--purple); }
+        .hero-text h2 .accent {
+            color: var(--purple);
+        }
 
-        .hero-text p { color: var(--text-gray); font-size: 15px; max-width: 500px; }
+        .hero-text p {
+            color: var(--text-gray);
+            font-size: 15px;
+            max-width: 500px;
+        }
 
-        .hero-illustration { width: 200px; flex-shrink: 0; }
+        .hero-illustration {
+            width: 240px;
+            flex-shrink: 0;
+            margin-bottom: -36px;
+        }
 
-        .hero-illustration svg { width: 100%; height: auto; display: block; }
+        .hero-illustration img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
 
         .search-box {
             background: #fff;
@@ -376,7 +674,9 @@
             line-height: 1.5;
         }
 
-        .search-box textarea::placeholder { color: #9ca3af; }
+        .search-box textarea::placeholder {
+            color: #9ca3af;
+        }
 
         .search-actions {
             display: flex;
@@ -387,7 +687,12 @@
             gap: 10px;
         }
 
-        .search-actions-left { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .search-actions-left {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
 
         .pill-btn {
             display: flex;
@@ -402,7 +707,9 @@
             white-space: nowrap;
         }
 
-        .pill-btn:hover { background: var(--bg-soft); }
+        .pill-btn:hover {
+            background: var(--bg-soft);
+        }
 
         .pill-btn.recording {
             background: #fee2e2;
@@ -410,9 +717,18 @@
             color: #dc2626;
         }
 
-        .search-actions-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+        .search-actions-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
 
-        .char-count { font-size: 13px; color: var(--text-gray); white-space: nowrap; }
+        .char-count {
+            font-size: 13px;
+            color: var(--text-gray);
+            white-space: nowrap;
+        }
 
         .analyze-btn {
             background: var(--purple);
@@ -427,8 +743,14 @@
             white-space: nowrap;
         }
 
-        .analyze-btn:hover { background: var(--purple-dark); }
-        .analyze-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+        .analyze-btn:hover {
+            background: var(--purple-dark);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
 
         .tip {
             font-size: 13px;
@@ -450,10 +772,16 @@
             gap: 6px;
         }
 
-        .file-chip.visible { display: inline-flex; }
-        .file-chip button { color: var(--purple); font-weight: 700; }
+        .file-chip.visible {
+            display: inline-flex;
+        }
 
-        /* Section cards */
+        .file-chip button {
+            color: var(--purple);
+            font-weight: 700;
+        }
+
+        /* Section cards (guest) */
         .section-card {
             background: #fff;
             border: 1px solid var(--border);
@@ -462,7 +790,12 @@
             margin-bottom: 24px;
         }
 
-        .section-title { text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 28px; }
+        .section-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 28px;
+        }
 
         .steps {
             display: flex;
@@ -472,7 +805,12 @@
             flex-wrap: wrap;
         }
 
-        .step { text-align: center; flex: 1; min-width: 140px; position: relative; }
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 140px;
+            position: relative;
+        }
 
         .step-icon-wrap {
             width: 64px;
@@ -505,7 +843,13 @@
             border: 2px solid #fff;
         }
 
-        .step h4 { font-size: 14px; margin-bottom: 4px; font-weight: 600; min-height: 1.4em; overflow-wrap: break-word; }
+        .step h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            min-height: 1.4em;
+            overflow-wrap: break-word;
+        }
 
         .step p {
             font-size: 12px;
@@ -524,7 +868,6 @@
             flex-shrink: 0;
         }
 
-        /* Popular issues */
         .popular-header {
             display: flex;
             justify-content: space-between;
@@ -534,9 +877,23 @@
             gap: 12px;
         }
 
-        .popular-header h3 { font-size: 18px; font-weight: 800; }
-        .view-all { font-size: 13px; color: var(--purple); font-weight: 600; cursor: pointer; }
-        .popular-sub { font-size: 13px; color: var(--text-gray); margin-bottom: 18px; }
+        .popular-header h3 {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .view-all {
+            font-size: 13px;
+            color: var(--purple);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .popular-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 18px;
+        }
 
         .issue-grid {
             display: grid;
@@ -560,8 +917,14 @@
             min-height: 100px;
         }
 
-        .issue-card:hover { box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06); border-color: #d6d6fb; }
-        .issue-card:active { transform: scale(0.98); }
+        .issue-card:hover {
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+            border-color: #d6d6fb;
+        }
+
+        .issue-card:active {
+            transform: scale(0.98);
+        }
 
         .issue-icon {
             width: 38px;
@@ -574,11 +937,26 @@
             flex-shrink: 0;
         }
 
-        .issue-card > div { min-width: 0; }
-        .issue-card h5 { font-size: 14px; margin-bottom: 2px; font-weight: 600; min-height: 1.4em; overflow-wrap: break-word; }
-        .issue-card p { font-size: 12px; color: var(--text-gray); line-height: 1.3; min-height: 2.4em; overflow-wrap: break-word; }
+        .issue-card>div {
+            min-width: 0;
+        }
 
-        /* Trust strip */
+        .issue-card h5 {
+            font-size: 14px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            min-height: 1.4em;
+            overflow-wrap: break-word;
+        }
+
+        .issue-card p {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.3;
+            min-height: 2.4em;
+            overflow-wrap: break-word;
+        }
+
         .trust-strip {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -589,11 +967,330 @@
             padding: 24px 32px;
         }
 
-        .trust-item { display: flex; gap: 12px; align-items: flex-start; }
-        .trust-icon { font-size: 22px; flex-shrink: 0; }
-        .trust-item > div { min-width: 0; }
-        .trust-item h5 { font-size: 14px; margin-bottom: 2px; font-weight: 600; overflow-wrap: break-word; }
-        .trust-item p { font-size: 12px; color: var(--text-gray); line-height: 1.4; overflow-wrap: break-word; }
+        .trust-item {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .trust-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .trust-item>div {
+            min-width: 0;
+        }
+
+        .trust-item h5 {
+            font-size: 14px;
+            margin-bottom: 2px;
+            font-weight: 600;
+            overflow-wrap: break-word;
+        }
+
+        .trust-item p {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.4;
+            overflow-wrap: break-word;
+        }
+
+        /* ========== DASHBOARD ========== */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .qa-card {
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .qa-card .qa-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            margin-bottom: 4px;
+        }
+
+        .qa-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .qa-card p {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.4;
+            min-height: 2.6em;
+        }
+
+        .qa-card .qa-btn {
+            margin-top: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 14px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        .qa-card.qa-purple {
+            background: #eef0ff;
+        }
+
+        .qa-card.qa-purple .qa-btn {
+            background: var(--purple);
+            color: #fff;
+        }
+
+        .qa-card.qa-purple .qa-btn:hover {
+            background: var(--purple-dark);
+        }
+
+        .qa-card.qa-green {
+            background: #eafbf1;
+        }
+
+        .qa-card.qa-green .qa-btn {
+            border: 1px solid #16a34a;
+            color: #16a34a;
+            background: #fff;
+        }
+
+        .qa-card.qa-green .qa-btn:hover {
+            background: #dcfce7;
+        }
+
+        .qa-card.qa-blue {
+            background: #eef0ff;
+        }
+
+        .qa-card.qa-blue .qa-btn {
+            border: 1px solid var(--purple);
+            color: var(--purple);
+            background: #fff;
+        }
+
+        .qa-card.qa-blue .qa-btn:hover {
+            background: var(--purple-light);
+        }
+
+        .qa-card.qa-amber {
+            background: #fff7e6;
+        }
+
+        .qa-card.qa-amber .qa-btn {
+            border: 1px solid #d97706;
+            color: #d97706;
+            background: #fff;
+        }
+
+        .qa-card.qa-amber .qa-btn:hover {
+            background: #ffedd5;
+        }
+
+        .cases-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 26px 28px;
+            margin-bottom: 18px;
+        }
+
+        .cases-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .cases-card-header h3 {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .case-tabs {
+            display: flex;
+            gap: 22px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 14px;
+            overflow-x: auto;
+        }
+
+        .case-tab {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-gray);
+            padding: 10px 2px;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .case-tab:hover {
+            color: var(--text-dark);
+        }
+
+        .case-tab.active {
+            color: var(--purple);
+            border-bottom-color: var(--purple);
+        }
+
+        .case-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 4px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .case-row:last-child {
+            border-bottom: none;
+        }
+
+        .case-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .case-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .case-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 3px;
+        }
+
+        .case-title-row h4 {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .case-status {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 20px;
+        }
+
+        .case-status.in_progress {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+
+        .case-status.awaiting_action {
+            background: #ffedd5;
+            color: #b45309;
+        }
+
+        .case-status.resolved {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .case-status.closed {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .case-desc {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 6px;
+            overflow-wrap: break-word;
+        }
+
+        .case-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #9ca3af;
+            flex-wrap: wrap;
+        }
+
+        .case-strength-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .case-ring {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .case-ring::before {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            background: #fff;
+            border-radius: 50%;
+        }
+
+        .case-ring span {
+            position: relative;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .case-strength-label {
+            font-size: 10px;
+            color: var(--text-gray);
+            display: block;
+            margin-top: 1px;
+            text-align: center;
+        }
+
+        .case-strength-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .case-chevron {
+            color: #9ca3af;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-gray);
+            padding: 4px 0 8px;
+        }
 
         /* ========== RIGHT PANEL ========== */
         .right-panel {
@@ -616,11 +1313,38 @@
             margin-bottom: 20px;
         }
 
-        .panel-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 14px; overflow-wrap: break-word; }
+        .panel-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            overflow-wrap: break-word;
+        }
 
-        .why-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+        .panel-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
 
-        .why-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #374151; }
+        .panel-card-header h4 {
+            margin-bottom: 0;
+        }
+
+        .why-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .why-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
 
         .check {
             color: #fff;
@@ -636,7 +1360,12 @@
             margin-top: 2px;
         }
 
-        .panel-card p.sub { font-size: 12px; color: var(--text-gray); margin-bottom: 14px; overflow-wrap: break-word; }
+        .panel-card p.sub {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 14px;
+            overflow-wrap: break-word;
+        }
 
         .lawyer-icon-wrap {
             width: 42px;
@@ -663,7 +1392,82 @@
             gap: 8px;
         }
 
-        .find-lawyer-btn:hover { background: var(--bg-soft); }
+        .find-lawyer-btn:hover {
+            background: var(--bg-soft);
+        }
+
+        /* Quick tools / activity list (dashboard right panel) */
+        .qt-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .qt-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .qt-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--purple-light);
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .qt-item h5 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .qt-item p {
+            font-size: 11px;
+            color: var(--text-gray);
+            line-height: 1.35;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .activity-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .activity-item p {
+            font-size: 12.5px;
+            color: #374151;
+            line-height: 1.35;
+        }
+
+        .activity-item span {
+            font-size: 11px;
+            color: #9ca3af;
+        }
 
         /* Modal */
         .modal-overlay {
@@ -677,7 +1481,9 @@
             padding: 16px;
         }
 
-        .modal-overlay.open { display: flex; }
+        .modal-overlay.open {
+            display: flex;
+        }
 
         .modal-box {
             background: #fff;
@@ -703,10 +1509,25 @@
             border-radius: 50%;
         }
 
-        .modal-close:hover { background: var(--bg-soft); }
-        .modal-box h3 { font-size: 19px; font-weight: 800; margin-bottom: 6px; }
-        .modal-box p.modal-sub { font-size: 13px; color: var(--text-gray); margin-bottom: 18px; }
-        .modal-field { margin-bottom: 14px; }
+        .modal-close:hover {
+            background: var(--bg-soft);
+        }
+
+        .modal-box h3 {
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .modal-box p.modal-sub {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-bottom: 18px;
+        }
+
+        .modal-field {
+            margin-bottom: 14px;
+        }
 
         .modal-field label {
             font-size: 12px;
@@ -726,7 +1547,9 @@
             outline: none;
         }
 
-        .modal-field input:focus { border-color: var(--purple); }
+        .modal-field input:focus {
+            border-color: var(--purple);
+        }
 
         .modal-submit {
             width: 100%;
@@ -739,7 +1562,9 @@
             margin-top: 4px;
         }
 
-        .modal-submit:hover { background: var(--purple-dark); }
+        .modal-submit:hover {
+            background: var(--purple-dark);
+        }
 
         /* Toast */
         .toast {
@@ -760,18 +1585,30 @@
             text-align: center;
         }
 
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
 
         /* ========== RESPONSIVE ========== */
         @media (max-width: 1300px) {
-            .app { grid-template-columns: 240px minmax(0, 1fr); }
-            .right-panel { display: none; }
+            .app {
+                grid-template-columns: 240px minmax(0, 1fr);
+            }
+
+            .right-panel {
+                display: none;
+            }
         }
 
         @media (max-width: 900px) {
-            .app { grid-template-columns: 1fr; }
+            .app {
+                grid-template-columns: 1fr;
+            }
 
-            .mobile-topbar { display: flex; }
+            .mobile-topbar {
+                display: flex;
+            }
 
             .sidebar {
                 position: fixed;
@@ -785,45 +1622,142 @@
                 z-index: 150;
             }
 
-            .sidebar.open { transform: translateX(0); }
-            .sidebar-close { display: flex; align-items: center; justify-content: center; }
+            .sidebar.open {
+                transform: translateX(0);
+            }
 
-            .topbar { display: none; }
+            .sidebar-close {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-            .main { padding: 20px 16px; }
+            .topbar {
+                display: none;
+            }
 
-            .hero-illustration { display: none; }
-            .step-arrow { display: none; }
+            .main {
+                padding: 20px 16px;
+            }
 
-            .hero-text h2 { font-size: 26px; }
-            .hero { padding: 24px; }
-            .section-card { padding: 20px; }
-            .trust-strip { padding: 16px 20px; }
+            .hero-illustration {
+                display: none;
+            }
 
-            .issue-grid { grid-template-columns: repeat(2, 1fr); }
-            .steps { flex-direction: column; }
+            .step-arrow {
+                display: none;
+            }
+
+            .hero-text h2 {
+                font-size: 26px;
+            }
+
+            .hero {
+                padding: 24px;
+            }
+
+            .section-card {
+                padding: 20px;
+            }
+
+            .trust-strip {
+                padding: 16px 20px;
+            }
+
+            .issue-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .steps {
+                flex-direction: column;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .case-row {
+                flex-wrap: wrap;
+            }
+
+            .cases-card {
+                padding: 18px;
+            }
         }
 
         @media (max-width: 560px) {
-            .hero-text h2 { font-size: 22px; }
-            .hero-text p { font-size: 14px; }
-            .main { padding: 16px; }
-            .section-card { padding: 16px; border-radius: 12px; }
-            .hero { border-radius: 12px; padding: 16px; }
+            .hero-text h2 {
+                font-size: 22px;
+            }
 
-            .search-actions { flex-direction: column; align-items: stretch; }
-            .search-actions-right { width: 100%; justify-content: space-between; }
-            .analyze-btn { width: 100%; justify-content: center; }
-            .pill-btn { font-size: 12px; padding: 6px 10px; }
+            .hero-text p {
+                font-size: 14px;
+            }
 
-            .issue-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-            .issue-card { padding: 12px; min-height: 90px; }
+            .main {
+                padding: 16px;
+            }
 
-            .trust-strip { grid-template-columns: 1fr; padding: 16px; gap: 12px; }
+            .section-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .hero {
+                border-radius: 12px;
+                padding: 16px;
+            }
+
+            .search-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-actions-right {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .analyze-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .pill-btn {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .issue-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+
+            .issue-card {
+                padding: 12px;
+                min-height: 90px;
+            }
+
+            .trust-strip {
+                grid-template-columns: 1fr;
+                padding: 16px;
+                gap: 12px;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 380px) {
-            .issue-grid { grid-template-columns: 1fr; }
+            .issue-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .case-icon {
+            background: var(--bg);
+            color: var(--fg);
         }
     </style>
 </head>
@@ -838,19 +1772,25 @@
                 <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
                 <span class="mobile-logo">⚖️ NyaySetu</span>
             </div>
-            <div class="lang-dropdown" id="mobileLangDropdown">
-                <button class="lang-dropdown-toggle" id="mobileLangToggle">
-                    <span class="left">🌐 <span class="mobileLangSelected">English</span></span>
-                    <span>▾</span>
-                </button>
-                <ul class="lang-menu lang-menu-instance" id="mobileLangMenu"></ul>
+            <div class="mobile-right">
+                {% if user %}
+                <button class="bell-btn" id="bellBtnMobile" aria-label="Notifications">🔔<span
+                        class="bell-badge">2</span></button>
+                {% endif %}
+                <div class="lang-dropdown" id="mobileLangDropdown">
+                    <button class="lang-dropdown-toggle" id="mobileLangToggle">
+                        <span class="left">🌐 <span class="mobileLangSelected">English</span></span>
+                        <span>▾</span>
+                    </button>
+                    <ul class="lang-menu lang-menu-instance" id="mobileLangMenu"></ul>
+                </div>
             </div>
         </div>
 
         <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
         <!-- ================= LEFT SIDEBAR ================= -->
-        <aside class="sidebar" id="sidebar">
+        <aside class="sidebar {% if user %}sidebar-dark{% endif %}" id="sidebar">
             <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
 
             <div class="logo">
@@ -861,6 +1801,40 @@
                 </div>
             </div>
 
+            {% if user %}
+            <!-- ===== DASHBOARD NAV ===== -->
+            <nav class="nav">
+                <a href="/" class="nav-item active" data-page="dashboard"><span class="icon">🏠</span> <span
+                        data-i18n="navDashboard">Dashboard</span></a>
+                <a href="/my-issues" class="nav-item" data-page="mycases"><span class="icon">🗂️</span> <span
+                        data-i18n="navMyCases">My Cases</span></a>
+                <a href="#issueInput" class="nav-item" data-page="newissue"><span class="icon">➕</span> <span
+                        data-i18n="navNewIssue">New Issue</span></a>
+                <a href="/document-helper" class="nav-item" data-page="docanalysis"><span class="icon">📄</span> <span
+                        data-i18n="navDocAnalysis">Document Analysis</span></a>
+                <a href="/saved-reports" class="nav-item" data-page="saved"><span class="icon">📑</span> <span
+                        data-i18n="navSavedReports">Saved Reports</span></a>
+                <a href="/know-your-rights" class="nav-item" data-page="rights"><span class="icon">⚖️</span> <span
+                        data-i18n="navKnowRights">Know Your Rights</span></a>
+                <a href="/government-services" class="nav-item" data-page="gov"><span class="icon">🏛️</span> <span
+                        data-i18n="navGovServices">Government Services</span></a>
+                <a href="/find-lawyer" class="nav-item" data-page="lawyer"><span class="icon">👤</span> <span
+                        data-i18n="navFindLawyer">Find a Lawyer</span></a>
+                <a href="/help-support" class="nav-item" data-page="help"><span class="icon">❓</span> <span
+                        data-i18n="navHelpSupport">Help &amp; Support</span></a>
+                <a href="/settings" class="nav-item" data-page="settings"><span class="icon">⚙️</span> <span
+                        data-i18n="navSettings">Settings</span></a>
+            </nav>
+
+            <div class="sidebar-cta">
+                <div class="icon-circle">🛡️</div>
+                <h4 data-i18n="sidebarCtaTitle">Your legal journey starts with knowledge.</h4>
+                <p data-i18n="sidebarCtaText">NyaySetu helps you understand your rights and take the right step.</p>
+                <a href="/know-your-rights" class="sidebar-cta-btn"><span data-i18n="sidebarCtaBtn">Know Your
+                        Rights</span> →</a>
+            </div>
+            {% else %}
+            <!-- ===== GUEST NAV ===== -->
             <button class="new-issue-btn" id="newIssueBtn">
                 <span>+</span> <span data-i18n="newIssue">New Issue</span>
             </button>
@@ -879,7 +1853,7 @@
                 <a href="/government-services" class="nav-item" data-page="gov"><span class="icon">🏛️</span> <span
                         data-i18n="navGovServices">Government Services</span></a>
                 <a href="/help-support" class="nav-item" data-page="help"><span class="icon">❓</span> <span
-                        data-i18n="navHelpSupport">Help & Support</span></a>
+                        data-i18n="navHelpSupport">Help &amp; Support</span></a>
             </nav>
 
             <div class="privacy-box">
@@ -888,11 +1862,125 @@
                 <p data-i18n="privacyText">We never share your data.</p>
                 <p data-i18n="privacyText2">Everything is confidential.</p>
             </div>
+            {% endif %}
         </aside>
 
         <!-- ================= MAIN CONTENT ================= -->
         <main class="main">
 
+            {% if user %}
+            <!-- ===================== DASHBOARD TOPBAR ===================== -->
+            <div class="topbar topbar-dashboard">
+                <div class="topbar-greeting">
+                    <h1><span data-i18n="{{ greeting_key }}">Good morning</span>, {{ user.first_name }}! 👋</h1>
+                    <p data-i18n="dashboardSubtitle">We're here to help you understand your legal rights.</p>
+                </div>
+                <div class="topbar-controls">
+                    <div class="lang-dropdown" id="topbarLangDropdown">
+                        <button class="lang-dropdown-toggle" id="topbarLangToggle">
+                            <span class="left">🌐 <span class="topbarLangSelected">English</span></span>
+                            <span>▾</span>
+                        </button>
+                        <ul class="lang-menu lang-menu-instance" id="topbarLangMenu"></ul>
+                    </div>
+                    <button class="bell-btn" id="bellBtn" aria-label="Notifications">🔔<span
+                            class="bell-badge">2</span></button>
+                    <div class="account-area">
+                        <button class="account-toggle" id="accountToggle">
+                            <span class="account-avatar">{{ user.initial }}</span>
+                            <span class="account-name">{{ user.first_name }}</span>
+                            <span>▾</span>
+                        </button>
+                        <ul class="account-menu" id="accountMenu">
+                            <li><a href="/settings" data-i18n="accountProfile">My Profile</a></li>
+                            <li><a href="/settings" data-i18n="accountSettings">Settings</a></li>
+                            <li class="divider"><a href="/logout" class="danger" data-i18n="accountLogout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick actions -->
+            <h2 style="font-size:18px;font-weight:800;margin-bottom:14px;" data-i18n="whatWouldYouLike">What would you
+                like to do today?</h2>
+            <div class="quick-actions">
+                <div class="qa-card qa-purple">
+                    <div class="qa-icon">💬</div>
+                    <h4 data-i18n="qaAddIssueTitle">Add New Issue</h4>
+                    <p data-i18n="qaAddIssueText">Describe your legal issue in simple words.</p>
+                    <a href="#issueInput" class="qa-btn"><span data-i18n="qaAddIssueBtn">Start Now</span> →</a>
+                </div>
+                <div class="qa-card qa-green">
+                    <div class="qa-icon">📄</div>
+                    <h4 data-i18n="qaAnalyzeTitle">Analyze Document</h4>
+                    <p data-i18n="qaAnalyzeText">Upload any legal document for simple explanation.</p>
+                    <a href="/document-helper" class="qa-btn" data-i18n="qaAnalyzeBtn">Upload Document</a>
+                </div>
+                <div class="qa-card qa-blue">
+                    <div class="qa-icon">📁</div>
+                    <h4 data-i18n="qaMyCasesTitle">My Cases</h4>
+                    <p data-i18n="qaMyCasesText">View and manage all your legal cases.</p>
+                    <a href="/my-issues" class="qa-btn" data-i18n="qaMyCasesBtn">View Cases</a>
+                </div>
+                <div class="qa-card qa-amber">
+                    <div class="qa-icon">⚖️</div>
+                    <h4 data-i18n="qaKnowRightsTitle">Know Your Rights</h4>
+                    <p data-i18n="qaKnowRightsText">Explore legal information on various topics.</p>
+                    <a href="/know-your-rights" class="qa-btn" data-i18n="qaKnowRightsBtn">Explore Now</a>
+                </div>
+            </div>
+
+            <!-- My Cases -->
+            <div class="cases-card">
+                <div class="cases-card-header">
+                    <h3 data-i18n="myCasesTitle">My Cases</h3>
+                    <a href="/my-issues" class="view-all" data-i18n="viewAllCases">View all cases →</a>
+                </div>
+                <div class="case-tabs">
+                    <span class="case-tab active" data-filter="all" data-i18n="tabAll">All Cases</span>
+                    <span class="case-tab" data-filter="in_progress" data-i18n="tabInProgress">In Progress</span>
+                    <span class="case-tab" data-filter="awaiting_action" data-i18n="tabAwaiting">Awaiting Action</span>
+                    <span class="case-tab" data-filter="resolved" data-i18n="tabResolved">Resolved</span>
+                    <span class="case-tab" data-filter="closed" data-i18n="tabClosed">Closed</span>
+                </div>
+                <div id="caseList">
+                    {% for c in cases %}
+                    <div class="case-row" data-status="{{ c.status }}">
+                        <div class="case-icon" style="--bg: {{ c.icon_bg }}; --fg: {{ c.icon_color }};">
+                            {{ c.icon }}
+                        </div>
+                        <div class="case-info">
+                            <div class="case-title-row">
+                                <h4>{{ c.title }}</h4>
+                                <span class="case-status {{ c.status }}">{{ c.status_label }}</span>
+                            </div>
+                            <p class="case-desc">{{ c.description }}</p>
+                            <div class="case-meta">
+                                <span>📅 {{ c.date }}</span>
+                                <span>📁 {{ c.category }}</span>
+                            </div>
+                        </div>
+                        <div class="case-strength-wrap">
+                            <div class="case-strength-col">
+                                <div class="case-ring"
+                                    style="background: conic-gradient({{ c.strength_color }} {{ c.strength }}%, #e5e7eb 0);">
+                                    <span>{{ c.strength }}%</span>
+                                </div>
+                                <span class="case-strength-label" data-i18n="caseStrength">Case Strength</span>
+                            </div>
+                            <span class="case-chevron">›</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <p class="footer-note">🔒 <span data-i18n="footerPrivacyNote">Your information is private and secure. We do
+                    not share your data with anyone.</span></p>
+
+            {% else %}
+            <!-- ===================== GUEST TOPBAR ===================== -->
             <div class="topbar">
                 <div class="lang-dropdown" id="topbarLangDropdown">
                     <button class="lang-dropdown-toggle" id="topbarLangToggle">
@@ -901,20 +1989,7 @@
                     </button>
                     <ul class="lang-menu lang-menu-instance" id="topbarLangMenu"></ul>
                 </div>
-
-                {% if user %}
-                <div class="lang-dropdown" id="userMenuDropdown">
-                    <button class="lang-dropdown-toggle" id="userMenuToggle">
-                        <span class="left">👤 <span>{{ user.name or user.email }}</span></span>
-                        <span>▾</span>
-                    </button>
-                    <ul class="lang-menu" id="userMenu">
-                        <li><a href="/logout">Logout</a></li>
-                    </ul>
-                </div>
-                {% else %}
                 <a href="/login" class="signin-btn" id="signinBtn" data-i18n="signInSignUp">Sign in / Sign up</a>
-                {% endif %}
             </div>
 
             <!-- Hero section -->
@@ -922,25 +1997,27 @@
                 <div class="hero-top">
                     <div class="hero-text">
                         <h2 data-i18n-html="heroTitle">How can we <span class="accent">help</span> you today?</h2>
-                        <p data-i18n="heroSub">Describe your issue in simple words. We'll help you understand your legal position.</p>
+                        <p data-i18n="heroSub">Describe your issue in simple words. We&#8217;ll help you understand your
+                            legal position.</p>
                     </div>
-                    <div class="hero-illustration" aria-hidden="true">
-                        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="100" cy="100" r="92" fill="#ffffff" opacity="0.5"/>
-                            <rect x="120" y="40" width="6" height="80" fill="#7c6ef0"/>
-                            <line x1="78" y1="58" x2="162" y2="58" stroke="#7c6ef0" stroke-width="4" stroke-linecap="round"/>
-                            <line x1="78" y1="58" x2="60" y2="92" stroke="#7c6ef0" stroke-width="3"/>
-                            <line x1="78" y1="58" x2="96" y2="92" stroke="#7c6ef0" stroke-width="3"/>
-                            <path d="M60 92 a18 14 0 0 0 36 0 Z" fill="none" stroke="#7c6ef0" stroke-width="3"/>
-                            <line x1="162" y1="58" x2="144" y2="92" stroke="#7c6ef0" stroke-width="3"/>
-                            <line x1="162" y1="58" x2="180" y2="92" stroke="#7c6ef0" stroke-width="3"/>
-                            <path d="M144 92 a18 14 0 0 0 36 0 Z" fill="none" stroke="#7c6ef0" stroke-width="3"/>
-                            <rect x="98" y="120" width="56" height="10" rx="3" fill="#7c6ef0"/>
-                            <circle cx="55" cy="130" r="28" fill="#2a2a44"/>
-                            <circle cx="55" cy="118" r="16" fill="#ffd9b3"/>
-                            <path d="M40 112 q15 -22 30 0 q-2 -18 -15 -18 q-15 0 -15 18 Z" fill="#2a2a44"/>
-                            <rect x="33" y="140" width="44" height="50" rx="14" fill="#7c6ef0"/>
-                            <rect x="40" y="150" width="30" height="22" rx="3" fill="#f3f1ff"/>
+                    <div class="hero-illustration">
+                        <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" role="img"
+                            aria-label="Balanced scales of justice illustration">
+                            <circle cx="120" cy="150" r="60" fill="#ded9ff" />
+                            <rect x="112" y="40" width="16" height="120" rx="6" fill="#5b4dee" />
+                            <rect x="60" y="34" width="120" height="12" rx="6" fill="#4a3dd9" />
+                            <circle cx="60" cy="34" r="10" fill="#4a3dd9" />
+                            <circle cx="180" cy="34" r="10" fill="#4a3dd9" />
+                            <path d="M40 60 L60 40 L80 60 Q60 85 40 60 Z" fill="#fff" stroke="#4a3dd9"
+                                stroke-width="4" />
+                            <path d="M160 60 L180 40 L200 60 Q180 85 160 60 Z" fill="#fff" stroke="#4a3dd9"
+                                stroke-width="4" />
+                            <line x1="60" y1="34" x2="40" y2="60" stroke="#4a3dd9" stroke-width="3" />
+                            <line x1="60" y1="34" x2="80" y2="60" stroke="#4a3dd9" stroke-width="3" />
+                            <line x1="180" y1="34" x2="160" y2="60" stroke="#4a3dd9" stroke-width="3" />
+                            <line x1="180" y1="34" x2="200" y2="60" stroke="#4a3dd9" stroke-width="3" />
+                            <rect x="90" y="160" width="60" height="14" rx="7" fill="#5b4dee" />
+                            <circle cx="120" cy="20" r="14" fill="#ffce6b" />
                         </svg>
                     </div>
                 </div>
@@ -960,8 +2037,8 @@
                         </div>
                         <div class="search-actions-right">
                             <span class="char-count"><span id="charCount">0</span>/1000</span>
-                            <button class="analyze-btn" id="analyzeBtn" type="button"><span
-                                    id="analyzeBtnLabel">Analyze Issue</span> →</button>
+                            <button class="analyze-btn" id="analyzeBtn" type="button"><span id="analyzeBtnLabel">Analyze
+                                    Issue</span> →</button>
                         </div>
                     </div>
                 </div>
@@ -1011,14 +2088,14 @@
                     <button class="issue-card" data-example="exJob" type="button">
                         <div class="issue-icon" style="background:#e3e8ff;color:#4a4ad9;">💼</div>
                         <div>
-                            <h5 data-i18n="issueJobTitle">Job & Employment</h5>
+                            <h5 data-i18n="issueJobTitle">Job &amp; Employment</h5>
                             <p data-i18n="issueJobText">Salary, termination, contracts</p>
                         </div>
                     </button>
                     <button class="issue-card" data-example="exLandlord" type="button">
                         <div class="issue-icon" style="background:#ffe9d6;color:#d97706;">🏠</div>
                         <div>
-                            <h5 data-i18n="issueLandlordTitle">Landlord & Tenant</h5>
+                            <h5 data-i18n="issueLandlordTitle">Landlord &amp; Tenant</h5>
                             <p data-i18n="issueLandlordText">Rent, deposit, eviction</p>
                         </div>
                     </button>
@@ -1039,21 +2116,21 @@
                     <button class="issue-card" data-example="exPolice" type="button">
                         <div class="issue-icon" style="background:#ede7ff;color:#7c3aed;">👮</div>
                         <div>
-                            <h5 data-i18n="issuePoliceTitle">Police & FIR</h5>
+                            <h5 data-i18n="issuePoliceTitle">Police &amp; FIR</h5>
                             <p data-i18n="issuePoliceText">FIR, complaints, procedures</p>
                         </div>
                     </button>
                     <button class="issue-card" data-example="exLoans" type="button">
                         <div class="issue-icon" style="background:#dafbe8;color:#16a34a;">💰</div>
                         <div>
-                            <h5 data-i18n="issueLoansTitle">Loans & Recovery</h5>
+                            <h5 data-i18n="issueLoansTitle">Loans &amp; Recovery</h5>
                             <p data-i18n="issueLoansText">Harassment, illegal recovery</p>
                         </div>
                     </button>
                     <button class="issue-card" data-example="exFamily" type="button">
                         <div class="issue-icon" style="background:#ffe3ec;color:#db2777;">👨‍👩‍👧</div>
                         <div>
-                            <h5 data-i18n="issueFamilyTitle">Family & Personal</h5>
+                            <h5 data-i18n="issueFamilyTitle">Family &amp; Personal</h5>
                             <p data-i18n="issueFamilyText">Divorce, maintenance, etc.</p>
                         </div>
                     </button>
@@ -1086,7 +2163,7 @@
                 <div class="trust-item">
                     <span class="trust-icon">🛡️</span>
                     <div>
-                        <h5 data-i18n="trust3Title">Secure & Confidential</h5>
+                        <h5 data-i18n="trust3Title">Secure &amp; Confidential</h5>
                         <p data-i18n="trust3Text">Your privacy is our priority</p>
                     </div>
                 </div>
@@ -1094,15 +2171,78 @@
                     <span class="trust-icon">✅</span>
                     <div>
                         <h5 data-i18n="trust4Title">Always Improving</h5>
-                        <p data-i18n="trust4Text">We're here to serve you better</p>
+                        <p data-i18n="trust4Text">We&#8217;re here to serve you better</p>
                     </div>
                 </div>
             </section>
+            {% endif %}
 
         </main>
 
         <!-- ================= RIGHT PANEL ================= -->
         <aside class="right-panel">
+            {% if user %}
+            <!-- ===== DASHBOARD RIGHT PANEL ===== -->
+            <div class="panel-card">
+                <h4 data-i18n="quickToolsTitle">Quick Tools</h4>
+                <div class="qt-list">
+                    <a href="/document-helper" class="qt-item">
+                        <div class="qt-icon">📄</div>
+                        <div>
+                            <h5 data-i18n="qt1Title">Document Analysis</h5>
+                            <p data-i18n="qt1Text">Upload and analyze any legal document</p>
+                        </div>
+                    </a>
+                    <a href="#issueInput" class="qt-item">
+                        <div class="qt-icon">⚖️</div>
+                        <div>
+                            <h5 data-i18n="qt2Title">AI Legal Assistant</h5>
+                            <p data-i18n="qt2Text">Ask any legal question</p>
+                        </div>
+                    </a>
+                    <a href="/document-helper" class="qt-item">
+                        <div class="qt-icon">🖥️</div>
+                        <div>
+                            <h5 data-i18n="qt3Title">Complaint Templates</h5>
+                            <p data-i18n="qt3Text">Get templates for common issues</p>
+                        </div>
+                    </a>
+                    <a href="/know-your-rights" class="qt-item">
+                        <div class="qt-icon">📋</div>
+                        <div>
+                            <h5 data-i18n="qt4Title">Evidence Checklist</h5>
+                            <p data-i18n="qt4Text">Know what documents you need</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="panel-card">
+                <h4 data-i18n="recentActivityTitle">Recent Activity</h4>
+                <div class="activity-list">
+                    {% for a in activity %}
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background:{{ a.icon_bg }};color:{{ a.icon_color }};">{{
+                            a.icon }}</div>
+                        <div>
+                            <p>{{ a.text }}</p>
+                            <span>{{ a.time }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a href="/saved-reports" class="view-all" data-i18n="viewAllActivity">View all activity →</a>
+            </div>
+
+            <div class="panel-card">
+                <h4 data-i18n="needExpertTitle">Need Expert Help?</h4>
+                <p class="sub" data-i18n="needExpertText">Connect with verified lawyers in your area for professional
+                    legal assistance.</p>
+                <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
+                        data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
+            </div>
+            {% else %}
+            <!-- ===== GUEST RIGHT PANEL ===== -->
             <div class="panel-card">
                 <h4 data-i18n="whyTitle">Why NyaySetu?</h4>
                 <ul class="why-list">
@@ -1128,10 +2268,12 @@
             <div class="panel-card">
                 <div class="lawyer-icon-wrap">⚖️</div>
                 <h4 data-i18n="lawyerPanelTitle">Need help from a lawyer?</h4>
-                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need expert help.</p>
+                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need expert
+                    help.</p>
                 <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
                         data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
             </div>
+            {% endif %}
         </aside>
 
     </div>
@@ -1159,148 +2301,59 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        /* ========== LANGUAGES ==========
-           Full UI translations exist for en / hi / mr. The remaining
-           languages are listed (matching the design) so users can select
-           them, but text falls back to English until full translations are
-           added — see getText() below. */
-        const LANGUAGES = [
-            { code: 'en', label: 'English' },
-            { code: 'hi', label: 'हिंदी (Hindi)' },
-            { code: 'mr', label: 'मराठी (Marathi)' },
-            { code: 'ta', label: 'தமிழ் (Tamil)' },
-            { code: 'te', label: 'తెలుగు (Telugu)' },
-            { code: 'bn', label: 'বাংলা (Bengali)' },
-            { code: 'gu', label: 'ગુજરાતી (Gujarati)' },
-            { code: 'kn', label: 'ಕನ್ನಡ (Kannada)' },
-        ];
+        const IS_LOGGED_IN = {{ 'true' if user else 'false' }};
 
-        const TRANSLATIONS = {
-            tagline: { en: "Understand Your Rights", hi: "अपने अधिकार समझें", mr: "तुमचे हक्क समजून घ्या" },
-            newIssue: { en: "New Issue", hi: "नई समस्या", mr: "नवीन समस्या" },
-            navHome: { en: "Home", hi: "होम", mr: "होम" },
-            navMyIssues: { en: "My Issues", hi: "मेरी समस्याएँ", mr: "माझ्या समस्या" },
-            navDocHelper: { en: "Document Helper", hi: "दस्तावेज़ सहायक", mr: "कागदपत्र सहाय्यक" },
-            navKnowRights: { en: "Know Your Rights", hi: "अपने अधिकार जानें", mr: "तुमचे हक्क जाणून घ्या" },
-            navSavedReports: { en: "Saved Reports", hi: "सहेजी गई रिपोर्ट", mr: "जतन केलेले अहवाल" },
-            navGovServices: { en: "Government Services", hi: "सरकारी सेवाएं", mr: "सरकारी सेवा" },
-            navHelpSupport: { en: "Help & Support", hi: "सहायता और समर्थन", mr: "मदत आणि समर्थन" },
-            privacyTitle: { en: "Your information is private", hi: "आपकी जानकारी निजी है", mr: "तुमची माहिती गोपनीय आहे" },
-            privacyText: { en: "We never share your data.", hi: "हम कभी शेयर नहीं करते।", mr: "आम्ही कधीही शेअर करत नाही." },
-            privacyText2: { en: "Everything is confidential.", hi: "सब कुछ गोपनीय है।", mr: "सर्व काही गोपनीय आहे." },
-            signInSignUp: { en: "Sign in / Sign up", hi: "साइन इन / साइन अप", mr: "साइन इन / साइन अप" },
-            heroTitle: { en: 'How can we <span class="accent">help</span> you today?', hi: 'आज हम आपकी <span class="accent">मदद</span> कैसे कर सकते हैं?', mr: 'आज आम्ही तुम्हाला <span class="accent">कशी मदत</span> करू शकतो?' },
-            heroSub: { en: "Describe your issue in simple words. We'll help you understand your legal position.", hi: "अपनी समस्या सरल शब्दों में बताएं। हम आपको आपकी कानूनी स्थिति समझने में मदद करेंगे।", mr: "तुमची समस्या सोप्या शब्दांत सांगा. आम्ही तुम्हाला तुमची कायदेशीर स्थिती समजून घेण्यास मदत करू." },
-            issuePlaceholder: { en: "Example: My landlord is not returning my security deposit.", hi: "उदाहरण: मेरा मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है।", mr: "उदाहरण: माझा घरमालक माझी ठेव परत करत नाही." },
-            speak: { en: "Speak", hi: "बोलें", mr: "बोला" },
-            attachOptional: { en: "Attach document (optional)", hi: "दस्तावेज़ जोड़ें (वैकल्पिक)", mr: "कागदपत्र जोडा (पर्यायी)" },
-            analyzeIssue: { en: "Analyze Issue", hi: "समस्या का विश्लेषण करें", mr: "समस्येचे विश्लेषण करा" },
-            analyzing: { en: "Analyzing…", hi: "विश्लेषण हो रहा है…", mr: "विश्लेषण सुरू आहे…" },
-            tip: { en: "Be specific about what, when, and with whom.", hi: "क्या, कब और किसके साथ — स्पष्ट बताएं।", mr: "काय, केव्हा आणि कोणासोबत — स्पष्ट सांगा." },
-            howItWorks: { en: "How it works", hi: "यह कैसे काम करता है", mr: "हे कसे कार्य करते" },
-            step1Title: { en: "Tell us your issue", hi: "अपनी समस्या बताएं", mr: "तुमची समस्या सांगा" },
-            step1Text: { en: "Describe in your own words.", hi: "अपने शब्दों में बताएं।", mr: "तुमच्या शब्दांत सांगा." },
-            step2Title: { en: "We analyze it", hi: "हम विश्लेषण करते हैं", mr: "आम्ही विश्लेषण करतो" },
-            step2Text: { en: "Our AI finds relevant laws and information.", hi: "हमारा AI प्रासंगिक कानून और जानकारी ढूंढता है।", mr: "आमचे AI संबंधित कायदे आणि माहिती शोधते." },
-            step3Title: { en: "Get clear guidance", hi: "स्पष्ट मार्गदर्शन पाएं", mr: "स्पष्ट मार्गदर्शन मिळवा" },
-            step3Text: { en: "Know your rights, next steps, and important evidence.", hi: "अपने अधिकार, अगले कदम और जरूरी सबूत जानें।", mr: "तुमचे हक्क, पुढील पावले आणि महत्त्वाचे पुरावे जाणा." },
-            step4Title: { en: "Take action", hi: "कार्रवाई करें", mr: "कृती करा" },
-            step4Text: { en: "Use the guidance or connect with the right authority.", hi: "मार्गदर्शन का उपयोग करें या सही प्राधिकरण से जुड़ें।", mr: "मार्गदर्शनाचा वापर करा किंवा योग्य प्राधिकरणाशी संपर्क साधा." },
-            popularIssues: { en: "Popular Issues", hi: "लोकप्रिय समस्याएँ", mr: "लोकप्रिय समस्या" },
-            viewAll: { en: "View all →", hi: "सभी देखें →", mr: "सर्व पहा →" },
-            popularSub: { en: "Select a common issue or ask your own.", hi: "एक सामान्य समस्या चुनें या अपनी पूछें।", mr: "एक सामान्य समस्या निवडा किंवा तुमची विचारा." },
-            issueJobTitle: { en: "Job & Employment", hi: "नौकरी और रोजगार", mr: "नोकरी आणि रोजगार" },
-            issueJobText: { en: "Salary, termination, contracts", hi: "वेतन, बर्खास्तगी, अनुबंध", mr: "पगार, नोकरीतून काढणे, करार" },
-            issueLandlordTitle: { en: "Landlord & Tenant", hi: "मकान मालिक और किरायेदार", mr: "घरमालक आणि भाडेकरू" },
-            issueLandlordText: { en: "Rent, deposit, eviction", hi: "किराया, जमा, बेदखली", mr: "भाडे, ठेव, बेदखल करणे" },
-            issueConsumerTitle: { en: "Consumer Complaints", hi: "उपभोक्ता शिकायतें", mr: "ग्राहक तक्रारी" },
-            issueConsumerText: { en: "Refunds, defective products", hi: "धनवापसी, दोषपूर्ण उत्पाद", mr: "परतावा, सदोष उत्पादने" },
-            issueCyberTitle: { en: "Cyber Fraud", hi: "साइबर धोखाधड़ी", mr: "सायबर फसवणूक" },
-            issueCyberText: { en: "Online scams, hacking", hi: "ऑनलाइन घोटाले, हैकिंग", mr: "ऑनलाइन फसवणूक, हॅकिंग" },
-            issuePoliceTitle: { en: "Police & FIR", hi: "पुलिस और एफआईआर", mr: "पोलीस आणि एफआयआर" },
-            issuePoliceText: { en: "FIR, complaints, procedures", hi: "एफआईआर, शिकायतें, प्रक्रियाएं", mr: "एफआयआर, तक्रारी, प्रक्रिया" },
-            issueLoansTitle: { en: "Loans & Recovery", hi: "ऋण और वसूली", mr: "कर्ज आणि वसुली" },
-            issueLoansText: { en: "Harassment, illegal recovery", hi: "उत्पीड़न, अवैध वसूली", mr: "त्रास, बेकायदेशीर वसुली" },
-            issueFamilyTitle: { en: "Family & Personal", hi: "पारिवारिक और व्यक्तिगत", mr: "कौटुंबिक आणि वैयक्तिक" },
-            issueFamilyText: { en: "Divorce, maintenance, etc.", hi: "तलाक, गुजारा भत्ता, आदि।", mr: "घटस्फोट, पोटगी, इ." },
-            issuePropertyTitle: { en: "Property Disputes", hi: "संपत्ति विवाद", mr: "मालमत्ता वाद" },
-            issuePropertyText: { en: "Ownership, inheritance", hi: "स्वामित्व, विरासत", mr: "मालकी, वारसा" },
-            trust1Title: { en: "Trusted by Users", hi: "उपयोगकर्ताओं का भरोसा", mr: "वापरकर्त्यांचा विश्वास" },
-            trust1Text: { en: "Built for everyday Indians", hi: "आम भारतीयों के लिए", mr: "सामान्य भारतीयांसाठी" },
-            trust2Title: { en: "Based on Indian Laws", hi: "भारतीय कानूनों पर", mr: "भारतीय कायद्यांवर" },
-            trust2Text: { en: "Information from verified sources", hi: "सत्यापित स्रोतों से जानकारी", mr: "सत्यापित स्रोतांकडून माहिती" },
-            trust3Title: { en: "Secure & Confidential", hi: "सुरक्षित और गोपनीय", mr: "सुरक्षित आणि गोपनीय" },
-            trust3Text: { en: "Your privacy is our priority", hi: "आपकी निजता हमारी प्राथमिकता है", mr: "तुमची गोपनीयता आमचे प्राधान्य आहे" },
-            trust4Title: { en: "Always Improving", hi: "हमेशा सुधार", mr: "सतत सुधारणा" },
-            trust4Text: { en: "We're here to serve you better", hi: "आपकी बेहतर सेवा के लिए", mr: "तुम्हाला अधिक चांगली सेवा देण्यासाठी" },
-            whyTitle: { en: "Why NyaySetu?", hi: "नयायसेतु क्यों?", mr: "न्यायसेतु का?" },
-            why1: { en: "Plain language explanations", hi: "सरल भाषा में स्पष्टीकरण", mr: "सोप्या भाषेत स्पष्टीकरण" },
-            why2: { en: "Reliable legal information", hi: "विश्वसनीय कानूनी जानकारी", mr: "विश्वासार्ह कायदेशीर माहिती" },
-            why3: { en: "Neutral and non-judgmental", hi: "तटस्थ और निष्पक्ष", mr: "तटस्थ आणि निष्पक्ष" },
-            why4: { en: "Helps you take the right steps", hi: "सही कदम उठाने में मदद करता है", mr: "योग्य पावले उचलण्यास मदत करते" },
-            langPanelTitle: { en: "Language / भाषा", hi: "भाषा / Language", mr: "भाषा / Language" },
-            langPanelSub: { en: "Choose your preferred language", hi: "अपनी पसंदीदा भाषा चुनें", mr: "तुमची आवडती भाषा निवडा" },
-            lawyerPanelTitle: { en: "Need help from a lawyer?", hi: "वकील से मदद चाहिए?", mr: "वकिलाची मदत हवी आहे?" },
-            lawyerPanelSub: { en: "Connect with verified lawyers in your area if you need expert help.", hi: "विशेषज्ञ सहायता के लिए अपने क्षेत्र के सत्यापित वकीलों से जुड़ें।", mr: "तज्ज्ञ मदतीसाठी तुमच्या भागातील सत्यापित वकिलांशी संपर्क साधा." },
-            lawyerModalTitle: { en: "Find a Lawyer", hi: "वकील खोजें", mr: "वकील शोधा" },
-            lawyerModalSub: { en: "Tell us your city and legal area.", hi: "अपना शहर और क्षेत्र बताएं।", mr: "तुमचे शहर आणि क्षेत्र सांगा." },
-            cityLabel: { en: "City", hi: "शहर", mr: "शहर" },
-            areaLabel: { en: "Area of law", hi: "कानून का क्षेत्र", mr: "कायद्याचे क्षेत्र" },
-            findLawyerSubmit: { en: "Find a Lawyer", hi: "वकील खोजें", mr: "वकील शोधा" },
-            findLawyerSubmit2: { en: "Find Lawyers", hi: "वकील खोजें", mr: "वकील शोधा" },
-        };
+        // Language + translation data lives in static/translations.json.
+        let LANGUAGES = [{ code: "en", label: "English" }];
+        let VOICE_LOCALES = { en: "en-IN" };
+        let TRANSLATIONS = {};
+        let EXAMPLES = {};
+
+        async function loadLanguageData() {
+            try {
+                const res = await fetch("{{ url_for('static', filename='translations.json') }}");
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                if (data.languages && data.languages.length) LANGUAGES = data.languages;
+                if (data.translations) TRANSLATIONS = data.translations;
+                if (data.examples) EXAMPLES = data.examples;
+                if (data.voice_locales) VOICE_LOCALES = data.voice_locales;
+            } catch (err) {
+                console.warn('Could not load /static/translations.json — falling back to English only.', err);
+            }
+        }
 
         function getText(key, lang) {
             const entry = TRANSLATIONS[key];
             if (!entry) return '';
-            return entry[lang] || entry.en;
+            return entry[lang] || entry.en || '';
         }
-
-        const EXAMPLES = {
-            exJob: { en: "My employer terminated me without notice and hasn't paid my final salary.", hi: "मेरे नियोक्ता ने बिना सूचना के मुझे निकाल दिया।", mr: "माझ्या मालकाने मला सूचना न देता कामावरून काढले." },
-            exLandlord: { en: "My landlord is not returning my security deposit even after I vacated.", hi: "घर खाली करने के बाद भी मकान मालिक मेरी जमा राशि वापस नहीं कर रहा है।", mr: "घर रिकामे केल्यानंतरही घरमालक ठेव परत करत नाही." },
-            exConsumer: { en: "I received a defective product online and the seller refuses to refund me.", hi: "मुझे दोषपूर्ण उत्पाद मिला और विक्रेता धनवापसी से मना कर रहा है।", mr: "मला सदोष उत्पादन मिळाले आणि विक्रेता परतावा देण्यास नकार देत आहे." },
-            exCyber: { en: "I was scammed online and my bank account was hacked. What should I do?", hi: "मुझे ऑनलाइन ठगा गया और मेरा बैंक खाता हैक हो गया।", mr: "माझी ऑनलाइन फसवणूक झाली आणि माझे बँक खाते हॅक झाले." },
-            exPolice: { en: "The police are refusing to file my FIR. What are my rights?", hi: "पुलिस मेरी एफआईआर दर्ज करने से मना कर रही है।", mr: "पोलीस माझा एफआयआर नोंदवण्यास नकार देत आहेत." },
-            exLoans: { en: "A loan recovery agent is harassing me with threatening calls.", hi: "एक ऋण वसूली एजेंट मुझे परेशान कर रहा है।", mr: "एक कर्ज वसुली एजंट मला त्रास देत आहे." },
-            exFamily: { en: "I want to understand the process for filing for divorce and maintenance.", hi: "मैं तलाक और गुजारा भत्ता की प्रक्रिया समझना चाहता हूं।", mr: "मला घटस्फोट आणि पोटगीच्या प्रक्रियेचा ज्ञान हवा आहे." },
-            exProperty: { en: "There is a dispute over inherited property among family members.", hi: "विरासत में मिली संपत्ति को लेकर परिवार में विवाद है।", mr: "वारसा मालमत्तेवरून कुटुंबातील सदस्यांमध्ये वाद आहे." },
-        };
 
         let currentLang = 'en';
         let analyzeBtnBusy = false;
 
         function applyLanguage(lang) {
             currentLang = lang;
-
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (TRANSLATIONS[key]) el.textContent = getText(key, lang);
             });
-
             document.querySelectorAll('[data-i18n-html]').forEach(el => {
                 const key = el.getAttribute('data-i18n-html');
                 if (TRANSLATIONS[key]) el.innerHTML = getText(key, lang);
             });
-
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 if (TRANSLATIONS[key]) el.placeholder = getText(key, lang);
             });
-
             const analyzeLabel = document.getElementById('analyzeBtnLabel');
-            if (analyzeLabel && !analyzeBtnBusy) {
-                analyzeLabel.textContent = getText('analyzeIssue', lang);
-            }
-
+            if (analyzeLabel && !analyzeBtnBusy) analyzeLabel.textContent = getText('analyzeIssue', lang);
             const langInfo = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
             document.querySelectorAll('.topbarLangSelected, .mobileLangSelected, .panelLangSelected')
                 .forEach(el => { el.textContent = langInfo.label; });
-
             document.querySelectorAll('.lang-menu-instance li').forEach(li => {
                 li.classList.toggle('selected', li.dataset.lang === lang);
             });
-
             document.documentElement.lang = lang;
         }
 
@@ -1324,19 +2377,15 @@
             });
         }
 
-        document.querySelectorAll('.lang-menu-instance').forEach(buildLangMenu);
-
         function wireLangDropdown(toggleId, menuId) {
             const toggle = document.getElementById(toggleId);
             const menu = document.getElementById(menuId);
             if (!toggle || !menu) return;
-
             toggle.addEventListener('click', (e) => {
                 e.stopPropagation();
-                document.querySelectorAll('.lang-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+                document.querySelectorAll('.lang-menu, .account-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
                 menu.classList.toggle('open');
             });
-
             menu.addEventListener('click', (e) => {
                 const item = e.target.closest('li[data-lang]');
                 if (!item) return;
@@ -1348,12 +2397,28 @@
         wireLangDropdown('topbarLangToggle', 'topbarLangMenu');
         wireLangDropdown('mobileLangToggle', 'mobileLangMenu');
         wireLangDropdown('panelLangToggle', 'panelLangMenu');
-        wireLangDropdown('userMenuToggle', 'userMenu');
+
+        // Account dropdown (only present when logged in)
+        const accountToggle = document.getElementById('accountToggle');
+        const accountMenu = document.getElementById('accountMenu');
+        if (accountToggle && accountMenu) {
+            accountToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.lang-menu').forEach(m => m.classList.remove('open'));
+                accountMenu.classList.toggle('open');
+            });
+        }
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.lang-dropdown')) {
+            if (!e.target.closest('.lang-dropdown'))
                 document.querySelectorAll('.lang-menu').forEach(m => m.classList.remove('open'));
-            }
+            if (!e.target.closest('.account-area'))
+                document.querySelectorAll('.account-menu').forEach(m => m.classList.remove('open'));
+        });
+
+        // Notification bell (demo)
+        document.querySelectorAll('#bellBtn, #bellBtnMobile').forEach(btn => {
+            btn.addEventListener('click', () => showToast(getText('toastNotifications', currentLang) || 'You have 2 new notifications.'));
         });
 
         const sidebar = document.getElementById('sidebar');
@@ -1361,17 +2426,8 @@
         const hamburgerBtn = document.getElementById('hamburgerBtn');
         const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
 
-        function openSidebar() {
-            sidebar.classList.add('open');
-            sidebarBackdrop.classList.add('open');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeSidebar() {
-            sidebar.classList.remove('open');
-            sidebarBackdrop.classList.remove('open');
-            document.body.style.overflow = '';
-        }
+        function openSidebar() { sidebar.classList.add('open'); sidebarBackdrop.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); sidebarBackdrop.classList.remove('open'); document.body.style.overflow = ''; }
 
         hamburgerBtn.addEventListener('click', openSidebar);
         sidebarCloseBtn.addEventListener('click', closeSidebar);
@@ -1379,24 +2435,26 @@
 
         const issueInput = document.getElementById('issueInput');
         const charCount = document.getElementById('charCount');
-        issueInput.addEventListener('input', () => {
-            charCount.textContent = issueInput.value.length;
-        });
+        if (issueInput) {
+            issueInput.addEventListener('input', () => { charCount.textContent = issueInput.value.length; });
+        }
 
-        document.getElementById('newIssueBtn').addEventListener('click', () => {
-            closeSidebar();
-            issueInput.value = '';
-            charCount.textContent = '0';
-            issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            issueInput.focus();
-        });
+        const newIssueBtn = document.getElementById('newIssueBtn');
+        if (newIssueBtn && issueInput) {
+            newIssueBtn.addEventListener('click', () => {
+                closeSidebar();
+                issueInput.value = ''; charCount.textContent = '0';
+                issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                issueInput.focus();
+            });
+        }
 
         document.querySelectorAll('.issue-card').forEach(card => {
             card.addEventListener('click', () => {
                 const key = card.dataset.example;
                 const text = EXAMPLES[key] ? (EXAMPLES[key][currentLang] || EXAMPLES[key].en) : '';
-                issueInput.value = text;
-                charCount.textContent = text.length;
+                if (!issueInput) return;
+                issueInput.value = text; charCount.textContent = text.length;
                 issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 issueInput.focus();
             });
@@ -1404,105 +2462,96 @@
 
         const analyzeBtn = document.getElementById('analyzeBtn');
         const analyzeBtnLabel = document.getElementById('analyzeBtnLabel');
-
-        analyzeBtn.addEventListener('click', () => {
-            if (!issueInput.value.trim()) {
-                showToast({ en: 'Please describe your issue first.', hi: 'कृपया पहले अपनी समस्या बताएं।', mr: 'कृपया आधी तुमची समस्या सांगा.' }[currentLang] || 'Please describe your issue first.');
-                issueInput.focus();
-                return;
-            }
-            analyzeBtnBusy = true;
-            analyzeBtn.disabled = true;
-            analyzeBtnLabel.textContent = getText('analyzing', currentLang);
-
-            setTimeout(() => {
-                analyzeBtnBusy = false;
-                analyzeBtn.disabled = false;
-                analyzeBtnLabel.textContent = getText('analyzeIssue', currentLang);
-                showToast({ en: 'Analysis complete — guidance ready below (demo).', hi: 'विश्लेषण पूर्ण (डेमो)।', mr: 'विश्लेषण पूर्ण (डेमो).' }[currentLang] || 'Analysis complete (demo).');
-            }, 1400);
-        });
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', () => {
+                if (!issueInput.value.trim()) {
+                    showToast(getText('toastEmptyIssue', currentLang) || 'Please describe your issue first.');
+                    issueInput.focus(); return;
+                }
+                analyzeBtnBusy = true; analyzeBtn.disabled = true;
+                analyzeBtnLabel.textContent = getText('analyzing', currentLang);
+                setTimeout(() => {
+                    analyzeBtnBusy = false; analyzeBtn.disabled = false;
+                    analyzeBtnLabel.textContent = getText('analyzeIssue', currentLang);
+                    showToast(getText('toastAnalysisComplete', currentLang) || 'Analysis complete (demo).');
+                }, 1400);
+            });
+        }
 
         const speakBtn = document.getElementById('speakBtn');
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        speakBtn.addEventListener('click', () => {
-            if (!SpeechRecognition) {
-                showToast({ en: 'Voice input not supported.', hi: 'वॉइस इनपुट समर्थित नहीं है।', mr: 'व्हॉइस इनपुट समर्थित नाही.' }[currentLang] || 'Voice input not supported.');
-                return;
-            }
-            const recognition = new SpeechRecognition();
-            recognition.lang = { en: 'en-IN', hi: 'hi-IN', mr: 'mr-IN' }[currentLang] || 'en-IN';
-            recognition.interimResults = false;
-
-            speakBtn.classList.add('recording');
-            speakBtn.querySelector('span').textContent = { en: 'Listening…', hi: 'सुन रहे हैं…', mr: 'ऐकत आहे…' }[currentLang] || 'Listening…';
-
-            recognition.start();
-
-            recognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                issueInput.value = (issueInput.value ? issueInput.value + ' ' : '') + transcript;
-                charCount.textContent = issueInput.value.length;
-            };
-            recognition.onerror = () => {
-                showToast({ en: 'Could not capture audio.', hi: 'ऑडियो कैप्चर नहीं हो सका।', mr: 'ऑडिओ कॅप्चर करता आले नाही.' }[currentLang] || 'Could not capture audio.');
-            };
-            recognition.onend = () => {
-                speakBtn.classList.remove('recording');
-                speakBtn.querySelector('span').textContent = getText('speak', currentLang);
-            };
-        });
+        if (speakBtn) {
+            speakBtn.addEventListener('click', () => {
+                if (!SpeechRecognition) { showToast(getText('toastVoiceNotSupported', currentLang) || 'Voice input not supported.'); return; }
+                const recognition = new SpeechRecognition();
+                recognition.lang = VOICE_LOCALES[currentLang] || 'en-IN';
+                recognition.interimResults = false;
+                speakBtn.classList.add('recording');
+                speakBtn.querySelector('span').textContent = getText('toastListening', currentLang) || 'Listening…';
+                recognition.start();
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    issueInput.value = (issueInput.value ? issueInput.value + ' ' : '') + transcript;
+                    charCount.textContent = issueInput.value.length;
+                };
+                recognition.onerror = () => { showToast(getText('toastAudioError', currentLang) || 'Could not capture audio.'); };
+                recognition.onend = () => { speakBtn.classList.remove('recording'); speakBtn.querySelector('span').textContent = getText('speak', currentLang); };
+            });
+        }
 
         const attachBtn = document.getElementById('attachBtn');
         const fileInput = document.getElementById('fileInput');
         const fileChip = document.getElementById('fileChip');
         const fileChipName = document.getElementById('fileChipName');
-
-        attachBtn.addEventListener('click', () => fileInput.click());
-
-        fileInput.addEventListener('change', () => {
-            if (fileInput.files.length) {
-                fileChipName.textContent = fileInput.files[0].name;
-                fileChip.classList.add('visible');
-            }
-        });
-
-        document.getElementById('fileChipRemove').addEventListener('click', () => {
-            fileInput.value = '';
-            fileChip.classList.remove('visible');
-        });
+        if (attachBtn) {
+            attachBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', () => { if (fileInput.files.length) { fileChipName.textContent = fileInput.files[0].name; fileChip.classList.add('visible'); } });
+            document.getElementById('fileChipRemove').addEventListener('click', () => { fileInput.value = ''; fileChip.classList.remove('visible'); });
+        }
 
         const lawyerModal = document.getElementById('lawyerModal');
-        const findLawyerBtn = document.getElementById('findLawyerBtn');
-        const lawyerModalClose = document.getElementById('lawyerModalClose');
-        const lawyerForm = document.getElementById('lawyerForm');
-
-        findLawyerBtn.addEventListener('click', () => {
-            lawyerModal.classList.add('open');
+        document.querySelectorAll('#findLawyerBtn').forEach(btn => {
+            btn.addEventListener('click', () => lawyerModal.classList.add('open'));
         });
-
-        lawyerModalClose.addEventListener('click', () => lawyerModal.classList.remove('open'));
+        document.getElementById('lawyerModalClose').addEventListener('click', () => lawyerModal.classList.remove('open'));
         lawyerModal.addEventListener('click', (e) => { if (e.target === lawyerModal) lawyerModal.classList.remove('open'); });
-
-        lawyerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            lawyerModal.classList.remove('open');
-            lawyerForm.reset();
-            showToast({ en: "We'll connect you with a lawyer shortly (demo).", hi: 'हम जल्द ही आपको वकील से जोड़ेंगे (डेमो)।', mr: 'आम्ही लवकरच तुम्हाला वकिलाशी जोडू (डेमो).' }[currentLang] || "We'll connect you with a lawyer shortly (demo).");
+        document.getElementById('lawyerForm').addEventListener('submit', (e) => {
+            e.preventDefault(); lawyerModal.classList.remove('open'); document.getElementById('lawyerForm').reset();
+            showToast(getText('toastLawyerConnect', currentLang) || "We'll connect you with a lawyer shortly (demo).");
         });
 
-        document.getElementById('viewAllBtn').addEventListener('click', (e) => {
-            e.preventDefault();
-            showToast({ en: 'Full issue directory coming soon.', hi: 'पूरी समस्या सूची जल्द आ रही है।', mr: 'संपूर्ण समस्या यादी लवकरच येत आहे.' }[currentLang] || 'Full issue directory coming soon.');
-        });
+        const viewAllBtn = document.getElementById('viewAllBtn');
+        if (viewAllBtn) {
+            viewAllBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showToast(getText('toastViewAllSoon', currentLang) || 'Full issue directory coming soon.');
+            });
+        }
 
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                closeSidebar();
+                item.classList.add('active'); closeSidebar();
             });
         });
+
+        // Dashboard "My Cases" tab filter
+        document.querySelectorAll('.case-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const filter = tab.dataset.filter;
+                document.querySelectorAll('.case-row').forEach(row => {
+                    row.style.display = (filter === 'all' || row.dataset.status === filter) ? 'flex' : 'none';
+                });
+            });
+        });
+
+        (async function init() {
+            await loadLanguageData();
+            document.querySelectorAll('.lang-menu-instance').forEach(buildLangMenu);
+            applyLanguage('en');
+        })();
     </script>
 
 </body>

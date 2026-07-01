@@ -44,3 +44,15 @@ class User(db.Model):
         if not self.password_hash:
             return False
         return check_password_hash(self.password_hash, password)
+
+    @property
+    def first_name(self):
+        """Short display name used in greetings / the avatar chip."""
+        if self.name:
+            return self.name.strip().split(" ")[0]
+        return self.email.split("@")[0]
+
+    @property
+    def initial(self):
+        source = self.name or self.email
+        return source.strip()[0].upper() if source.strip() else "U"
