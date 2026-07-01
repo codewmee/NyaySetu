@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Analysis - NyaySetu</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --purple: #5b4dee;
+            --purple-dark: #4a3dd9;
+            --purple-light: #ecebfe;
+            --text-dark: #1a1a2e;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --bg-soft: #f8f8fc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #fafafb;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 24px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .back-btn {
+            width: 36px; height: 36px; border-radius: 10px;
+            border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; background: #fff; text-decoration: none; color: inherit;
+            flex-shrink: 0;
+        }
+        .back-btn:hover { background: var(--bg-soft); }
+
+        .topbar-info h1 { font-size: 17px; font-weight: 800; }
+        .topbar-info p { font-size: 12.5px; color: var(--text-gray); margin-top: 2px; }
+
+        .strength-badge {
+            margin-left: auto;
+            font-size: 12px; font-weight: 700;
+            padding: 6px 12px; border-radius: 999px;
+            background: var(--purple-light); color: var(--purple);
+            white-space: nowrap;
+        }
+
+        .chat-wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 24px 16px 140px;
+        }
+
+        .bubble-row { display: flex; margin-bottom: 16px; }
+        .bubble-row.user { justify-content: flex-end; }
+
+        .bubble {
+            max-width: 78%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14.5px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .bubble-row.model .bubble {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 4px;
+        }
+
+        .bubble-row.user .bubble {
+            background: var(--purple);
+            color: #fff;
+            border-bottom-right-radius: 4px;
+        }
+
+        .typing-bubble {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 14px 16px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+        }
+        .typing-bubble.show { display: flex; }
+
+        .typing-bubble span {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #9ca3af;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .typing-bubble span:nth-child(2) { animation-delay: 0.15s; }
+        .typing-bubble span:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-4px); opacity: 1; }
+        }
+
+        .composer {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: #fff;
+            border-top: 1px solid var(--border);
+            padding: 14px 16px;
+        }
+
+        .composer-inner {
+            max-width: 760px;
+            margin: 0 auto;
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .composer textarea {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 14.5px;
+            font-family: inherit;
+            resize: none;
+            max-height: 120px;
+            outline: none;
+        }
+        .composer textarea:focus { border-color: var(--purple); }
+
+        .send-btn {
+            background: var(--purple);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            width: 46px; height: 46px;
+            font-size: 17px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .send-btn:hover { background: var(--purple-dark); }
+        .send-btn:disabled { opacity: 0.5; cursor: default; }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <a href="/" class="back-btn" aria-label="Back to dashboard">←</a>
+        <div class="topbar-info">
+            <h1>{{ case.title }}</h1>
+            <p>{{ case.category }}{% if case.city %} · {{ case.city }}{% endif %}</p>
+        </div>
+        <span class="strength-badge" style="color: {{ case.strength_color }};">Strength: {{ case.strength }}/100</span>
+    </div>
+
+    <div class="chat-wrap" id="chatWrap">
+        {% for m in messages %}
+        <div class="bubble-row {{ 'user' if m.role == 'user' else 'model' }}">
+            <div class="bubble">{{ m.content }}</div>
+        </div>
+        {% endfor %}
+        <div class="bubble-row model">
+            <div class="typing-bubble" id="typingBubble"><span></span><span></span><span></span></div>
+        </div>
+    </div>
+
+    <div class="composer">
+        <div class="composer-inner">
+            <textarea id="msgInput" rows="1" placeholder="Reply or add more detail…"></textarea>
+            <button class="send-btn" id="sendBtn" aria-label="Send">➤</button>
+        </div>
+    </div>
+
+    <script>
+        const CASE_ID = {{ case.id }};
+        const chatWrap = document.getElementById('chatWrap');
+        const typingBubble = document.getElementById('typingBubble');
+        const msgInput = document.getElementById('msgInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        function scrollToBottom() {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+        scrollToBottom();
+
+        function addBubble(role, text) {
+            const row = document.createElement('div');
+            row.className = 'bubble-row ' + (role === 'user' ? 'user' : 'model');
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = text;
+            row.appendChild(bubble);
+            chatWrap.insertBefore(row, typingBubble.closest('.bubble-row'));
+            scrollToBottom();
+        }
+
+        msgInput.addEventListener('input', () => {
+            msgInput.style.height = 'auto';
+            msgInput.style.height = Math.min(msgInput.scrollHeight, 120) + 'px';
+        });
+
+        msgInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        async function sendMessage() {
+            const text = msgInput.value.trim();
+            if (!text) return;
+
+            addBubble('user', text);
+            msgInput.value = '';
+            msgInput.style.height = 'auto';
+            sendBtn.disabled = true;
+            typingBubble.classList.add('show');
+            scrollToBottom();
+
+            try {
+                const res = await fetch(`/case/${CASE_ID}/chat/message`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text }),
+                });
+                const data = await res.json();
+                typingBubble.classList.remove('show');
+                addBubble('model', data.reply || "Sorry, something went wrong.");
+            } catch (err) {
+                typingBubble.classList.remove('show');
+                addBubble('model', "Sorry, couldn't reach the server — check your connection and try again.");
+            } finally {
+                sendBtn.disabled = false;
+                msgInput.focus();
+            }
+        }
+    </script>
+
+</body>
+
+</html>
