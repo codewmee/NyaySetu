@@ -85,6 +85,14 @@ class Case(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    documents = db.relationship(
+        "CaseDocument",
+        backref="case",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="CaseDocument.uploaded_at",
+    )
+
     STATUS_LABELS = {
         "in_progress": "In Progress",
         "awaiting_action": "Awaiting Action",
@@ -113,3 +121,51 @@ class Case(db.Model):
     @property
     def date(self):
         return self.created_at.strftime("%d %b %Y") if self.created_at else ""
+
+
+class CaseDocument(db.Model):
+    """A file the user attached to a case.
+
+    The actual file bytes live in Cloudinary — this row just stores the
+    public_id/URL (and enough metadata to display or delete it) so we
+    never put binary data in Neon/Postgres.
+    """
+
+    __tablename__ = "case_documents"
+
+    id = db.Column(db.Integer, primary_key=True)
+    case_id = db.Column(db.Integer, db.ForeignKey("cases.id"), nullable=False, index=True)
+
+    # Original filename as uploaded by the user, e.g. "rental_agreement.pdf"
+    file_name = db.Column(db.String(255), nullable=False)
+
+    # Cloudinary's identifier for the asset, e.g.
+    # "nyaysetu/cases/14/9c1e2b7e_rental_agreement" — needed to build
+    # transformation URLs later or to delete the asset via
+    # cloudinary.uploader.destroy(public_id, resource_type=...).
+    cloudinary_public_id = db.Column(db.String(500), nullable=False)
+
+    # Secure (https) delivery URL returned by Cloudinary — what the UI
+    # actually links to / renders.
+    cloudinary_url = db.Column(db.String(1000), nullable=False)
+
+    # Cloudinary resource_type: "image", "raw" (e.g. PDFs/DOCX), or "video".
+    resource_type = db.Column(db.String(20), nullable=True)
+
+    # MIME type, e.g. "application/pdf", "image/png".
+    content_type = db.Column(db.String(100), nullable=True)
+
+    # Size in bytes.
+    bytes = db.Column(db.Integer, nullable=True)
+
+    uploaded_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    @property
+    def size_label(self):
+        if not self.bytes:
+            return ""
+        if self.bytes < 1024:
+            return f"{self.bytes} B"
+        if self.bytes < 1024 * 1024:
+            return f"{self.bytes / 1024:.1f} KB"
+        return f"{self.bytes / (1024 * 1024):.1f} MB"

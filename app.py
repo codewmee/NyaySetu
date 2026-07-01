@@ -1,17 +1,56 @@
 import os
+import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, session, redirect, url_for, request, flash
+from werkzeug.utils import secure_filename
+import cloudinary
+import cloudinary.uploader
 
-from db import db, init_db, User, Case
+from db import db, init_db, User, Case, CaseDocument
 
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this-later")
 
+# ---------------- Secret key (REQUIRED from .env, no hardcoded fallback) ----------------
+SECRET_KEY = os.environ.get("SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError(
+        "SECRET_KEY env var not set. Add a long random string to your .env, e.g.\n"
+        "SECRET_KEY=" + uuid.uuid4().hex + uuid.uuid4().hex
+    )
+app.secret_key = SECRET_KEY
+
+# ---------------- Neon Postgres (users + cases) ----------------
 init_db(app)
+
+# ---------------- Cloudinary (file storage: PDFs, images, etc.) ----------------
+# Users + cases live in Neon (Postgres, via SQLAlchemy in db.py). Uploaded
+# files/images live in Cloudinary instead — only the resulting public_id/URL
+# get saved to Neon (see CaseDocument in db.py).
+#
+# Expects these in your .env:
+#   CLOUDINARY_CLOUD_NAME=your-cloud-name
+#   CLOUDINARY_API_KEY=your-api-key
+#   CLOUDINARY_API_SECRET=your-api-secret
+CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
+CLOUDINARY_API_KEY = os.environ.get("CLOUDINARY_API_KEY")
+CLOUDINARY_API_SECRET = os.environ.get("CLOUDINARY_API_SECRET")
+
+if not CLOUDINARY_CLOUD_NAME or not CLOUDINARY_API_KEY or not CLOUDINARY_API_SECRET:
+    raise RuntimeError(
+        "CLOUDINARY_CLOUD_NAME / CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET env vars not set "
+        "(add them to your .env)"
+    )
+
+cloudinary.config(
+    cloud_name=CLOUDINARY_CLOUD_NAME,
+    api_key=CLOUDINARY_API_KEY,
+    api_secret=CLOUDINARY_API_SECRET,
+    secure=True,
+)
 
 
 def current_user():
@@ -54,6 +93,20 @@ RECENT_ACTIVITY = [
     },
 ]
 
+# Maps the value of each category radio button in the New Issue form to the
+# display label + icon styling used both on the form and on the resulting
+# Case card in the dashboard.
+CATEGORY_META = {
+    "job": {"label": "Job & Employment", "icon": "💼", "icon_bg": "#e3e8ff", "icon_color": "#4a4ad9"},
+    "landlord": {"label": "Landlord & Tenant", "icon": "🏠", "icon_bg": "#ffe9d6", "icon_color": "#d97706"},
+    "consumer": {"label": "Consumer Complaint", "icon": "🛒", "icon_bg": "#ffe1e1", "icon_color": "#dc2626"},
+    "cyber": {"label": "Cyber Crime", "icon": "🔒", "icon_bg": "#d8ecff", "icon_color": "#0d6ec7"},
+    "loan": {"label": "Loan & Recovery", "icon": "💰", "icon_bg": "#dafbe8", "icon_color": "#16a34a"},
+    "family": {"label": "Family & Personal", "icon": "👪", "icon_bg": "#ede4ff", "icon_color": "#7c3aed"},
+    "property": {"label": "Property Dispute", "icon": "🏢", "icon_bg": "#ffe3ec", "icon_color": "#db2777"},
+    "other": {"label": "Other", "icon": "•••", "icon_bg": "#f3f4f6", "icon_color": "#4b5563"},
+}
+
 
 @app.route("/")
 def home():
@@ -71,6 +124,107 @@ def home():
         greeting_key=greeting_key_for_now(),
         cases=cases,
         activity=RECENT_ACTIVITY,
+    )
+
+
+# ---------------- New Issue wizard ----------------
+@app.route("/new-issue", methods=["GET", "POST"])
+def new_issue():
+    user = current_user()
+    if not user:
+        return redirect(url_for("login_page"))
+
+    if request.method == "POST":
+        description = request.form.get("description", "").strip()
+        category_key = request.form.get("category", "other")
+
+        if not description:
+            flash("Please describe your issue before submitting.")
+            return redirect(url_for("new_issue"))
+
+        meta = CATEGORY_META.get(category_key, CATEGORY_META["other"])
+
+        # A short, human-readable title derived from the free-text description.
+        title = description if len(description) <= 60 else description[:60].rstrip() + "…"
+
+        case = Case(
+            user_id=user.id,
+            title=title,
+            description=description,
+            category=meta["label"],
+            status="in_progress",
+            strength=40,
+            icon=meta["icon"],
+            icon_bg=meta["icon_bg"],
+            icon_color=meta["icon_color"],
+        )
+        db.session.add(case)
+        db.session.commit()  # need case.id before we can attach documents to it
+
+        # Upload each attached file to Cloudinary, then store only the
+        # resulting public_id/URL in Neon — never the raw file bytes.
+        documents = request.files.getlist("documents")
+        uploaded_count = 0
+        failed_count = 0
+
+        for f in documents:
+            if not f or not f.filename:
+                continue
+
+            safe_name = secure_filename(f.filename) or "file"
+            name_no_ext = os.path.splitext(safe_name)[0] or "file"
+            public_id = f"{uuid.uuid4().hex}_{name_no_ext}"
+            content_type = f.mimetype or "application/octet-stream"
+
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    f,
+                    folder=f"nyaysetu/cases/{case.id}",
+                    public_id=public_id,
+                    resource_type="auto",  # auto-detects image vs pdf/raw
+                    use_filename=False,
+                    unique_filename=False,
+                    overwrite=False,
+                )
+            except Exception as exc:  # network/credentials/quota issues, etc.
+                # Full traceback in the server console — check here first if
+                # uploads are failing. Common causes: wrong CLOUDINARY_*
+                # values in .env, or the .env file not being loaded (make
+                # sure it sits next to app.py and load_dotenv() runs before
+                # any request).
+                app.logger.exception("Cloudinary upload failed for %s", f.filename)
+                failed_count += 1
+                continue
+
+            doc = CaseDocument(
+                case_id=case.id,
+                file_name=f.filename,
+                cloudinary_public_id=upload_result.get("public_id"),
+                cloudinary_url=upload_result.get("secure_url"),
+                resource_type=upload_result.get("resource_type"),
+                content_type=content_type,
+                bytes=upload_result.get("bytes"),
+            )
+            db.session.add(doc)
+            uploaded_count += 1
+
+        if uploaded_count or failed_count:
+            db.session.commit()
+
+        if failed_count:
+            flash(f"Issue submitted. {uploaded_count} document(s) uploaded, {failed_count} failed — please retry those.")
+        elif uploaded_count:
+            flash(f"Your issue was submitted with {uploaded_count} document(s) attached.")
+        else:
+            flash("Your issue has been submitted.")
+
+        return redirect(url_for("home"))
+
+    return render_template(
+        "new_issue.html",
+        active_page="newissue",
+        user=user,
+        greeting_key=greeting_key_for_now(),
     )
 
 

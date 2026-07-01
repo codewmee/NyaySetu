@@ -1,0 +1,2128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Issue - NyaySetu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #5b4dee;
+            --purple-dark: #4a3dd9;
+            --purple-light: #ecebfe;
+            --text-dark: #1a1a2e;
+            --text-gray: #6b7280;
+            --border: #e5e7eb;
+            --bg-soft: #f8f8fc;
+            --green: #16a34a;
+            --sidebar-dark: #13122a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: #fafafb;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            transition: all 0.15s ease;
+        }
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        select:focus-visible {
+            outline: 2px solid var(--purple);
+            outline-offset: 2px;
+        }
+
+        /* ========== LAYOUT SHELL ========== */
+        .app {
+            display: grid;
+            grid-template-columns: 260px minmax(0, 1fr);
+            align-items: start;
+            min-height: 100vh;
+        }
+
+        /* ========== MOBILE TOPBAR ========== */
+        .mobile-topbar {
+            display: none;
+            grid-column: 1 / -1;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 200;
+        }
+
+        .mobile-topbar .mobile-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        .mobile-topbar .mobile-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .hamburger {
+            font-size: 20px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .hamburger:hover {
+            background: var(--bg-soft);
+        }
+
+        .mobile-logo {
+            font-size: 16px;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(20, 20, 35, 0.45);
+            z-index: 149;
+        }
+
+        .sidebar-backdrop.open {
+            display: block;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            border-right: none;
+            padding: 24px 18px;
+            display: flex;
+            flex-direction: column;
+            background: var(--sidebar-dark);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-close {
+            display: none;
+            align-self: flex-end;
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            color: inherit;
+        }
+
+        .sidebar-close:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+            min-width: 0;
+        }
+
+        .logo-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .logo-text {
+            min-width: 0;
+        }
+
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .logo-text span {
+            font-size: 11px;
+            color: #9a98c4;
+            display: block;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #c3c1e6;
+            white-space: normal;
+            overflow-wrap: break-word;
+            min-width: 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            color: #fff;
+        }
+
+        .nav-item.active {
+            background: var(--purple);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .nav-item .icon {
+            width: 20px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .sidebar-cta {
+            margin-top: auto;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .sidebar-cta .icon-circle {
+            width: 36px;
+            height: 36px;
+            background: var(--purple);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .sidebar-cta h4 {
+            font-size: 14px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        .sidebar-cta p {
+            font-size: 12px;
+            color: #b7b5db;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+
+        .sidebar-cta-btn {
+            width: 100%;
+            background: var(--purple);
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .sidebar-cta-btn:hover {
+            background: var(--purple-dark);
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main {
+            padding: 24px 32px;
+            min-width: 0;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            flex-wrap: wrap;
+        }
+
+        .topbar-title-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            background: #fff;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-soft);
+        }
+
+        .topbar-greeting h1 {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .topbar-greeting p {
+            color: var(--text-gray);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .bell-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            background: #fff;
+        }
+
+        .bell-btn:hover {
+            background: var(--bg-soft);
+        }
+
+        .bell-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #dc2626;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        .account-area {
+            position: relative;
+        }
+
+        .account-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 6px 12px 6px 6px;
+            background: #fff;
+        }
+
+        .account-toggle:hover {
+            background: var(--bg-soft);
+        }
+
+        .account-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--purple);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .account-name {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .account-menu {
+            list-style: none;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #fff;
+            width: 180px;
+            z-index: 250;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .account-menu.open {
+            display: block;
+        }
+
+        .account-menu li a {
+            display: block;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .account-menu li a:hover {
+            background: var(--bg-soft);
+        }
+
+        .account-menu li.divider {
+            border-top: 1px solid var(--border);
+        }
+
+        .account-menu li a.danger {
+            color: #dc2626;
+        }
+
+        .lang-dropdown {
+            position: relative;
+            min-width: 0;
+        }
+
+        .lang-dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 14px;
+            background: #fff;
+            justify-content: space-between;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+        .lang-dropdown-toggle:hover {
+            background: var(--bg-soft);
+        }
+
+        .lang-dropdown-toggle .left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .lang-menu {
+            list-style: none;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: none;
+            position: absolute;
+            right: 0;
+            background: #fff;
+            width: 100%;
+            min-width: 170px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 250;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .lang-menu.open {
+            display: block;
+        }
+
+        .lang-menu li {
+            padding: 10px 14px;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .lang-menu li:hover {
+            background: var(--bg-soft);
+        }
+
+        .lang-menu li.selected {
+            color: var(--purple);
+            background: var(--purple-light);
+            font-weight: 600;
+        }
+
+        /* ========== NEW ISSUE LAYOUT ========== */
+        .newissue-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 320px;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .wizard-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 28px 30px;
+        }
+
+        /* Step indicator */
+        .step-indicator {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+
+        .step-indicator-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-indicator-connector {
+            flex: 1;
+            height: 2px;
+            background: var(--border);
+            margin: 17px 8px 0;
+            min-width: 20px;
+        }
+
+        .step-indicator-connector.done {
+            background: var(--purple);
+        }
+
+        .step-dot {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--bg-soft);
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-indicator-item.active .step-dot {
+            background: var(--purple);
+            color: #fff;
+        }
+
+        .step-indicator-item.done .step-dot {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .step-indicator-labels h5 {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-gray);
+            overflow-wrap: break-word;
+        }
+
+        .step-indicator-item.active .step-indicator-labels h5 {
+            color: var(--purple);
+        }
+
+        .step-indicator-labels p {
+            font-size: 11.5px;
+            color: #9ca3af;
+            margin-top: 1px;
+            overflow-wrap: break-word;
+        }
+
+        .step-progress-track {
+            height: 4px;
+            background: var(--border);
+            border-radius: 4px;
+            margin-bottom: 26px;
+            overflow: hidden;
+        }
+
+        .step-progress-fill {
+            height: 100%;
+            background: var(--purple);
+            border-radius: 4px;
+            width: 25%;
+            transition: width 0.25s ease;
+        }
+
+        .step-panel {
+            display: none;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        .form-block {
+            margin-bottom: 26px;
+        }
+
+        .form-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-block-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .form-block-title .optional-tag {
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-gray);
+        }
+
+        .form-block-sub {
+            font-size: 12.5px;
+            color: var(--text-gray);
+            margin-bottom: 14px;
+        }
+
+        .issue-textarea-wrap {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+        }
+
+        .issue-textarea-wrap textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-dark);
+            height: 110px;
+            line-height: 1.5;
+        }
+
+        .issue-textarea-wrap textarea::placeholder {
+            color: #9ca3af;
+        }
+
+        .textarea-char-count {
+            text-align: right;
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        .field-actions-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .pill-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 13px;
+            color: #374151;
+            background: #fff;
+            white-space: nowrap;
+        }
+
+        .pill-btn:hover {
+            background: var(--bg-soft);
+        }
+
+        .pill-btn.recording {
+            background: #fee2e2;
+            border-color: #fca5a5;
+            color: #dc2626;
+        }
+
+        .field-tip {
+            font-size: 12.5px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .file-chip {
+            font-size: 12px;
+            color: var(--purple);
+            background: var(--purple-light);
+            border-radius: 6px;
+            padding: 6px 10px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .file-chip.visible {
+            display: inline-flex;
+        }
+
+        .file-chip button {
+            color: var(--purple);
+            font-weight: 700;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        .category-option {
+            display: none;
+        }
+
+        .category-card {
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+        }
+
+        .category-card:hover {
+            border-color: #d6d6fb;
+            background: var(--bg-soft);
+        }
+
+        .category-option:checked+.category-card {
+            border-color: var(--purple);
+            background: var(--purple-light);
+        }
+
+        .category-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .category-card span.label {
+            font-size: 13px;
+            font-weight: 600;
+            overflow-wrap: break-word;
+        }
+
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field label {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .field input[type="text"],
+        .field input[type="date"],
+        .field input[type="number"],
+        .field select,
+        .field textarea {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+            color: var(--text-dark);
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus {
+            border-color: var(--purple);
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .checkbox-row input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--purple);
+        }
+
+        .date-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .date-row .field {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Upload dropzone */
+        .dropzone {
+            border: 1.5px dashed var(--border);
+            border-radius: 14px;
+            padding: 34px 20px;
+            text-align: center;
+            background: var(--bg-soft);
+            cursor: pointer;
+        }
+
+        .dropzone:hover {
+            border-color: var(--purple);
+            background: var(--purple-light);
+        }
+
+        .dropzone .dz-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .dropzone h5 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .dropzone p {
+            font-size: 12.5px;
+            color: var(--text-gray);
+        }
+
+        .upload-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .upload-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .upload-row .upload-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--purple-light);
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .upload-row .upload-name {
+            flex: 1;
+            min-width: 0;
+            font-size: 13px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .upload-row .upload-size {
+            font-size: 11.5px;
+            color: var(--text-gray);
+            flex-shrink: 0;
+        }
+
+        .upload-row .upload-remove {
+            font-size: 15px;
+            color: #9ca3af;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .upload-row .upload-remove:hover {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        /* Review step */
+        .review-summary {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .review-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .review-row:last-child {
+            border-bottom: none;
+        }
+
+        .review-row .review-label {
+            font-size: 12.5px;
+            color: var(--text-gray);
+            flex-shrink: 0;
+            width: 140px;
+        }
+
+        .review-row .review-value {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: right;
+            overflow-wrap: break-word;
+        }
+
+        .review-value.empty {
+            color: #9ca3af;
+            font-weight: 500;
+        }
+
+        /* Bottom action bar */
+        .wizard-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--bg-soft);
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-top: 26px;
+            flex-wrap: wrap;
+        }
+
+        .wizard-footer-note {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12.5px;
+            color: var(--text-gray);
+        }
+
+        .wizard-footer-note .icon-circle-sm {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--purple);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .wizard-footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 11px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            border-color: #c7c9f5;
+        }
+
+        .btn-primary {
+            background: var(--purple);
+            color: #fff;
+            padding: 11px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary:hover {
+            background: var(--purple-dark);
+        }
+
+        /* Right rail */
+        .rail-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .rail-card h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 14px;
+        }
+
+        .rail-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .rail-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .rail-step .rail-step-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .rail-step h5 {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .rail-step p {
+            font-size: 11.5px;
+            color: var(--text-gray);
+            line-height: 1.35;
+        }
+
+        .rail-tips {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .rail-tips li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .check {
+            color: #fff;
+            background: var(--green);
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .example-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .example-item {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            background: var(--bg-soft);
+            font-size: 12.5px;
+            color: #374151;
+            line-height: 1.4;
+            text-align: left;
+            width: 100%;
+            display: flex;
+            gap: 6px;
+        }
+
+        .example-item:hover {
+            border-color: #d6d6fb;
+            background: var(--purple-light);
+        }
+
+        .example-item .quote-mark {
+            color: var(--purple);
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .rail-view-more {
+            display: inline-block;
+            margin-top: 4px;
+            font-size: 13px;
+            color: var(--purple);
+            font-weight: 600;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1a1a2e;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 2000;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1150px) {
+            .newissue-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .app {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-topbar {
+                display: flex;
+            }
+
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 270px;
+                max-width: 84vw;
+                height: 100vh;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease;
+                z-index: 150;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-close {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .topbar {
+                display: none;
+            }
+
+            .main {
+                padding: 20px 16px;
+            }
+
+            .wizard-card {
+                padding: 20px;
+            }
+
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .field-row {
+                grid-template-columns: 1fr;
+            }
+
+            .step-indicator-labels p {
+                display: none;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .main {
+                padding: 16px;
+            }
+
+            .wizard-card {
+                padding: 16px;
+                border-radius: 12px;
+            }
+
+            .step-indicator-labels h5 {
+                font-size: 0;
+            }
+
+            .wizard-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .wizard-footer-actions {
+                justify-content: stretch;
+            }
+
+            .wizard-footer-actions button {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- ================= MOBILE TOPBAR ================= -->
+        <div class="mobile-topbar">
+            <div class="mobile-left">
+                <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
+                <span class="mobile-logo">⚖️ New Issue</span>
+            </div>
+            <div class="mobile-right">
+                <button class="bell-btn" id="bellBtnMobile" aria-label="Notifications">🔔<span
+                        class="bell-badge">2</span></button>
+                <div class="lang-dropdown" id="mobileLangDropdown">
+                    <button class="lang-dropdown-toggle" id="mobileLangToggle">
+                        <span class="left">🌐 <span class="mobileLangSelected">English</span></span>
+                        <span>▾</span>
+                    </button>
+                    <ul class="lang-menu lang-menu-instance" id="mobileLangMenu"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ================= LEFT SIDEBAR ================= -->
+        <aside class="sidebar" id="sidebar">
+            <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+
+            <div class="logo">
+                <span class="logo-icon">⚖️</span>
+                <div class="logo-text">
+                    <h1>NyaySetu</h1>
+                    <span data-i18n="tagline">Understand Your Rights</span>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <a href="/" class="nav-item" data-page="dashboard"><span class="icon">🏠</span> <span
+                        data-i18n="navDashboard">Dashboard</span></a>
+                <a href="/my-issues" class="nav-item" data-page="mycases"><span class="icon">🗂️</span> <span
+                        data-i18n="navMyCases">My Cases</span></a>
+                <a href="/new-issue" class="nav-item active" data-page="newissue"><span class="icon">➕</span> <span
+                        data-i18n="navNewIssue">New Issue</span></a>
+                <a href="/document-helper" class="nav-item" data-page="docanalysis"><span class="icon">📄</span> <span
+                        data-i18n="navDocAnalysis">Document Analysis</span></a>
+                <a href="/saved-reports" class="nav-item" data-page="saved"><span class="icon">📑</span> <span
+                        data-i18n="navSavedReports">Saved Reports</span></a>
+                <a href="/know-your-rights" class="nav-item" data-page="rights"><span class="icon">⚖️</span> <span
+                        data-i18n="navKnowRights">Know Your Rights</span></a>
+                <a href="/government-services" class="nav-item" data-page="gov"><span class="icon">🏛️</span> <span
+                        data-i18n="navGovServices">Government Services</span></a>
+                <a href="/find-lawyer" class="nav-item" data-page="lawyer"><span class="icon">👤</span> <span
+                        data-i18n="navFindLawyer">Find a Lawyer</span></a>
+                <a href="/help-support" class="nav-item" data-page="help"><span class="icon">❓</span> <span
+                        data-i18n="navHelpSupport">Help &amp; Support</span></a>
+                <a href="/settings" class="nav-item" data-page="settings"><span class="icon">⚙️</span> <span
+                        data-i18n="navSettings">Settings</span></a>
+            </nav>
+
+            <div class="sidebar-cta">
+                <div class="icon-circle">🛡️</div>
+                <h4 data-i18n="sidebarCtaTitle">Your legal journey starts with knowledge.</h4>
+                <p data-i18n="sidebarCtaText">NyaySetu helps you understand your rights and take the right step.</p>
+                <a href="/know-your-rights" class="sidebar-cta-btn"><span data-i18n="sidebarCtaBtn">Know Your
+                        Rights</span> →</a>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main">
+
+            <div class="topbar">
+                <div class="topbar-title-row">
+                    <a href="/" class="back-btn" aria-label="Back to dashboard">←</a>
+                    <div class="topbar-greeting">
+                        <h1 data-i18n="newIssueTitle">New Issue</h1>
+                        <p data-i18n="newIssueSubtitle">Describe your legal issue and let NyaySetu guide you.</p>
+                    </div>
+                </div>
+                <div class="topbar-controls">
+                    <div class="lang-dropdown" id="topbarLangDropdown">
+                        <button class="lang-dropdown-toggle" id="topbarLangToggle">
+                            <span class="left">🌐 <span class="topbarLangSelected">English</span></span>
+                            <span>▾</span>
+                        </button>
+                        <ul class="lang-menu lang-menu-instance" id="topbarLangMenu"></ul>
+                    </div>
+                    <button class="bell-btn" id="bellBtn" aria-label="Notifications">🔔<span
+                            class="bell-badge">2</span></button>
+                    <div class="account-area">
+                        <button class="account-toggle" id="accountToggle">
+                            <span class="account-avatar">{{ user.initial }}</span>
+                            <span class="account-name">{{ user.first_name }}</span>
+                            <span>▾</span>
+                        </button>
+                        <ul class="account-menu" id="accountMenu">
+                            <li><a href="/settings" data-i18n="accountProfile">My Profile</a></li>
+                            <li><a href="/settings" data-i18n="accountSettings">Settings</a></li>
+                            <li class="divider"><a href="/logout" class="danger" data-i18n="accountLogout">Logout</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="newissue-layout">
+
+                <!-- ============ WIZARD ============ -->
+                <div class="wizard-card">
+
+                    <div class="step-indicator" id="stepIndicator">
+                        <div class="step-indicator-item active" data-step="1">
+                            <div class="step-dot">1</div>
+                            <div class="step-indicator-labels">
+                                <h5 data-i18n="wizStep1Title">Describe Issue</h5>
+                                <p data-i18n="wizStep1Sub">Tell us what happened</p>
+                            </div>
+                        </div>
+                        <div class="step-indicator-connector"></div>
+                        <div class="step-indicator-item" data-step="2">
+                            <div class="step-dot">2</div>
+                            <div class="step-indicator-labels">
+                                <h5 data-i18n="wizStep2Title">Add Details</h5>
+                                <p data-i18n="wizStep2Sub">Provide more information</p>
+                            </div>
+                        </div>
+                        <div class="step-indicator-connector"></div>
+                        <div class="step-indicator-item" data-step="3">
+                            <div class="step-dot">3</div>
+                            <div class="step-indicator-labels">
+                                <h5 data-i18n="wizStep3Title">Upload Documents</h5>
+                                <p data-i18n="wizStep3Sub">Add supporting evidence</p>
+                            </div>
+                        </div>
+                        <div class="step-indicator-connector"></div>
+                        <div class="step-indicator-item" data-step="4">
+                            <div class="step-dot">4</div>
+                            <div class="step-indicator-labels">
+                                <h5 data-i18n="wizStep4Title">Review &amp; Submit</h5>
+                                <p data-i18n="wizStep4Sub">Confirm and create case</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-progress-track">
+                        <div class="step-progress-fill" id="stepProgressFill"></div>
+                    </div>
+
+                    <form id="issueForm" method="POST" action="/new-issue" enctype="multipart/form-data">
+
+                        <!-- ===== STEP 1 ===== -->
+                        <div class="step-panel active" data-panel="1">
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="describeIssueTitle">1. Describe Your Issue</h4>
+                                <p class="form-block-sub" data-i18n="describeIssueSub">Explain your legal issue in
+                                    your own words. The more details you provide, the better we can help.</p>
+
+                                <div class="issue-textarea-wrap">
+                                    <textarea id="descriptionInput" name="description" maxlength="2000"
+                                        data-i18n-placeholder="describePlaceholder"
+                                        placeholder="Write a brief description of your issue…"></textarea>
+                                    <div class="textarea-char-count"><span id="charCount">0</span>/2000 <span
+                                            data-i18n="characters">characters</span></div>
+                                </div>
+
+                                <div class="field-actions-row">
+                                    <button class="pill-btn" id="speakBtn" type="button">🎤 <span
+                                            data-i18n="speakInstead">Speak Instead</span></button>
+                                    <button class="pill-btn" id="attachBtn" type="button">📎 <span
+                                            data-i18n="attachOptional">Attach Document (Optional)</span></button>
+                                    <input type="file" id="quickFileInput" style="display:none;">
+                                    <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button
+                                            type="button" id="fileChipRemove">✕</button></span>
+                                    <span class="field-tip">💡 <span data-i18n="tip">Be specific about what, when,
+                                            and with whom.</span></span>
+                                </div>
+                            </div>
+
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="selectCategoryTitle">2. Select Issue Category
+                                    <span class="optional-tag" data-i18n="optional">(Optional)</span>
+                                </h4>
+                                <p class="form-block-sub" data-i18n="selectCategorySub">Choose the category that best
+                                    matches your issue.</p>
+
+                                <div class="category-grid">
+                                    <label>
+                                        <input type="radio" name="category" value="job" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#e3e8ff;color:#4a4ad9;">💼
+                                            </div>
+                                            <span class="label" data-i18n="issueJobTitle">Job &amp; Employment</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="landlord" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#ffe9d6;color:#d97706;">🏠
+                                            </div>
+                                            <span class="label" data-i18n="issueLandlordTitle">Landlord &amp;
+                                                Tenant</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="consumer" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#ffe1e1;color:#dc2626;">🛒
+                                            </div>
+                                            <span class="label" data-i18n="issueConsumerTitle">Consumer
+                                                Complaint</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="cyber" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#d8ecff;color:#0d6ec7;">🔒
+                                            </div>
+                                            <span class="label" data-i18n="issueCyberTitle">Cyber Crime</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="loan" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#dafbe8;color:#16a34a;">💰
+                                            </div>
+                                            <span class="label" data-i18n="issueLoansTitle">Loan &amp; Recovery</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="family" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#ede4ff;color:#7c3aed;">👪
+                                            </div>
+                                            <span class="label" data-i18n="issueFamilyTitle">Family &amp;
+                                                Personal</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="property" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#ffe3ec;color:#db2777;">🏢
+                                            </div>
+                                            <span class="label" data-i18n="issuePropertyTitle">Property Dispute</span>
+                                        </div>
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="category" value="other" class="category-option">
+                                        <div class="category-card">
+                                            <div class="category-icon" style="background:#f3f4f6;color:#4b5563;">•••
+                                            </div>
+                                            <span class="label" data-i18n="issueOtherTitle">Other</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="whenHappenTitle">3. When did this happen?</h4>
+                                <div class="date-row">
+                                    <div class="field">
+                                        <input type="date" id="incidentDate" name="incident_date">
+                                    </div>
+                                    <label class="checkbox-row">
+                                        <input type="checkbox" id="ongoingCheckbox" name="ongoing">
+                                        <span data-i18n="ongoingIssue">Ongoing issue</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== STEP 2 ===== -->
+                        <div class="step-panel" data-panel="2">
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="addDetailsTitle">Add More Details</h4>
+                                <p class="form-block-sub" data-i18n="addDetailsSub">This extra context helps us give
+                                    you more accurate guidance.</p>
+
+                                <div class="field-row">
+                                    <div class="field">
+                                        <label data-i18n="cityLabel">City</label>
+                                        <input type="text" name="city" placeholder="e.g. Mumbai">
+                                    </div>
+                                    <div class="field">
+                                        <label data-i18n="stateLabel">State / UT</label>
+                                        <input type="text" name="state" placeholder="e.g. Maharashtra">
+                                    </div>
+                                </div>
+
+                                <div class="field-row" style="margin-top:14px;">
+                                    <div class="field">
+                                        <label data-i18n="otherPartyLabel">Other party's name / organization <span
+                                                class="optional-tag" data-i18n="optional">(Optional)</span></label>
+                                        <input type="text" name="other_party" placeholder="e.g. Landlord, employer, company">
+                                    </div>
+                                    <div class="field">
+                                        <label data-i18n="amountLabel">Financial amount involved (₹) <span
+                                                class="optional-tag" data-i18n="optional">(Optional)</span></label>
+                                        <input type="number" min="0" name="amount" placeholder="e.g. 25000">
+                                    </div>
+                                </div>
+
+                                <div class="field" style="margin-top:14px;">
+                                    <label data-i18n="notesLabel">Additional notes <span class="optional-tag"
+                                            data-i18n="optional">(Optional)</span></label>
+                                    <textarea name="additional_notes"
+                                        placeholder="Any communication received, prior steps taken, or other context…"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ===== STEP 3 ===== -->
+                        <div class="step-panel" data-panel="3">
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="uploadDocsTitle">Upload Supporting Documents
+                                    <span class="optional-tag" data-i18n="optional">(Optional)</span>
+                                </h4>
+                                <p class="form-block-sub" data-i18n="uploadDocsSub">Agreements, receipts, notices,
+                                    screenshots — anything that supports your case.</p>
+
+                                <div class="dropzone" id="dropzone">
+                                    <div class="dz-icon">📤</div>
+                                    <h5 data-i18n="dzTitle">Click to upload or drag and drop</h5>
+                                    <p data-i18n="dzSub">PDF, JPG, PNG or DOCX, up to 10MB each</p>
+                                </div>
+                                <input type="file" id="docsInput" name="documents" multiple style="display:none;"
+                                    accept=".pdf,.jpg,.jpeg,.png,.docx">
+
+                                <div class="upload-list" id="uploadList"></div>
+                            </div>
+                        </div>
+
+                        <!-- ===== STEP 4 ===== -->
+                        <div class="step-panel" data-panel="4">
+                            <div class="form-block">
+                                <h4 class="form-block-title" data-i18n="reviewTitle">Review Your Case</h4>
+                                <p class="form-block-sub" data-i18n="reviewSub">Check the details below before
+                                    creating your case.</p>
+
+                                <div class="review-summary" id="reviewSummary">
+                                    <div class="review-row">
+                                        <span class="review-label" data-i18n="reviewDescription">Description</span>
+                                        <span class="review-value empty" id="reviewDescription" data-i18n="reviewNotProvided">Not
+                                            provided</span>
+                                    </div>
+                                    <div class="review-row">
+                                        <span class="review-label" data-i18n="reviewCategory">Category</span>
+                                        <span class="review-value empty" id="reviewCategory" data-i18n="reviewNotProvided">Not
+                                            provided</span>
+                                    </div>
+                                    <div class="review-row">
+                                        <span class="review-label" data-i18n="reviewDate">Date</span>
+                                        <span class="review-value empty" id="reviewDate" data-i18n="reviewNotProvided">Not
+                                            provided</span>
+                                    </div>
+                                    <div class="review-row">
+                                        <span class="review-label" data-i18n="reviewLocation">Location</span>
+                                        <span class="review-value empty" id="reviewLocation" data-i18n="reviewNotProvided">Not
+                                            provided</span>
+                                    </div>
+                                    <div class="review-row">
+                                        <span class="review-label" data-i18n="reviewDocs">Documents</span>
+                                        <span class="review-value empty" id="reviewDocs" data-i18n="reviewNoneAttached">None
+                                            attached</span>
+                                    </div>
+                                </div>
+
+                                <label class="checkbox-row" style="margin-top:18px;">
+                                    <input type="checkbox" id="confirmCheckbox" required>
+                                    <span data-i18n="confirmAccurate">I confirm the information provided above is
+                                        accurate.</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="wizard-footer">
+                            <div class="wizard-footer-note">
+                                <span class="icon-circle-sm">🔒</span>
+                                <span data-i18n="footerPrivacyNote2">Your information is private and secure. We do
+                                    not share your data with anyone.</span>
+                            </div>
+                            <div class="wizard-footer-actions">
+                                <button type="button" class="btn-secondary" id="backStepBtn"
+                                    style="display:none;" data-i18n="backBtn">← Back</button>
+                                <button type="button" class="btn-primary" id="nextStepBtn"><span
+                                        id="nextStepBtnLabel" data-i18n="saveContinue">Save &amp; Continue</span>
+                                    →</button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- ============ RIGHT RAIL ============ -->
+                <div class="newissue-rail">
+                    <div class="rail-card">
+                        <h4 data-i18n="howItWorksTitle">How it works</h4>
+                        <div class="rail-steps">
+                            <div class="rail-step">
+                                <div class="rail-step-icon" style="background:#eef0ff;">💬</div>
+                                <div>
+                                    <h5 data-i18n="rs1Title">You tell us your issue</h5>
+                                    <p data-i18n="rs1Sub">In simple words</p>
+                                </div>
+                            </div>
+                            <div class="rail-step">
+                                <div class="rail-step-icon" style="background:#fff2df;">🔍</div>
+                                <div>
+                                    <h5 data-i18n="rs2Title">We analyze it</h5>
+                                    <p data-i18n="rs2Sub">Our AI finds relevant laws and points</p>
+                                </div>
+                            </div>
+                            <div class="rail-step">
+                                <div class="rail-step-icon" style="background:#e6f9f0;">📋</div>
+                                <div>
+                                    <h5 data-i18n="rs3Title">Get clear guidance</h5>
+                                    <p data-i18n="rs3Sub">Rights, steps, and options</p>
+                                </div>
+                            </div>
+                            <div class="rail-step">
+                                <div class="rail-step-icon" style="background:#eafbf1;">✅</div>
+                                <div>
+                                    <h5 data-i18n="rs4Title">You take action</h5>
+                                    <p data-i18n="rs4Sub">Use the guidance to resolve it</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rail-card">
+                        <h4 data-i18n="tipsTitle">Tips for better results</h4>
+                        <ul class="rail-tips">
+                            <li><span class="check">✓</span> <span data-i18n="tip1">Be specific about what
+                                    happened</span></li>
+                            <li><span class="check">✓</span> <span data-i18n="tip2">Mention dates, amounts, and
+                                    names</span></li>
+                            <li><span class="check">✓</span> <span data-i18n="tip3">Add documents for stronger
+                                    analysis</span></li>
+                            <li><span class="check">✓</span> <span data-i18n="tip4">Include any communication
+                                    received</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="rail-card">
+                        <h4 data-i18n="exampleIssuesTitle">Example Issues</h4>
+                        <div class="example-list">
+                            <button type="button" class="example-item" data-example="exJob">
+                                <span class="quote-mark">"</span>
+                                <span data-i18n="exJobText">My employer hasn't paid my salary for the last 2
+                                    months.</span>
+                            </button>
+                            <button type="button" class="example-item" data-example="exLandlord">
+                                <span class="quote-mark">"</span>
+                                <span data-i18n="exLandlordText">My landlord is refusing to return my security
+                                    deposit.</span>
+                            </button>
+                            <button type="button" class="example-item" data-example="exConsumer">
+                                <span class="quote-mark">"</span>
+                                <span data-i18n="exConsumerText">I received a defective product and the seller is not
+                                    refunding.</span>
+                            </button>
+                        </div>
+                        <a href="/know-your-rights" class="rail-view-more" data-i18n="viewMoreExamples">View more
+                            examples →</a>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let LANGUAGES = [{ code: "en", label: "English" }];
+        let VOICE_LOCALES = { en: "en-IN" };
+        let TRANSLATIONS = {};
+        let EXAMPLES = {};
+
+        async function loadLanguageData() {
+            try {
+                const res = await fetch("{{ url_for('static', filename='translations.json') }}");
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                if (data.languages && data.languages.length) LANGUAGES = data.languages;
+                if (data.translations) TRANSLATIONS = data.translations;
+                if (data.examples) EXAMPLES = data.examples;
+                if (data.voice_locales) VOICE_LOCALES = data.voice_locales;
+            } catch (err) {
+                console.warn('Could not load /static/translations.json — falling back to English only.', err);
+            }
+        }
+
+        function getText(key, lang) {
+            const entry = TRANSLATIONS[key];
+            if (!entry) return '';
+            return entry[lang] || entry.en || '';
+        }
+
+        let currentLang = 'en';
+
+        function applyLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (TRANSLATIONS[key]) el.textContent = getText(key, lang);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (TRANSLATIONS[key]) el.placeholder = getText(key, lang);
+            });
+            const langInfo = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
+            document.querySelectorAll('.topbarLangSelected, .mobileLangSelected')
+                .forEach(el => { el.textContent = langInfo.label; });
+            document.querySelectorAll('.lang-menu-instance li').forEach(li => {
+                li.classList.toggle('selected', li.dataset.lang === lang);
+            });
+            document.documentElement.lang = lang;
+            updateReview();
+        }
+
+        let toastTimer;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+
+        function buildLangMenu(menuEl) {
+            menuEl.innerHTML = '';
+            LANGUAGES.forEach(({ code, label }) => {
+                const li = document.createElement('li');
+                li.dataset.lang = code;
+                li.textContent = label;
+                if (code === currentLang) li.classList.add('selected');
+                menuEl.appendChild(li);
+            });
+        }
+
+        function wireLangDropdown(toggleId, menuId) {
+            const toggle = document.getElementById(toggleId);
+            const menu = document.getElementById(menuId);
+            if (!toggle || !menu) return;
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.lang-menu, .account-menu').forEach(m => { if (m !== menu) m.classList.remove('open'); });
+                menu.classList.toggle('open');
+            });
+            menu.addEventListener('click', (e) => {
+                const item = e.target.closest('li[data-lang]');
+                if (!item) return;
+                applyLanguage(item.dataset.lang);
+                menu.classList.remove('open');
+            });
+        }
+
+        wireLangDropdown('topbarLangToggle', 'topbarLangMenu');
+        wireLangDropdown('mobileLangToggle', 'mobileLangMenu');
+
+        const accountToggle = document.getElementById('accountToggle');
+        const accountMenu = document.getElementById('accountMenu');
+        if (accountToggle && accountMenu) {
+            accountToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.lang-menu').forEach(m => m.classList.remove('open'));
+                accountMenu.classList.toggle('open');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.lang-dropdown'))
+                document.querySelectorAll('.lang-menu').forEach(m => m.classList.remove('open'));
+            if (!e.target.closest('.account-area'))
+                document.querySelectorAll('.account-menu').forEach(m => m.classList.remove('open'));
+        });
+
+        document.querySelectorAll('#bellBtn, #bellBtnMobile').forEach(btn => {
+            btn.addEventListener('click', () => showToast(getText('toastNotifications', currentLang) || 'You have 2 new notifications.'));
+        });
+
+        const sidebar = document.getElementById('sidebar');
+        const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
+
+        function openSidebar() { sidebar.classList.add('open'); sidebarBackdrop.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeSidebar() { sidebar.classList.remove('open'); sidebarBackdrop.classList.remove('open'); document.body.style.overflow = ''; }
+
+        hamburgerBtn.addEventListener('click', openSidebar);
+        sidebarCloseBtn.addEventListener('click', closeSidebar);
+        sidebarBackdrop.addEventListener('click', closeSidebar);
+
+        /* ---------- Step 1 field behavior ---------- */
+        const descriptionInput = document.getElementById('descriptionInput');
+        const charCount = document.getElementById('charCount');
+        descriptionInput.addEventListener('input', () => { charCount.textContent = descriptionInput.value.length; updateReview(); });
+
+        document.querySelectorAll('input[name="category"]').forEach(radio => {
+            radio.addEventListener('change', updateReview);
+        });
+        document.getElementById('incidentDate').addEventListener('change', updateReview);
+        document.querySelector('input[name="city"]').addEventListener('input', updateReview);
+        document.querySelector('input[name="state"]').addEventListener('input', updateReview);
+
+        const speakBtn = document.getElementById('speakBtn');
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (speakBtn) {
+            speakBtn.addEventListener('click', () => {
+                if (!SpeechRecognition) { showToast(getText('toastVoiceNotSupported', currentLang) || 'Voice input not supported.'); return; }
+                const recognition = new SpeechRecognition();
+                recognition.lang = VOICE_LOCALES[currentLang] || 'en-IN';
+                recognition.interimResults = false;
+                speakBtn.classList.add('recording');
+                speakBtn.querySelector('span').textContent = getText('toastListening', currentLang) || 'Listening…';
+                recognition.start();
+                recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    descriptionInput.value = (descriptionInput.value ? descriptionInput.value + ' ' : '') + transcript;
+                    charCount.textContent = descriptionInput.value.length;
+                    updateReview();
+                };
+                recognition.onerror = () => { showToast(getText('toastAudioError', currentLang) || 'Could not capture audio.'); };
+                recognition.onend = () => { speakBtn.classList.remove('recording'); speakBtn.querySelector('span').textContent = getText('speakInstead', currentLang); };
+            });
+        }
+
+        /* ---------- Step 3 uploads (shared by dropzone, native picker, and
+           the Step 1 quick-attach button) ----------
+           docsInput.files is the ONLY thing that actually gets submitted
+           with the form. Drag-and-drop and the quick-attach button don't
+           touch it on their own — a browser FileList is read-only — so we
+           keep our own `collectedFiles` array as the source of truth and
+           rebuild docsInput.files from it via a DataTransfer object every
+           time it changes. This is also why nothing was reaching Cloudinary
+           or getting a row/link in Neon: those files were only ever in the
+           UI list, never actually in the submitted request. */
+        const dropzone = document.getElementById('dropzone');
+        const docsInput = document.getElementById('docsInput');
+        const uploadList = document.getElementById('uploadList');
+        const collectedFiles = [];
+
+        function syncDocsInput() {
+            const dt = new DataTransfer();
+            collectedFiles.forEach(file => dt.items.add(file));
+            docsInput.files = dt.files;
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function renderUploadList() {
+            uploadList.innerHTML = '';
+            collectedFiles.forEach(file => {
+                const row = document.createElement('div');
+                row.className = 'upload-row';
+                row.innerHTML = `<div class="upload-icon">📄</div>
+                    <div class="upload-name">${file.name}</div>
+                    <div class="upload-size">${formatSize(file.size)}</div>
+                    <button type="button" class="upload-remove" aria-label="Remove">✕</button>`;
+                row.querySelector('.upload-remove').addEventListener('click', () => {
+                    const idx = collectedFiles.indexOf(file);
+                    if (idx > -1) collectedFiles.splice(idx, 1);
+                    syncDocsInput();
+                    renderUploadList();
+                });
+                uploadList.appendChild(row);
+            });
+            updateReview();
+        }
+
+        function addFileToUploadList(file) {
+            collectedFiles.push(file);
+            syncDocsInput();
+            renderUploadList();
+        }
+
+        dropzone.addEventListener('click', () => docsInput.click());
+        dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.style.borderColor = 'var(--purple)'; });
+        dropzone.addEventListener('dragleave', () => { dropzone.style.borderColor = ''; });
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = '';
+            [...e.dataTransfer.files].forEach(addFileToUploadList);
+        });
+        docsInput.addEventListener('change', () => {
+            // Files chosen via the native picker are already in docsInput.files —
+            // just mirror them into collectedFiles so the UI list / review step
+            // and everything else added via drag-drop or quick-attach stay in sync.
+            [...docsInput.files].forEach(file => {
+                if (!collectedFiles.includes(file)) collectedFiles.push(file);
+            });
+            renderUploadList();
+        });
+
+        const attachBtn = document.getElementById('attachBtn');
+        const quickFileInput = document.getElementById('quickFileInput');
+        const fileChip = document.getElementById('fileChip');
+        const fileChipName = document.getElementById('fileChipName');
+        if (attachBtn) {
+            attachBtn.addEventListener('click', () => quickFileInput.click());
+            quickFileInput.addEventListener('change', () => {
+                if (quickFileInput.files.length) {
+                    const file = quickFileInput.files[0];
+                    fileChipName.textContent = file.name;
+                    fileChip.classList.add('visible');
+                    addFileToUploadList(file);
+                }
+            });
+            document.getElementById('fileChipRemove').addEventListener('click', () => {
+                const file = quickFileInput.files[0];
+                quickFileInput.value = '';
+                fileChip.classList.remove('visible');
+                if (file) {
+                    const idx = collectedFiles.indexOf(file);
+                    if (idx > -1) { collectedFiles.splice(idx, 1); syncDocsInput(); renderUploadList(); }
+                }
+            });
+        }
+
+        document.querySelectorAll('.example-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const key = item.dataset.example;
+                const text = EXAMPLES[key] ? (EXAMPLES[key][currentLang] || EXAMPLES[key].en) : item.querySelector('span:last-child').textContent;
+                descriptionInput.value = text;
+                charCount.textContent = text.length;
+                goToStep(1);
+                descriptionInput.focus();
+                updateReview();
+            });
+        });
+
+        /* ---------- Step navigation ---------- */
+        let currentStep = 1;
+        const totalSteps = 4;
+        const nextStepBtn = document.getElementById('nextStepBtn');
+        const nextStepBtnLabel = document.getElementById('nextStepBtnLabel');
+        const backStepBtn = document.getElementById('backStepBtn');
+        const stepProgressFill = document.getElementById('stepProgressFill');
+        const issueForm = document.getElementById('issueForm');
+
+        function goToStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.step-panel').forEach(p => p.classList.toggle('active', Number(p.dataset.panel) === step));
+            document.querySelectorAll('.step-indicator-item').forEach(item => {
+                const n = Number(item.dataset.step);
+                item.classList.toggle('active', n === step);
+                item.classList.toggle('done', n < step);
+            });
+            document.querySelectorAll('.step-indicator-connector').forEach((c, i) => {
+                c.classList.toggle('done', i < step - 1);
+            });
+            stepProgressFill.style.width = (step / totalSteps * 100) + '%';
+            backStepBtn.style.display = step > 1 ? 'inline-flex' : 'none';
+            nextStepBtnLabel.textContent = step === totalSteps
+                ? (getText('createCase', currentLang) || 'Create Case')
+                : (getText('saveContinue', currentLang) || 'Save & Continue');
+            if (step === totalSteps) updateReview();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        nextStepBtn.addEventListener('click', () => {
+            if (currentStep === 1 && !descriptionInput.value.trim()) {
+                showToast(getText('toastEmptyIssue', currentLang) || 'Please describe your issue first.');
+                descriptionInput.focus();
+                return;
+            }
+            if (currentStep < totalSteps) {
+                goToStep(currentStep + 1);
+            } else {
+                if (!document.getElementById('confirmCheckbox').checked) {
+                    showToast(getText('toastConfirmRequired', currentLang) || 'Please confirm the details before submitting.');
+                    return;
+                }
+                issueForm.submit();
+            }
+        });
+
+        backStepBtn.addEventListener('click', () => {
+            if (currentStep > 1) goToStep(currentStep - 1);
+        });
+
+        function updateReview() {
+            const reviewDescription = document.getElementById('reviewDescription');
+            const desc = descriptionInput.value.trim();
+            reviewDescription.textContent = desc ? (desc.length > 90 ? desc.slice(0, 90) + '…' : desc) : (getText('reviewNotProvided', currentLang) || 'Not provided');
+            reviewDescription.classList.toggle('empty', !desc);
+
+            const reviewCategory = document.getElementById('reviewCategory');
+            const checkedCategory = document.querySelector('input[name="category"]:checked');
+            const categoryLabel = checkedCategory ? checkedCategory.closest('label').querySelector('.label').textContent.trim() : '';
+            reviewCategory.textContent = categoryLabel || (getText('reviewNotProvided', currentLang) || 'Not provided');
+            reviewCategory.classList.toggle('empty', !categoryLabel);
+
+            const reviewDate = document.getElementById('reviewDate');
+            const dateVal = document.getElementById('incidentDate').value;
+            const ongoing = document.getElementById('ongoingCheckbox').checked;
+            reviewDate.textContent = ongoing ? (getText('ongoingIssue', currentLang) || 'Ongoing issue') : (dateVal || (getText('reviewNotProvided', currentLang) || 'Not provided'));
+            reviewDate.classList.toggle('empty', !dateVal && !ongoing);
+
+            const reviewLocation = document.getElementById('reviewLocation');
+            const city = document.querySelector('input[name="city"]').value.trim();
+            const state = document.querySelector('input[name="state"]').value.trim();
+            const loc = [city, state].filter(Boolean).join(', ');
+            reviewLocation.textContent = loc || (getText('reviewNotProvided', currentLang) || 'Not provided');
+            reviewLocation.classList.toggle('empty', !loc);
+
+            const reviewDocs = document.getElementById('reviewDocs');
+            reviewDocs.textContent = collectedFiles.length
+                ? collectedFiles.length + ' ' + (getText('filesAttached', currentLang) || 'file(s) attached')
+                : (getText('reviewNoneAttached', currentLang) || 'None attached');
+            reviewDocs.classList.toggle('empty', !collectedFiles.length);
+        }
+
+        (async function init() {
+            await loadLanguageData();
+            document.querySelectorAll('.lang-menu-instance').forEach(buildLangMenu);
+            applyLanguage('en');
+            goToStep(1);
+        })();
+    </script>
+
+</body>
+
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if user %}Dashboard{% else %}NyaySetu - Understand Your Rights{% endif %}</title>
+    <title>Dashboard - NyaySetu</title>
     <style>
         * {
             margin: 0;
@@ -59,7 +59,7 @@
         /* ========== LAYOUT SHELL ========== */
         .app {
             display: grid;
-            grid-template-columns: 260px minmax(0, 1fr) 300px;
+            grid-template-columns: 260px minmax(0, 1fr);
             align-items: start;
             min-height: 100vh;
         }
@@ -129,22 +129,17 @@
 
         /* ========== SIDEBAR ========== */
         .sidebar {
-            border-right: 1px solid var(--border);
+            border-right: none;
             padding: 24px 18px;
             display: flex;
             flex-direction: column;
-            background: #fff;
+            background: var(--sidebar-dark);
+            color: #fff;
             position: sticky;
             top: 0;
             height: 100vh;
             overflow-y: auto;
             z-index: 100;
-        }
-
-        .sidebar.sidebar-dark {
-            background: var(--sidebar-dark);
-            border-right: none;
-            color: #fff;
         }
 
         .sidebar-close {
@@ -159,10 +154,6 @@
         }
 
         .sidebar-close:hover {
-            background: var(--bg-soft);
-        }
-
-        .sidebar-dark .sidebar-close:hover {
             background: rgba(255, 255, 255, 0.08);
         }
 
@@ -191,38 +182,10 @@
 
         .logo-text span {
             font-size: 11px;
-            color: var(--text-gray);
+            color: #9a98c4;
             display: block;
             white-space: normal;
             overflow-wrap: break-word;
-        }
-
-        .sidebar-dark .logo-text span {
-            color: #9a98c4;
-        }
-
-        .new-issue-btn {
-            background: var(--purple);
-            color: #fff;
-            width: 100%;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 18px;
-        }
-
-        .new-issue-btn:hover {
-            background: var(--purple-dark);
-            transform: translateY(-1px);
-        }
-
-        .new-issue-btn:active {
-            transform: scale(0.98);
         }
 
         .nav {
@@ -240,77 +203,27 @@
             border-radius: 8px;
             font-size: 14px;
             font-weight: 500;
-            color: #374151;
+            color: #c3c1e6;
             white-space: normal;
             overflow-wrap: break-word;
             min-width: 0;
         }
 
         .nav-item:hover {
-            background: var(--bg-soft);
-        }
-
-        .nav-item.active {
-            background: var(--purple-light);
-            color: var(--purple);
-            font-weight: 600;
-        }
-
-        .sidebar-dark .nav-item {
-            color: #c3c1e6;
-        }
-
-        .sidebar-dark .nav-item:hover {
             background: rgba(255, 255, 255, 0.07);
             color: #fff;
         }
 
-        .sidebar-dark .nav-item.active {
+        .nav-item.active {
             background: var(--purple);
             color: #fff;
+            font-weight: 600;
         }
 
         .nav-item .icon {
             width: 20px;
             flex-shrink: 0;
             text-align: center;
-        }
-
-        .privacy-box {
-            background: var(--bg-soft);
-            border-radius: 12px;
-            padding: 18px;
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .privacy-box .icon-circle {
-            width: 40px;
-            height: 40px;
-            background: var(--purple);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            color: #fff;
-            font-size: 18px;
-        }
-
-        .privacy-box h4 {
-            font-size: 13px;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-
-        .privacy-box p {
-            font-size: 12px;
-            color: var(--text-gray);
-            line-height: 1.4;
-        }
-
-        .privacy-box p+p {
-            margin-top: 2px;
         }
 
         .sidebar-cta {
@@ -442,21 +355,6 @@
 
         .account-area {
             position: relative;
-        }
-
-        .signin-btn {
-            background: var(--purple);
-            color: #fff;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            display: inline-block;
-        }
-
-        .signin-btn:hover {
-            background: var(--purple-dark);
         }
 
         .account-toggle {
@@ -600,399 +498,6 @@
             font-weight: 600;
         }
 
-        /* Hero (guest) */
-        .hero {
-            background: linear-gradient(135deg, #eef0ff 0%, #f5eefc 100%);
-            border-radius: 18px;
-            padding: 36px;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 24px;
-        }
-
-        .hero-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            gap: 24px;
-        }
-
-        .hero-text {
-            min-width: 0;
-        }
-
-        .hero-text h2 {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-
-        .hero-text h2 .accent {
-            color: var(--purple);
-        }
-
-        .hero-text p {
-            color: var(--text-gray);
-            font-size: 15px;
-            max-width: 500px;
-        }
-
-        .hero-illustration {
-            width: 240px;
-            flex-shrink: 0;
-            margin-bottom: -36px;
-        }
-
-        .hero-illustration img,
-        .hero-illustration svg {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .search-box {
-            background: #fff;
-            border-radius: 14px;
-            padding: 18px;
-            margin-top: 24px;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-        }
-
-        .search-box textarea {
-            width: 100%;
-            border: none;
-            outline: none;
-            resize: none;
-            font-size: 15px;
-            color: var(--text-dark);
-            font-family: inherit;
-            height: 80px;
-            line-height: 1.5;
-        }
-
-        .search-box textarea::placeholder {
-            color: #9ca3af;
-        }
-
-        .search-actions {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 14px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .search-actions-left {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .pill-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 14px;
-            font-size: 13px;
-            color: #374151;
-            background: #fff;
-            white-space: nowrap;
-        }
-
-        .pill-btn:hover {
-            background: var(--bg-soft);
-        }
-
-        .pill-btn.recording {
-            background: #fee2e2;
-            border-color: #fca5a5;
-            color: #dc2626;
-        }
-
-        .search-actions-right {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            flex-wrap: wrap;
-        }
-
-        .char-count {
-            font-size: 13px;
-            color: var(--text-gray);
-            white-space: nowrap;
-        }
-
-        .analyze-btn {
-            background: var(--purple);
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            white-space: nowrap;
-        }
-
-        .analyze-btn:hover {
-            background: var(--purple-dark);
-        }
-
-        .analyze-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-
-        .tip {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-top: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .file-chip {
-            font-size: 12px;
-            color: var(--purple);
-            background: var(--purple-light);
-            border-radius: 6px;
-            padding: 6px 10px;
-            display: none;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .file-chip.visible {
-            display: inline-flex;
-        }
-
-        .file-chip button {
-            color: var(--purple);
-            font-weight: 700;
-        }
-
-        /* Section cards (guest) */
-        .section-card {
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 32px;
-            margin-bottom: 24px;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 28px;
-        }
-
-        .steps {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .step {
-            text-align: center;
-            flex: 1;
-            min-width: 140px;
-            position: relative;
-        }
-
-        .step-icon-wrap {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--bg-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin: 0 auto 12px;
-            position: relative;
-        }
-
-        .step-num {
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 22px;
-            height: 22px;
-            background: var(--purple);
-            color: #fff;
-            border-radius: 50%;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #fff;
-        }
-
-        .step h4 {
-            font-size: 14px;
-            margin-bottom: 4px;
-            font-weight: 600;
-            min-height: 1.4em;
-            overflow-wrap: break-word;
-        }
-
-        .step p {
-            font-size: 12px;
-            color: var(--text-gray);
-            line-height: 1.4;
-            max-width: 160px;
-            margin: 0 auto;
-            min-height: 2.8em;
-            overflow-wrap: break-word;
-        }
-
-        .step-arrow {
-            font-size: 20px;
-            color: #c7c9f5;
-            margin-top: 22px;
-            flex-shrink: 0;
-        }
-
-        .popular-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .popular-header h3 {
-            font-size: 18px;
-            font-weight: 800;
-        }
-
-        .view-all {
-            font-size: 13px;
-            color: var(--purple);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .popular-sub {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 18px;
-        }
-
-        .issue-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-        }
-
-        .issue-card {
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            align-items: flex-start;
-            transition: box-shadow 0.15s, border-color 0.15s;
-            cursor: pointer;
-            text-align: left;
-            width: 100%;
-            background: #fff;
-            min-height: 100px;
-        }
-
-        .issue-card:hover {
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
-            border-color: #d6d6fb;
-        }
-
-        .issue-card:active {
-            transform: scale(0.98);
-        }
-
-        .issue-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 17px;
-            flex-shrink: 0;
-        }
-
-        .issue-card>div {
-            min-width: 0;
-        }
-
-        .issue-card h5 {
-            font-size: 14px;
-            margin-bottom: 2px;
-            font-weight: 600;
-            min-height: 1.4em;
-            overflow-wrap: break-word;
-        }
-
-        .issue-card p {
-            font-size: 12px;
-            color: var(--text-gray);
-            line-height: 1.3;
-            min-height: 2.4em;
-            overflow-wrap: break-word;
-        }
-
-        .trust-strip {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 24px 32px;
-        }
-
-        .trust-item {
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-        }
-
-        .trust-icon {
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .trust-item>div {
-            min-width: 0;
-        }
-
-        .trust-item h5 {
-            font-size: 14px;
-            margin-bottom: 2px;
-            font-weight: 600;
-            overflow-wrap: break-word;
-        }
-
-        .trust-item p {
-            font-size: 12px;
-            color: var(--text-gray);
-            line-height: 1.4;
-            overflow-wrap: break-word;
-        }
-
         /* ========== DASHBOARD ========== */
         .quick-actions {
             display: grid;
@@ -1120,6 +625,13 @@
         .cases-card-header h3 {
             font-size: 18px;
             font-weight: 800;
+        }
+
+        .view-all {
+            font-size: 13px;
+            color: var(--purple);
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .case-tabs {
@@ -1284,273 +796,83 @@
             flex-shrink: 0;
         }
 
+        /* "How it works" fallback shown when there are zero cases */
+        .steps {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            text-align: center;
+            flex: 1;
+            min-width: 140px;
+            position: relative;
+        }
+
+        .step-icon-wrap {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: var(--bg-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            margin: 0 auto 12px;
+            position: relative;
+        }
+
+        .step-num {
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 22px;
+            height: 22px;
+            background: var(--purple);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #fff;
+        }
+
+        .step h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            font-weight: 600;
+            min-height: 1.4em;
+            overflow-wrap: break-word;
+        }
+
+        .step p {
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.4;
+            max-width: 160px;
+            margin: 0 auto;
+            min-height: 2.8em;
+            overflow-wrap: break-word;
+        }
+
+        .step-arrow {
+            font-size: 20px;
+            color: #c7c9f5;
+            margin-top: 22px;
+            flex-shrink: 0;
+        }
+
         .footer-note {
             text-align: center;
             font-size: 13px;
             color: var(--text-gray);
             padding: 4px 0 8px;
-        }
-
-        /* ========== RIGHT PANEL ========== */
-        .right-panel {
-            border-left: 1px solid var(--border);
-            padding: 24px 20px;
-            background: #fff;
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            z-index: 90;
-        }
-
-        .panel-card {
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .panel-card h4 {
-            font-size: 15px;
-            font-weight: 700;
-            margin-bottom: 14px;
-            overflow-wrap: break-word;
-        }
-
-        .why-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .why-list li {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-            font-size: 13px;
-            color: #374151;
-        }
-
-        .check {
-            color: #fff;
-            background: var(--green);
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            font-size: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .panel-card p.sub {
-            font-size: 12px;
-            color: var(--text-gray);
-            margin-bottom: 14px;
-            overflow-wrap: break-word;
-        }
-
-        .lawyer-icon-wrap {
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            background: var(--bg-soft);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-
-        .find-lawyer-btn {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .find-lawyer-btn:hover {
-            background: var(--bg-soft);
-        }
-
-        .qt-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .qt-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-
-        .qt-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--purple-light);
-            color: var(--purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 16px;
-            flex-shrink: 0;
-        }
-
-        .qt-item h5 {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-
-        .qt-item p {
-            font-size: 11px;
-            color: var(--text-gray);
-            line-height: 1.35;
-        }
-
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .activity-icon {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            flex-shrink: 0;
-        }
-
-        .activity-item p {
-            font-size: 12.5px;
-            color: #374151;
-            line-height: 1.35;
-        }
-
-        .activity-item span {
-            font-size: 11px;
-            color: #9ca3af;
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(20, 20, 35, 0.45);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 16px;
-        }
-
-        .modal-overlay.open {
-            display: flex;
-        }
-
-        .modal-box {
-            background: #fff;
-            border-radius: 16px;
-            padding: 28px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 14px;
-            right: 14px;
-            font-size: 18px;
-            color: var(--text-gray);
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-        }
-
-        .modal-close:hover {
-            background: var(--bg-soft);
-        }
-
-        .modal-box h3 {
-            font-size: 19px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .modal-box p.modal-sub {
-            font-size: 13px;
-            color: var(--text-gray);
-            margin-bottom: 18px;
-        }
-
-        .modal-field {
-            margin-bottom: 14px;
-        }
-
-        .modal-field label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
-            display: block;
-            margin-bottom: 6px;
-        }
-
-        .modal-field input {
-            width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-        }
-
-        .modal-field input:focus {
-            border-color: var(--purple);
-        }
-
-        .modal-submit {
-            width: 100%;
-            background: var(--purple);
-            color: #fff;
-            padding: 11px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        .modal-submit:hover {
-            background: var(--purple-dark);
         }
 
         /* Toast */
@@ -1578,16 +900,6 @@
         }
 
         /* ========== RESPONSIVE ========== */
-        @media (max-width: 1300px) {
-            .app {
-                grid-template-columns: 240px minmax(0, 1fr);
-            }
-
-            .right-panel {
-                display: none;
-            }
-        }
-
         @media (max-width: 900px) {
             .app {
                 grid-template-columns: 1fr;
@@ -1627,32 +939,8 @@
                 padding: 20px 16px;
             }
 
-            .hero-illustration {
-                display: none;
-            }
-
             .step-arrow {
                 display: none;
-            }
-
-            .hero-text h2 {
-                font-size: 26px;
-            }
-
-            .hero {
-                padding: 24px;
-            }
-
-            .section-card {
-                padding: 20px;
-            }
-
-            .trust-strip {
-                padding: 16px 20px;
-            }
-
-            .issue-grid {
-                grid-template-columns: repeat(2, 1fr);
             }
 
             .steps {
@@ -1673,71 +961,11 @@
         }
 
         @media (max-width: 560px) {
-            .hero-text h2 {
-                font-size: 22px;
-            }
-
-            .hero-text p {
-                font-size: 14px;
-            }
-
             .main {
                 padding: 16px;
             }
 
-            .section-card {
-                padding: 16px;
-                border-radius: 12px;
-            }
-
-            .hero {
-                border-radius: 12px;
-                padding: 16px;
-            }
-
-            .search-actions {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .search-actions-right {
-                width: 100%;
-                justify-content: space-between;
-            }
-
-            .analyze-btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .pill-btn {
-                font-size: 12px;
-                padding: 6px 10px;
-            }
-
-            .issue-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-            }
-
-            .issue-card {
-                padding: 12px;
-                min-height: 90px;
-            }
-
-            .trust-strip {
-                grid-template-columns: 1fr;
-                padding: 16px;
-                gap: 12px;
-            }
-
             .quick-actions {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .issue-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -1755,12 +983,8 @@
                 <span class="mobile-logo">⚖️ NyaySetu</span>
             </div>
             <div class="mobile-right">
-                {% if user %}
                 <button class="bell-btn" id="bellBtnMobile" aria-label="Notifications">🔔<span
                         class="bell-badge">2</span></button>
-                {% else %}
-                <a href="/login" class="signin-btn" data-i18n="signInSignUp">Sign in / Sign up</a>
-                {% endif %}
                 <div class="lang-dropdown" id="mobileLangDropdown">
                     <button class="lang-dropdown-toggle" id="mobileLangToggle">
                         <span class="left">🌐 <span class="mobileLangSelected">English</span></span>
@@ -1774,7 +998,7 @@
         <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
         <!-- ================= LEFT SIDEBAR ================= -->
-        <aside class="sidebar {% if user %}sidebar-dark{% endif %}" id="sidebar">
+        <aside class="sidebar" id="sidebar">
             <button class="sidebar-close" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
 
             <div class="logo">
@@ -1785,14 +1009,12 @@
                 </div>
             </div>
 
-            {% if user %}
-            <!-- ===== DASHBOARD NAV ===== -->
             <nav class="nav">
                 <a href="/" class="nav-item active" data-page="dashboard"><span class="icon">🏠</span> <span
                         data-i18n="navDashboard">Dashboard</span></a>
                 <a href="/my-issues" class="nav-item" data-page="mycases"><span class="icon">🗂️</span> <span
                         data-i18n="navMyCases">My Cases</span></a>
-                <a href="#issueInput" class="nav-item" data-page="newissue"><span class="icon">➕</span> <span
+                <a href="/new-issue" class="nav-item" data-page="newissue"><span class="icon">➕</span> <span
                         data-i18n="navNewIssue">New Issue</span></a>
                 <a href="/document-helper" class="nav-item" data-page="docanalysis"><span class="icon">📄</span> <span
                         data-i18n="navDocAnalysis">Document Analysis</span></a>
@@ -1817,43 +1039,11 @@
                 <a href="/know-your-rights" class="sidebar-cta-btn"><span data-i18n="sidebarCtaBtn">Know Your
                         Rights</span> →</a>
             </div>
-            {% else %}
-            <!-- ===== GUEST NAV ===== -->
-            <button class="new-issue-btn" id="newIssueBtn">
-                <span>+</span> <span data-i18n="newIssue">New Issue</span>
-            </button>
-
-            <nav class="nav">
-                <a href="/" class="nav-item active" data-page="home"><span class="icon">🏠</span> <span
-                        data-i18n="navHome">Home</span></a>
-                <a href="/my-issues" class="nav-item" data-page="myissues"><span class="icon">🗂️</span> <span
-                        data-i18n="navMyIssues">My Issues</span></a>
-                <a href="/document-helper" class="nav-item" data-page="dochelper"><span class="icon">📄</span> <span
-                        data-i18n="navDocHelper">Document Helper</span></a>
-                <a href="/know-your-rights" class="nav-item" data-page="rights"><span class="icon">⚖️</span> <span
-                        data-i18n="navKnowRights">Know Your Rights</span></a>
-                <a href="/saved-reports" class="nav-item" data-page="saved"><span class="icon">📑</span> <span
-                        data-i18n="navSavedReports">Saved Reports</span></a>
-                <a href="/government-services" class="nav-item" data-page="gov"><span class="icon">🏛️</span> <span
-                        data-i18n="navGovServices">Government Services</span></a>
-                <a href="/help-support" class="nav-item" data-page="help"><span class="icon">❓</span> <span
-                        data-i18n="navHelpSupport">Help &amp; Support</span></a>
-            </nav>
-
-            <div class="privacy-box">
-                <div class="icon-circle">🔒</div>
-                <h4 data-i18n="privacyTitle">Your information is private</h4>
-                <p data-i18n="privacyText">We never share your data.</p>
-                <p data-i18n="privacyText2">Everything is confidential.</p>
-            </div>
-            {% endif %}
         </aside>
 
-        <!-- ================= MAIN CONTENT ================= -->
+        <!-- ================= MAIN CONTENT (Dashboard) ================= -->
         <main class="main">
 
-            {% if user %}
-            <!-- ===================== DASHBOARD TOPBAR ===================== -->
             <div class="topbar topbar-dashboard">
                 <div class="topbar-greeting">
                     <h1><span data-i18n="{{ greeting_key }}">Good morning</span>, {{ user.first_name }}! 👋</h1>
@@ -1893,7 +1083,7 @@
                     <div class="qa-icon">💬</div>
                     <h4 data-i18n="qaAddIssueTitle">Add New Issue</h4>
                     <p data-i18n="qaAddIssueText">Describe your legal issue in simple words.</p>
-                    <a href="#issueInput" class="qa-btn"><span data-i18n="qaAddIssueBtn">Start Now</span> →</a>
+                    <a href="/new-issue" class="qa-btn"><span data-i18n="qaAddIssueBtn">Start Now</span> →</a>
                 </div>
                 <div class="qa-card qa-green">
                     <div class="qa-icon">📄</div>
@@ -1993,334 +1183,15 @@
             <p class="footer-note">🔒 <span data-i18n="footerPrivacyNote">Your information is private and secure. We
                     do not share your data with anyone.</span></p>
 
-            {% else %}
-            <!-- ===================== GUEST TOPBAR ===================== -->
-            <div class="topbar">
-                <div class="lang-dropdown" id="topbarLangDropdown">
-                    <button class="lang-dropdown-toggle" id="topbarLangToggle">
-                        <span class="left">🌐 <span class="topbarLangSelected">English</span></span>
-                        <span>▾</span>
-                    </button>
-                    <ul class="lang-menu lang-menu-instance" id="topbarLangMenu"></ul>
-                </div>
-                <a href="/login" class="signin-btn" id="signinBtn" data-i18n="signInSignUp">Sign in / Sign up</a>
-            </div>
-
-            <!-- Hero section -->
-            <section class="hero">
-                <div class="hero-top">
-                    <div class="hero-text">
-                        <h2 data-i18n-html="heroTitle">How can we <span class="accent">help</span> you today?</h2>
-                        <p data-i18n="heroSub">Describe your issue in simple words. We&#8217;ll help you understand
-                            your legal position.</p>
-                    </div>
-                    <div class="hero-illustration">
-                        <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" role="img"
-                            aria-label="Balanced scales of justice illustration">
-                            <circle cx="120" cy="150" r="60" fill="#ded9ff" />
-                            <rect x="112" y="40" width="16" height="120" rx="6" fill="#5b4dee" />
-                            <rect x="60" y="34" width="120" height="12" rx="6" fill="#4a3dd9" />
-                            <circle cx="60" cy="34" r="10" fill="#4a3dd9" />
-                            <circle cx="180" cy="34" r="10" fill="#4a3dd9" />
-                            <path d="M40 60 L60 40 L80 60 Q60 85 40 60 Z" fill="#fff" stroke="#4a3dd9"
-                                stroke-width="4" />
-                            <path d="M160 60 L180 40 L200 60 Q180 85 160 60 Z" fill="#fff" stroke="#4a3dd9"
-                                stroke-width="4" />
-                            <line x1="60" y1="34" x2="40" y2="60" stroke="#4a3dd9" stroke-width="3" />
-                            <line x1="60" y1="34" x2="80" y2="60" stroke="#4a3dd9" stroke-width="3" />
-                            <line x1="180" y1="34" x2="160" y2="60" stroke="#4a3dd9" stroke-width="3" />
-                            <line x1="180" y1="34" x2="200" y2="60" stroke="#4a3dd9" stroke-width="3" />
-                            <rect x="90" y="160" width="60" height="14" rx="7" fill="#5b4dee" />
-                            <circle cx="120" cy="20" r="14" fill="#ffce6b" />
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="search-box">
-                    <textarea id="issueInput" maxlength="1000" data-i18n-placeholder="issuePlaceholder"
-                        placeholder="Example: My landlord is not returning my security deposit."></textarea>
-                    <div class="search-actions">
-                        <div class="search-actions-left">
-                            <button class="pill-btn" id="speakBtn" type="button">🎤 <span
-                                    data-i18n="speak">Speak</span></button>
-                            <button class="pill-btn" id="attachBtn" type="button">📎 <span
-                                    data-i18n="attachOptional">Attach document (optional)</span></button>
-                            <input type="file" id="fileInput" style="display:none;">
-                            <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button
-                                    type="button" id="fileChipRemove">✕</button></span>
-                        </div>
-                        <div class="search-actions-right">
-                            <span class="char-count"><span id="charCount">0</span>/1000</span>
-                            <button class="analyze-btn" id="analyzeBtn" type="button"><span
-                                    id="analyzeBtnLabel">Analyze Issue</span> →</button>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="tip">💡 <span data-i18n="tip">Be specific about what, when, and with whom.</span></p>
-            </section>
-
-            <!-- How it works -->
-            <section class="section-card">
-                <h3 class="section-title" data-i18n="howItWorks">How it works</h3>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-icon-wrap">💬<span class="step-num">1</span></div>
-                        <h4 data-i18n="step1Title">Tell us your issue</h4>
-                        <p data-i18n="step1Text">Describe in your own words.</p>
-                    </div>
-                    <div class="step-arrow">→</div>
-                    <div class="step">
-                        <div class="step-icon-wrap">🔍<span class="step-num">2</span></div>
-                        <h4 data-i18n="step2Title">We analyze it</h4>
-                        <p data-i18n="step2Text">Our AI finds relevant laws and information.</p>
-                    </div>
-                    <div class="step-arrow">→</div>
-                    <div class="step">
-                        <div class="step-icon-wrap">📋<span class="step-num">3</span></div>
-                        <h4 data-i18n="step3Title">Get clear guidance</h4>
-                        <p data-i18n="step3Text">Know your rights, next steps, and important evidence.</p>
-                    </div>
-                    <div class="step-arrow">→</div>
-                    <div class="step">
-                        <div class="step-icon-wrap">✅<span class="step-num">4</span></div>
-                        <h4 data-i18n="step4Title">Take action</h4>
-                        <p data-i18n="step4Text">Use the guidance or connect with the right authority.</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Popular issues -->
-            <section class="section-card">
-                <div class="popular-header">
-                    <h3 data-i18n="popularIssues">Popular Issues</h3>
-                    <a href="#" class="view-all" id="viewAllBtn" data-i18n="viewAll">View all →</a>
-                </div>
-                <p class="popular-sub" data-i18n="popularSub">Select a common issue or ask your own.</p>
-
-                <div class="issue-grid" id="issueGrid">
-                    <button class="issue-card" data-example="exJob" type="button">
-                        <div class="issue-icon" style="background:#e3e8ff;color:#4a4ad9;">💼</div>
-                        <div>
-                            <h5 data-i18n="issueJobTitle">Job &amp; Employment</h5>
-                            <p data-i18n="issueJobText">Salary, termination, contracts</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exLandlord" type="button">
-                        <div class="issue-icon" style="background:#ffe9d6;color:#d97706;">🏠</div>
-                        <div>
-                            <h5 data-i18n="issueLandlordTitle">Landlord &amp; Tenant</h5>
-                            <p data-i18n="issueLandlordText">Rent, deposit, eviction</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exConsumer" type="button">
-                        <div class="issue-icon" style="background:#ffe1e1;color:#dc2626;">🛡️</div>
-                        <div>
-                            <h5 data-i18n="issueConsumerTitle">Consumer Complaints</h5>
-                            <p data-i18n="issueConsumerText">Refunds, defective products</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exCyber" type="button">
-                        <div class="issue-icon" style="background:#d8f3f0;color:#0d9488;">💻</div>
-                        <div>
-                            <h5 data-i18n="issueCyberTitle">Cyber Fraud</h5>
-                            <p data-i18n="issueCyberText">Online scams, hacking</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exPolice" type="button">
-                        <div class="issue-icon" style="background:#ede7ff;color:#7c3aed;">👮</div>
-                        <div>
-                            <h5 data-i18n="issuePoliceTitle">Police &amp; FIR</h5>
-                            <p data-i18n="issuePoliceText">FIR, complaints, procedures</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exLoans" type="button">
-                        <div class="issue-icon" style="background:#dafbe8;color:#16a34a;">💰</div>
-                        <div>
-                            <h5 data-i18n="issueLoansTitle">Loans &amp; Recovery</h5>
-                            <p data-i18n="issueLoansText">Harassment, illegal recovery</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exFamily" type="button">
-                        <div class="issue-icon" style="background:#ffe3ec;color:#db2777;">👨‍👩‍👧</div>
-                        <div>
-                            <h5 data-i18n="issueFamilyTitle">Family &amp; Personal</h5>
-                            <p data-i18n="issueFamilyText">Divorce, maintenance, etc.</p>
-                        </div>
-                    </button>
-                    <button class="issue-card" data-example="exProperty" type="button">
-                        <div class="issue-icon" style="background:#ede4ff;color:#7c3aed;">🏘️</div>
-                        <div>
-                            <h5 data-i18n="issuePropertyTitle">Property Disputes</h5>
-                            <p data-i18n="issuePropertyText">Ownership, inheritance</p>
-                        </div>
-                    </button>
-                </div>
-            </section>
-
-            <!-- Trust strip -->
-            <section class="trust-strip">
-                <div class="trust-item">
-                    <span class="trust-icon">👥</span>
-                    <div>
-                        <h5 data-i18n="trust1Title">Trusted by Users</h5>
-                        <p data-i18n="trust1Text">Built for everyday Indians</p>
-                    </div>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">🏛️</span>
-                    <div>
-                        <h5 data-i18n="trust2Title">Based on Indian Laws</h5>
-                        <p data-i18n="trust2Text">Information from verified sources</p>
-                    </div>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">🛡️</span>
-                    <div>
-                        <h5 data-i18n="trust3Title">Secure &amp; Confidential</h5>
-                        <p data-i18n="trust3Text">Your privacy is our priority</p>
-                    </div>
-                </div>
-                <div class="trust-item">
-                    <span class="trust-icon">✅</span>
-                    <div>
-                        <h5 data-i18n="trust4Title">Always Improving</h5>
-                        <p data-i18n="trust4Text">We&#8217;re here to serve you better</p>
-                    </div>
-                </div>
-            </section>
-            {% endif %}
-
         </main>
 
-        <!-- ================= RIGHT PANEL ================= -->
-        <aside class="right-panel">
-            {% if user %}
-            <!-- ===== DASHBOARD RIGHT PANEL ===== -->
-            <div class="panel-card">
-                <h4 data-i18n="quickToolsTitle">Quick Tools</h4>
-                <div class="qt-list">
-                    <a href="/document-helper" class="qt-item">
-                        <div class="qt-icon">📄</div>
-                        <div>
-                            <h5 data-i18n="qt1Title">Document Analysis</h5>
-                            <p data-i18n="qt1Text">Upload and analyze any legal document</p>
-                        </div>
-                    </a>
-                    <a href="#issueInput" class="qt-item">
-                        <div class="qt-icon">⚖️</div>
-                        <div>
-                            <h5 data-i18n="qt2Title">AI Legal Assistant</h5>
-                            <p data-i18n="qt2Text">Ask any legal question</p>
-                        </div>
-                    </a>
-                    <a href="/document-helper" class="qt-item">
-                        <div class="qt-icon">🖥️</div>
-                        <div>
-                            <h5 data-i18n="qt3Title">Complaint Templates</h5>
-                            <p data-i18n="qt3Text">Get templates for common issues</p>
-                        </div>
-                    </a>
-                    <a href="/know-your-rights" class="qt-item">
-                        <div class="qt-icon">📋</div>
-                        <div>
-                            <h5 data-i18n="qt4Title">Evidence Checklist</h5>
-                            <p data-i18n="qt4Text">Know what documents you need</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="panel-card">
-                <h4 data-i18n="recentActivityTitle">Recent Activity</h4>
-                <div class="activity-list">
-                    {% for a in activity %}
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background:{{ a.icon_bg }};color:{{ a.icon_color }};">{{
-                            a.icon }}</div>
-                        <div>
-                            <p>{{ a.text }}</p>
-                            <span>{{ a.time }}</span>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <a href="/saved-reports" class="view-all" data-i18n="viewAllActivity">View all activity →</a>
-            </div>
-
-            <div class="panel-card">
-                <h4 data-i18n="needExpertTitle">Need Expert Help?</h4>
-                <p class="sub" data-i18n="needExpertText">Connect with verified lawyers in your area for professional
-                    legal assistance.</p>
-                <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
-                        data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
-            </div>
-            {% else %}
-            <!-- ===== GUEST RIGHT PANEL ===== -->
-            <div class="panel-card">
-                <h4 data-i18n="whyTitle">Why NyaySetu?</h4>
-                <ul class="why-list">
-                    <li><span class="check">✓</span> <span data-i18n="why1">Plain language explanations</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="why2">Reliable legal information</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="why3">Neutral and non-judgmental</span></li>
-                    <li><span class="check">✓</span> <span data-i18n="why4">Helps you take the right steps</span></li>
-                </ul>
-            </div>
-
-            <div class="panel-card">
-                <h4 data-i18n="langPanelTitle">Language / भाषा</h4>
-                <p class="sub" data-i18n="langPanelSub">Choose your preferred language</p>
-                <div class="lang-dropdown" id="panelLangDropdown">
-                    <button class="lang-dropdown-toggle" id="panelLangToggle">
-                        <span class="left">🌐 <span class="panelLangSelected">English</span></span>
-                        <span>▾</span>
-                    </button>
-                    <ul class="lang-menu lang-menu-instance" id="panelLangMenu"></ul>
-                </div>
-            </div>
-
-            <div class="panel-card">
-                <div class="lawyer-icon-wrap">⚖️</div>
-                <h4 data-i18n="lawyerPanelTitle">Need help from a lawyer?</h4>
-                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need
-                    expert help.</p>
-                <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
-                        data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
-            </div>
-            {% endif %}
-        </aside>
-
-    </div>
-
-    <!-- ================= MODALS ================= -->
-    <div class="modal-overlay" id="lawyerModal">
-        <div class="modal-box">
-            <button class="modal-close" id="lawyerModalClose" type="button">✕</button>
-            <h3 data-i18n="lawyerModalTitle">Find a Lawyer</h3>
-            <p class="modal-sub" data-i18n="lawyerModalSub">Tell us your city and legal area.</p>
-            <form id="lawyerForm">
-                <div class="modal-field">
-                    <label data-i18n="cityLabel">City</label>
-                    <input type="text" required placeholder="e.g. Mumbai">
-                </div>
-                <div class="modal-field">
-                    <label data-i18n="areaLabel">Area of law</label>
-                    <input type="text" required placeholder="e.g. Property dispute">
-                </div>
-                <button type="submit" class="modal-submit" data-i18n="findLawyerSubmit2">Find Lawyers</button>
-            </form>
-        </div>
     </div>
 
     <div class="toast" id="toast"></div>
 
     <script>
-        const IS_LOGGED_IN = {{ 'true' if user else 'false' }};
-
         let LANGUAGES = [{ code: "en", label: "English" }];
-        let VOICE_LOCALES = { en: "en-IN" };
         let TRANSLATIONS = {};
-        let EXAMPLES = {};
 
         async function loadLanguageData() {
             try {
@@ -2329,8 +1200,6 @@
                 const data = await res.json();
                 if (data.languages && data.languages.length) LANGUAGES = data.languages;
                 if (data.translations) TRANSLATIONS = data.translations;
-                if (data.examples) EXAMPLES = data.examples;
-                if (data.voice_locales) VOICE_LOCALES = data.voice_locales;
             } catch (err) {
                 console.warn('Could not load /static/translations.json — falling back to English only.', err);
             }
@@ -2343,7 +1212,6 @@
         }
 
         let currentLang = 'en';
-        let analyzeBtnBusy = false;
 
         function applyLanguage(lang) {
             currentLang = lang;
@@ -2355,14 +1223,8 @@
                 const key = el.getAttribute('data-i18n-html');
                 if (TRANSLATIONS[key]) el.innerHTML = getText(key, lang);
             });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-                const key = el.getAttribute('data-i18n-placeholder');
-                if (TRANSLATIONS[key]) el.placeholder = getText(key, lang);
-            });
-            const analyzeLabel = document.getElementById('analyzeBtnLabel');
-            if (analyzeLabel && !analyzeBtnBusy) analyzeLabel.textContent = getText('analyzeIssue', lang);
             const langInfo = LANGUAGES.find(l => l.code === lang) || LANGUAGES[0];
-            document.querySelectorAll('.topbarLangSelected, .mobileLangSelected, .panelLangSelected')
+            document.querySelectorAll('.topbarLangSelected, .mobileLangSelected')
                 .forEach(el => { el.textContent = langInfo.label; });
             document.querySelectorAll('.lang-menu-instance li').forEach(li => {
                 li.classList.toggle('selected', li.dataset.lang === lang);
@@ -2409,7 +1271,6 @@
 
         wireLangDropdown('topbarLangToggle', 'topbarLangMenu');
         wireLangDropdown('mobileLangToggle', 'mobileLangMenu');
-        wireLangDropdown('panelLangToggle', 'panelLangMenu');
 
         const accountToggle = document.getElementById('accountToggle');
         const accountMenu = document.getElementById('accountMenu');
@@ -2443,101 +1304,6 @@
         hamburgerBtn.addEventListener('click', openSidebar);
         sidebarCloseBtn.addEventListener('click', closeSidebar);
         sidebarBackdrop.addEventListener('click', closeSidebar);
-
-        const issueInput = document.getElementById('issueInput');
-        const charCount = document.getElementById('charCount');
-        if (issueInput) {
-            issueInput.addEventListener('input', () => { charCount.textContent = issueInput.value.length; });
-        }
-
-        const newIssueBtn = document.getElementById('newIssueBtn');
-        if (newIssueBtn && issueInput) {
-            newIssueBtn.addEventListener('click', () => {
-                closeSidebar();
-                issueInput.value = ''; charCount.textContent = '0';
-                issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                issueInput.focus();
-            });
-        }
-
-        document.querySelectorAll('.issue-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const key = card.dataset.example;
-                const text = EXAMPLES[key] ? (EXAMPLES[key][currentLang] || EXAMPLES[key].en) : '';
-                if (!issueInput) return;
-                issueInput.value = text; charCount.textContent = text.length;
-                issueInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                issueInput.focus();
-            });
-        });
-
-        const analyzeBtn = document.getElementById('analyzeBtn');
-        const analyzeBtnLabel = document.getElementById('analyzeBtnLabel');
-        if (analyzeBtn) {
-            analyzeBtn.addEventListener('click', () => {
-                if (!issueInput.value.trim()) {
-                    showToast(getText('toastEmptyIssue', currentLang) || 'Please describe your issue first.');
-                    issueInput.focus(); return;
-                }
-                analyzeBtnBusy = true; analyzeBtn.disabled = true;
-                analyzeBtnLabel.textContent = getText('analyzing', currentLang);
-                setTimeout(() => {
-                    analyzeBtnBusy = false; analyzeBtn.disabled = false;
-                    analyzeBtnLabel.textContent = getText('analyzeIssue', currentLang);
-                    showToast(getText('toastAnalysisComplete', currentLang) || 'Analysis complete (demo).');
-                }, 1400);
-            });
-        }
-
-        const speakBtn = document.getElementById('speakBtn');
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (speakBtn) {
-            speakBtn.addEventListener('click', () => {
-                if (!SpeechRecognition) { showToast(getText('toastVoiceNotSupported', currentLang) || 'Voice input not supported.'); return; }
-                const recognition = new SpeechRecognition();
-                recognition.lang = VOICE_LOCALES[currentLang] || 'en-IN';
-                recognition.interimResults = false;
-                speakBtn.classList.add('recording');
-                speakBtn.querySelector('span').textContent = getText('toastListening', currentLang) || 'Listening…';
-                recognition.start();
-                recognition.onresult = (event) => {
-                    const transcript = event.results[0][0].transcript;
-                    issueInput.value = (issueInput.value ? issueInput.value + ' ' : '') + transcript;
-                    charCount.textContent = issueInput.value.length;
-                };
-                recognition.onerror = () => { showToast(getText('toastAudioError', currentLang) || 'Could not capture audio.'); };
-                recognition.onend = () => { speakBtn.classList.remove('recording'); speakBtn.querySelector('span').textContent = getText('speak', currentLang); };
-            });
-        }
-
-        const attachBtn = document.getElementById('attachBtn');
-        const fileInput = document.getElementById('fileInput');
-        const fileChip = document.getElementById('fileChip');
-        const fileChipName = document.getElementById('fileChipName');
-        if (attachBtn) {
-            attachBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', () => { if (fileInput.files.length) { fileChipName.textContent = fileInput.files[0].name; fileChip.classList.add('visible'); } });
-            document.getElementById('fileChipRemove').addEventListener('click', () => { fileInput.value = ''; fileChip.classList.remove('visible'); });
-        }
-
-        const lawyerModal = document.getElementById('lawyerModal');
-        document.querySelectorAll('#findLawyerBtn').forEach(btn => {
-            btn.addEventListener('click', () => lawyerModal.classList.add('open'));
-        });
-        document.getElementById('lawyerModalClose').addEventListener('click', () => lawyerModal.classList.remove('open'));
-        lawyerModal.addEventListener('click', (e) => { if (e.target === lawyerModal) lawyerModal.classList.remove('open'); });
-        document.getElementById('lawyerForm').addEventListener('submit', (e) => {
-            e.preventDefault(); lawyerModal.classList.remove('open'); document.getElementById('lawyerForm').reset();
-            showToast(getText('toastLawyerConnect', currentLang) || "We'll connect you with a lawyer shortly (demo).");
-        });
-
-        const viewAllBtn = document.getElementById('viewAllBtn');
-        if (viewAllBtn) {
-            viewAllBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                showToast(getText('toastViewAllSoon', currentLang) || 'Full issue directory coming soon.');
-            });
-        }
 
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', () => {
