@@ -4,9 +4,9 @@ from datetime import datetime
 from dotenv import load_dotenv
 from flask import Flask, render_template, session, redirect, url_for, request, flash
 
-from db import db, init_db, User
+from db import db, init_db, User, Case
 
-load_dotenv()  # reads .env into os.environ, if the file exists
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key-change-this-later")
@@ -22,7 +22,6 @@ def current_user():
 
 
 def greeting_key_for_now():
-    """Returns the translation key for the current time-of-day greeting."""
     hour = datetime.now().hour
     if hour < 12:
         return "greetingMorning"
@@ -31,79 +30,27 @@ def greeting_key_for_now():
     return "greetingEvening"
 
 
-# Placeholder data shown on the dashboard until real case storage is wired up.
-# Swap this out for a real Case model / query once you have one.
-MOCK_CASES = [
-    {
-        "id": 1,
-        "title": "Unpaid Salary Dispute",
-        "status": "in_progress",
-        "status_label": "In Progress",
-        "description": "My employer has not paid my salary for the last two months.",
-        "date": "24 May 2025",
-        "category": "Labour Law",
-        "icon": "💼",
-        "icon_bg": "#dcfce7",
-        "icon_color": "#16a34a",
-        "strength": 75,
-        "strength_color": "#16a34a",
-    },
-    {
-        "id": 2,
-        "title": "Security Deposit Refund",
-        "status": "awaiting_action",
-        "status_label": "Awaiting Action",
-        "description": "My landlord is refusing to return my security deposit.",
-        "date": "18 May 2025",
-        "category": "Property Law",
-        "icon": "🏠",
-        "icon_bg": "#ffedd5",
-        "icon_color": "#d97706",
-        "strength": 60,
-        "strength_color": "#d97706",
-    },
-    {
-        "id": 3,
-        "title": "Defective Product Refund",
-        "status": "in_progress",
-        "status_label": "In Progress",
-        "description": "Received a defective product, seller is not refunding.",
-        "date": "10 May 2025",
-        "category": "Consumer Law",
-        "icon": "🛒",
-        "icon_bg": "#ede9fe",
-        "icon_color": "#7c3aed",
-        "strength": 40,
-        "strength_color": "#7c3aed",
-    },
-    {
-        "id": 4,
-        "title": "Online Fraud Complaint",
-        "status": "closed",
-        "status_label": "Closed",
-        "description": "Fell victim to online fraud transaction.",
-        "date": "05 Apr 2025",
-        "category": "Cyber Law",
-        "icon": "💻",
-        "icon_bg": "#dbeafe",
-        "icon_color": "#2563eb",
-        "strength": 90,
-        "strength_color": "#16a34a",
-    },
-]
-
 RECENT_ACTIVITY = [
     {
-        "icon": "🗂️", "icon_bg": "#dbeafe", "icon_color": "#2563eb",
-        "text": "Case updated: Unpaid Salary Dispute", "time": "2 hours ago",
+        "icon": "🗂️",
+        "icon_bg": "#dbeafe",
+        "icon_color": "#2563eb",
+        "text": "Case updated: Unpaid Salary Dispute",
+        "time": "2 hours ago",
     },
     {
-        "icon": "📄", "icon_bg": "#dcfce7", "icon_color": "#16a34a",
-        "text": "Document analyzed: rental_agreement.pdf", "time": "Yesterday",
+        "icon": "📄",
+        "icon_bg": "#dcfce7",
+        "icon_color": "#16a34a",
+        "text": "Document analyzed: rental_agreement.pdf",
+        "time": "Yesterday",
     },
     {
-        "icon": "📌", "icon_bg": "#fce7f3", "icon_color": "#db2777",
-        "text": "New case created: Security Deposit Refund", "time": "2 days ago",
+        "icon": "📌",
+        "icon_bg": "#fce7f3",
+        "icon_color": "#db2777",
+        "text": "New case created: Security Deposit Refund",
+        "time": "2 days ago",
     },
 ]
 
@@ -112,17 +59,19 @@ RECENT_ACTIVITY = [
 def home():
     user = current_user()
 
-    if user:
-        return render_template(
-            "index.html",
-            active_page="dashboard",
-            user=user,
-            greeting_key=greeting_key_for_now(),
-            cases=MOCK_CASES,
-            activity=RECENT_ACTIVITY,
-        )
+    if not user:
+        return render_template("index.html", active_page="home", user=None)
 
-    return render_template("index.html", active_page="home", user=None)
+    cases = Case.query.filter_by(user_id=user.id).order_by(Case.created_at.desc()).all()
+
+    return render_template(
+        "index.html",
+        active_page="dashboard",
+        user=user,
+        greeting_key=greeting_key_for_now(),
+        cases=cases,
+        activity=RECENT_ACTIVITY,
+    )
 
 
 # ---------------- Local login/signup ----------------

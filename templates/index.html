@@ -22,7 +22,6 @@
             --bg-soft: #f8f8fc;
             --green: #16a34a;
             --sidebar-dark: #13122a;
-            --sidebar-dark-2: #1c1a3a;
         }
 
         html {
@@ -142,7 +141,6 @@
             z-index: 100;
         }
 
-        /* Dashboard variant: dark theme */
         .sidebar.sidebar-dark {
             background: var(--sidebar-dark);
             border-right: none;
@@ -315,7 +313,6 @@
             margin-top: 2px;
         }
 
-        /* Dashboard sidebar CTA card */
         .sidebar-cta {
             margin-top: auto;
             background: rgba(255, 255, 255, 0.06);
@@ -393,6 +390,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .topbar-greeting p {
@@ -408,7 +406,6 @@
             flex-wrap: wrap;
         }
 
-        /* Notification bell */
         .bell-btn {
             position: relative;
             width: 40px;
@@ -443,7 +440,6 @@
             border: 2px solid #fff;
         }
 
-        /* Account area (shared: shows sign-in button OR avatar dropdown) */
         .account-area {
             position: relative;
         }
@@ -456,6 +452,7 @@
             font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
+            display: inline-block;
         }
 
         .signin-btn:hover {
@@ -534,7 +531,6 @@
             color: #dc2626;
         }
 
-        /* Language dropdown (shared) */
         .lang-dropdown {
             position: relative;
             min-width: 0;
@@ -648,7 +644,8 @@
             margin-bottom: -36px;
         }
 
-        .hero-illustration img {
+        .hero-illustration img,
+        .hero-illustration svg {
             width: 100%;
             height: auto;
             display: block;
@@ -1172,6 +1169,8 @@
             justify-content: center;
             font-size: 20px;
             flex-shrink: 0;
+            background: var(--bg);
+            color: var(--fg);
         }
 
         .case-info {
@@ -1320,17 +1319,6 @@
             overflow-wrap: break-word;
         }
 
-        .panel-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
-
-        .panel-card-header h4 {
-            margin-bottom: 0;
-        }
-
         .why-list {
             list-style: none;
             display: flex;
@@ -1396,7 +1384,6 @@
             background: var(--bg-soft);
         }
 
-        /* Quick tools / activity list (dashboard right panel) */
         .qt-list {
             display: flex;
             flex-direction: column;
@@ -1754,11 +1741,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        .case-icon {
-            background: var(--bg);
-            color: var(--fg);
-        }
     </style>
 </head>
 
@@ -1776,6 +1758,8 @@
                 {% if user %}
                 <button class="bell-btn" id="bellBtnMobile" aria-label="Notifications">🔔<span
                         class="bell-badge">2</span></button>
+                {% else %}
+                <a href="/login" class="signin-btn" data-i18n="signInSignUp">Sign in / Sign up</a>
                 {% endif %}
                 <div class="lang-dropdown" id="mobileLangDropdown">
                     <button class="lang-dropdown-toggle" id="mobileLangToggle">
@@ -1931,8 +1915,9 @@
                 </div>
             </div>
 
-            <!-- My Cases -->
+            <!-- ============ My Cases (if cases exist) OR How it works (if zero cases) ============ -->
             <div class="cases-card">
+                {% if cases and cases|length > 0 %}
                 <div class="cases-card-header">
                     <h3 data-i18n="myCasesTitle">My Cases</h3>
                     <a href="/my-issues" class="view-all" data-i18n="viewAllCases">View all cases →</a>
@@ -1940,7 +1925,8 @@
                 <div class="case-tabs">
                     <span class="case-tab active" data-filter="all" data-i18n="tabAll">All Cases</span>
                     <span class="case-tab" data-filter="in_progress" data-i18n="tabInProgress">In Progress</span>
-                    <span class="case-tab" data-filter="awaiting_action" data-i18n="tabAwaiting">Awaiting Action</span>
+                    <span class="case-tab" data-filter="awaiting_action" data-i18n="tabAwaiting">Awaiting
+                        Action</span>
                     <span class="case-tab" data-filter="resolved" data-i18n="tabResolved">Resolved</span>
                     <span class="case-tab" data-filter="closed" data-i18n="tabClosed">Closed</span>
                 </div>
@@ -1974,10 +1960,38 @@
                     </div>
                     {% endfor %}
                 </div>
+                {% else %}
+                <h3 class="cases-card-header" style="display:block;" data-i18n="howItWorks">How it works</h3>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon-wrap">💬<span class="step-num">1</span></div>
+                        <h4 data-i18n="step1Title">Tell us your issue</h4>
+                        <p data-i18n="step1Text">Describe in your own words.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-icon-wrap">🔍<span class="step-num">2</span></div>
+                        <h4 data-i18n="step2Title">We analyze it</h4>
+                        <p data-i18n="step2Text">Our AI finds relevant laws and information.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-icon-wrap">📋<span class="step-num">3</span></div>
+                        <h4 data-i18n="step3Title">Get clear guidance</h4>
+                        <p data-i18n="step3Text">Know your rights, next steps, and important evidence.</p>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-icon-wrap">✅<span class="step-num">4</span></div>
+                        <h4 data-i18n="step4Title">Take action</h4>
+                        <p data-i18n="step4Text">Use the guidance or connect with the right authority.</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
 
-            <p class="footer-note">🔒 <span data-i18n="footerPrivacyNote">Your information is private and secure. We do
-                    not share your data with anyone.</span></p>
+            <p class="footer-note">🔒 <span data-i18n="footerPrivacyNote">Your information is private and secure. We
+                    do not share your data with anyone.</span></p>
 
             {% else %}
             <!-- ===================== GUEST TOPBAR ===================== -->
@@ -1997,8 +2011,8 @@
                 <div class="hero-top">
                     <div class="hero-text">
                         <h2 data-i18n-html="heroTitle">How can we <span class="accent">help</span> you today?</h2>
-                        <p data-i18n="heroSub">Describe your issue in simple words. We&#8217;ll help you understand your
-                            legal position.</p>
+                        <p data-i18n="heroSub">Describe your issue in simple words. We&#8217;ll help you understand
+                            your legal position.</p>
                     </div>
                     <div class="hero-illustration">
                         <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg" role="img"
@@ -2032,13 +2046,13 @@
                             <button class="pill-btn" id="attachBtn" type="button">📎 <span
                                     data-i18n="attachOptional">Attach document (optional)</span></button>
                             <input type="file" id="fileInput" style="display:none;">
-                            <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button type="button"
-                                    id="fileChipRemove">✕</button></span>
+                            <span class="file-chip" id="fileChip"><span id="fileChipName"></span> <button
+                                    type="button" id="fileChipRemove">✕</button></span>
                         </div>
                         <div class="search-actions-right">
                             <span class="char-count"><span id="charCount">0</span>/1000</span>
-                            <button class="analyze-btn" id="analyzeBtn" type="button"><span id="analyzeBtnLabel">Analyze
-                                    Issue</span> →</button>
+                            <button class="analyze-btn" id="analyzeBtn" type="button"><span
+                                    id="analyzeBtnLabel">Analyze Issue</span> →</button>
                         </div>
                     </div>
                 </div>
@@ -2268,8 +2282,8 @@
             <div class="panel-card">
                 <div class="lawyer-icon-wrap">⚖️</div>
                 <h4 data-i18n="lawyerPanelTitle">Need help from a lawyer?</h4>
-                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need expert
-                    help.</p>
+                <p class="sub" data-i18n="lawyerPanelSub">Connect with verified lawyers in your area if you need
+                    expert help.</p>
                 <button class="find-lawyer-btn" id="findLawyerBtn" type="button">👤 <span
                         data-i18n="findLawyerSubmit">Find a Lawyer</span></button>
             </div>
@@ -2303,7 +2317,6 @@
     <script>
         const IS_LOGGED_IN = {{ 'true' if user else 'false' }};
 
-        // Language + translation data lives in static/translations.json.
         let LANGUAGES = [{ code: "en", label: "English" }];
         let VOICE_LOCALES = { en: "en-IN" };
         let TRANSLATIONS = {};
@@ -2398,7 +2411,6 @@
         wireLangDropdown('mobileLangToggle', 'mobileLangMenu');
         wireLangDropdown('panelLangToggle', 'panelLangMenu');
 
-        // Account dropdown (only present when logged in)
         const accountToggle = document.getElementById('accountToggle');
         const accountMenu = document.getElementById('accountMenu');
         if (accountToggle && accountMenu) {
@@ -2416,7 +2428,6 @@
                 document.querySelectorAll('.account-menu').forEach(m => m.classList.remove('open'));
         });
 
-        // Notification bell (demo)
         document.querySelectorAll('#bellBtn, #bellBtnMobile').forEach(btn => {
             btn.addEventListener('click', () => showToast(getText('toastNotifications', currentLang) || 'You have 2 new notifications.'));
         });
@@ -2535,7 +2546,6 @@
             });
         });
 
-        // Dashboard "My Cases" tab filter
         document.querySelectorAll('.case-tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.case-tab').forEach(t => t.classList.remove('active'));
