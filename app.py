@@ -100,7 +100,9 @@ CATEGORY_META = {
     "other": {"label": "Other", "icon": "•••", "icon_bg": "#f3f4f6", "icon_color": "#4b5563"},
 }
 
-
+@app.route("/know_rights")
+def urrights():
+    return render_template("know_your_rights.html")
 @app.route("/")
 def home():
     user = current_user()
