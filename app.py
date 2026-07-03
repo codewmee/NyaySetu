@@ -277,9 +277,9 @@ def logout():
 
 
 # ---------------- placeholder routes ----------------
-@app.route("/my-issues")
+@app.route("/dashboard")
 def my_issues():
-    return "My Issues page (coming soon)"
+    return render_template("dashboard.html")
 
 
 @app.route("/document-helper")

@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — NyaySetu</title>
+<meta name="description" content="Track your legal cases, documents, and next steps in one place.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root{
+    --primary:#17171c;
+    --cohere-black:#000000;
+    --ink:#212121;
+    --deep-green:#003c33;
+    --dark-navy:#071829;
+    --canvas:#ffffff;
+    --soft-stone:#eeece7;
+    --pale-green:#edfce9;
+    --pale-blue:#f1f5ff;
+    --hairline:#d9d9dd;
+    --border-light:#e5e7eb;
+    --card-border:#f2f2f2;
+    --muted:#93939f;
+    --slate:#75758a;
+    --body-muted:#616161;
+    --action-blue:#1863dc;
+    --coral:#ff7759;
+    --coral-soft:#ffad9b;
+    --form-focus:#9b60aa;
+    --on-primary:#ffffff;
+    --on-dark:#ffffff;
+    --error:#b30000;
+    --success:#0a7a4a;
+    --amber:#b8860b;
+
+    --r-xs:4px; --r-sm:8px; --r-md:16px; --r-lg:22px; --r-xl:30px; --r-pill:32px; --r-full:9999px;
+
+    --font-display:'Space Grotesk','CohereText',ui-sans-serif,system-ui;
+    --font-body:'Inter','Unica77 Cohere Web',ui-sans-serif,system-ui;
+    --font-mono:'IBM Plex Mono','CohereMono',ui-sans-serif,system-ui;
+
+    --container:1220px;
+  }
+
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:var(--font-body); background:var(--canvas); color:var(--ink);
+    line-height:1.5; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:500; color:var(--ink); }
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  img{ max-width:100%; display:block; }
+  ul{ list-style:none; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible{
+    outline:2px solid #4c6ee6; outline-offset:2px;
+  }
+  .wrap{ max-width:var(--container); margin:0 auto; padding:0 32px; }
+  section{ position:relative; }
+
+  .mono-label{
+    font-family:var(--font-mono); font-size:13px; letter-spacing:0.28px;
+    text-transform:uppercase; color:var(--slate);
+  }
+
+  /* ===== buttons ===== */
+  .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    font-family:var(--font-body); font-size:14px; font-weight:500; line-height:1.71; white-space:nowrap; }
+  .btn-primary{ background:var(--primary); color:var(--on-primary); border-radius:var(--r-pill); padding:12px 22px; }
+  .btn-primary:hover{ background:#000; }
+  .btn-secondary{ background:transparent; color:var(--ink); border-radius:var(--r-xs); padding:8px 0; border-bottom:1px solid var(--ink); font-size:14px; }
+  .btn-pill-outline{
+    background:transparent; color:var(--primary); border:1px solid var(--border-light);
+    border-radius:var(--r-xl); padding:7px 15px; font-size:13.5px; font-weight:500;
+    transition:background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .btn-pill-outline:hover{ border-color:var(--primary); }
+  .btn-pill-outline.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
+  .icon-btn{
+    width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    font-size:16px; color:var(--ink); border:1px solid var(--border-light); flex-shrink:0;
+  }
+  .icon-btn:hover{ background:var(--soft-stone); }
+
+  /* ===== nav ===== */
+  .site-nav{
+    position:sticky; top:0; z-index:300; background:rgba(255,255,255,.94);
+    backdrop-filter:blur(10px); border-bottom:1px solid var(--border-light);
+  }
+  .nav-inner{
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
+    max-width:var(--container); margin:0 auto; padding:16px 32px;
+  }
+  .brand{ display:flex; align-items:center; gap:8px; }
+  .brand-icon{ font-size:20px; }
+  .brand-text{ font-family:var(--font-display); font-size:16px; font-weight:600; letter-spacing:-.2px; }
+  .nav-links{ display:flex; align-items:center; gap:26px; justify-self:center; }
+  .nav-link{ font-size:14px; font-weight:500; color:var(--body-muted); padding:6px 0; border-bottom:2px solid transparent; }
+  .nav-link:hover{ color:var(--ink); }
+  .nav-link.active{ color:var(--ink); border-bottom-color:var(--deep-green); }
+  .nav-right{ display:flex; align-items:center; gap:10px; justify-self:end; }
+
+  .notif-dropdown, .lang-dropdown, .account-area{ position:relative; }
+  .notif-btn{ position:relative; }
+  .notif-dot{ position:absolute; top:6px; right:7px; width:7px; height:7px; border-radius:50%; background:var(--coral); }
+  .dropdown-panel{
+    display:none; position:absolute; right:0; top:calc(100% + 10px);
+    background:#fff; border:1px solid var(--border-light); border-radius:var(--r-sm);
+    box-shadow:0 12px 28px rgba(0,0,0,.1); z-index:350;
+  }
+  .dropdown-panel.open{ display:block; }
+  .lang-menu{ width:170px; overflow:hidden; }
+  .lang-menu li{ padding:10px 14px; font-size:13px; cursor:pointer; }
+  .lang-menu li:hover{ background:var(--soft-stone); }
+  .lang-menu li.selected{ color:var(--deep-green); font-weight:600; background:var(--pale-green); }
+  .lang-toggle{
+    display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500;
+    border:1px solid var(--border-light); border-radius:var(--r-full); padding:7px 13px;
+  }
+  .lang-toggle:hover{ background:var(--soft-stone); }
+
+  .notif-panel{ width:320px; padding:8px 0; }
+  .notif-panel .panel-head{ padding:12px 16px 8px; font-size:13px; font-weight:600; }
+  .notif-item{ display:flex; gap:10px; padding:10px 16px; align-items:flex-start; }
+  .notif-item:hover{ background:var(--soft-stone); }
+  .notif-item .dot{ width:7px; height:7px; border-radius:50%; background:var(--coral); margin-top:6px; flex-shrink:0; }
+  .notif-item.read .dot{ background:var(--border-light); }
+  .notif-item p{ font-size:13px; line-height:1.4; }
+  .notif-item span{ display:block; font-size:11px; color:var(--muted); margin-top:3px; }
+
+  .account-toggle{ display:flex; align-items:center; gap:8px; padding:5px 10px 5px 5px; border:1px solid var(--border-light); border-radius:var(--r-sm); }
+  .account-toggle:hover{ background:var(--soft-stone); }
+  .account-avatar{
+    width:28px; height:28px; border-radius:50%; background:var(--deep-green); color:#fff;
+    font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  .account-name{ font-size:13px; font-weight:500; }
+  .account-menu{ width:170px; overflow:hidden; }
+  .account-menu li a, .account-menu li button{
+    display:block; width:100%; text-align:left; padding:10px 14px; font-size:13px;
+  }
+  .account-menu li a:hover, .account-menu li button:hover{ background:var(--soft-stone); }
+  .account-menu li.divider{ border-top:1px solid var(--card-border); }
+  .account-menu li .danger{ color:var(--error); }
+
+  .hamburger{ display:none; font-size:18px; width:36px; height:36px; align-items:center; justify-content:center; border-radius:var(--r-sm); }
+  .hamburger:hover{ background:var(--soft-stone); }
+  @media (max-width:900px){ .nav-links{ display:none; } .hamburger{ display:flex; } .nav-inner{ grid-template-columns:1fr auto; } }
+
+  .mobile-sheet-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:399; }
+  .mobile-sheet-backdrop.open{ display:block; }
+  .mobile-sheet{
+    position:fixed; top:0; right:0; height:100vh; width:280px; max-width:84vw; background:#fff;
+    z-index:400; padding:20px; transform:translateX(100%); transition:transform .25s ease;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .mobile-sheet.open{ transform:translateX(0); }
+  .mobile-sheet-close{ align-self:flex-end; width:34px; height:34px; border-radius:var(--r-sm); font-size:17px; margin-bottom:10px; }
+  .mobile-sheet-close:hover{ background:var(--soft-stone); }
+  .mobile-sheet .nav-link{ padding:12px 6px; border-bottom:1px solid var(--card-border); color:var(--ink); }
+  .mobile-sheet .btn{ margin-top:16px; }
+
+  /* ===== page header ===== */
+  .page-header{ padding:48px 0 32px; display:flex; justify-content:space-between; align-items:flex-end; gap:20px; flex-wrap:wrap; }
+  .page-header h1{ margin-top:8px; font-size:clamp(1.8rem,3.4vw,2.6rem); letter-spacing:-.6px; }
+  .page-header .subtext{ margin-top:8px; color:var(--body-muted); font-size:15px; max-width:440px; }
+  .header-actions{ display:flex; gap:10px; }
+
+  /* ===== stats ===== */
+  .stats-row{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:52px; }
+  @media (max-width:900px){ .stats-row{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .stats-row{ grid-template-columns:1fr; } }
+  .stat-card{ border-radius:var(--r-xs); padding:22px; display:flex; flex-direction:column; gap:6px; }
+  .stat-card.st-1{ background:var(--pale-green); }
+  .stat-card.st-2{ background:var(--soft-stone); }
+  .stat-card.st-3{ background:var(--pale-blue); }
+  .stat-card.st-4{ background:var(--soft-stone); }
+  .stat-card .stat-num{ font-family:var(--font-display); font-size:34px; font-weight:500; letter-spacing:-.4px; }
+  .stat-card .stat-label{ font-size:13px; color:var(--body-muted); }
+  .stat-card .stat-delta{ font-size:11.5px; color:var(--success); font-family:var(--font-mono); margin-top:2px; }
+
+  /* ===== main grid ===== */
+  .dash-grid{ display:grid; grid-template-columns:1.7fr 1fr; gap:24px; padding-bottom:90px; align-items:start; }
+  @media (max-width:1000px){ .dash-grid{ grid-template-columns:1fr; } }
+
+  /* ===== case list ===== */
+  .panel{ border:1px solid var(--card-border); border-radius:var(--r-sm); overflow:hidden; }
+  .panel-header{ display:flex; align-items:center; justify-content:space-between; gap:14px; padding:20px 22px; flex-wrap:wrap; border-bottom:1px solid var(--card-border); }
+  .panel-header h3{ font-size:19px; font-weight:500; }
+  .search-box{
+    display:flex; align-items:center; gap:8px; border:1px solid var(--border-light);
+    border-radius:var(--r-full); padding:8px 14px; font-size:13px; min-width:190px;
+  }
+  .search-box input{ border:none; outline:none; font-size:13px; font-family:inherit; width:100%; }
+  .filter-row{ display:flex; gap:8px; padding:16px 22px 0; flex-wrap:wrap; }
+
+  .case-table{ padding:8px 0 4px; }
+  .case-row{
+    display:grid; grid-template-columns:2.2fr 1fr 1fr auto; align-items:center; gap:12px;
+    padding:16px 22px; border-bottom:1px solid var(--card-border); cursor:pointer;
+  }
+  .case-row:hover{ background:var(--soft-stone); }
+  .case-row:last-child{ border-bottom:none; }
+  .case-title-cell{ display:flex; flex-direction:column; gap:5px; min-width:0; }
+  .case-title-cell strong{ font-size:14.5px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .case-cat{
+    align-self:flex-start; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.28px;
+    text-transform:uppercase; color:var(--slate);
+  }
+  .status-badge{
+    justify-self:start; font-size:12px; font-weight:500; padding:5px 12px; border-radius:var(--r-full);
+    white-space:nowrap;
+  }
+  .status-badge.needs{ background:#fdece6; color:#b8460e; }
+  .status-badge.review{ background:var(--pale-blue); color:var(--action-blue); }
+  .status-badge.resolved{ background:var(--pale-green); color:var(--success); }
+  .case-date{ font-size:12.5px; color:var(--muted); }
+  .case-chevron{ font-size:14px; color:var(--muted); transition:transform .2s ease; }
+  .case-row.open .case-chevron{ transform:rotate(90deg); }
+
+  .case-detail{ display:none; padding:0 22px 22px; border-bottom:1px solid var(--card-border); }
+  .case-detail.open{ display:block; }
+  .timeline{ display:flex; gap:0; margin:10px 0 18px; }
+  .timeline-step{ flex:1; display:flex; flex-direction:column; gap:8px; position:relative; }
+  .timeline-step .bar{ height:3px; background:var(--card-border); border-radius:2px; }
+  .timeline-step.done .bar{ background:var(--deep-green); }
+  .timeline-step.current .bar{ background:var(--coral); }
+  .timeline-step span{ font-size:11.5px; color:var(--body-muted); }
+  .timeline-step.done span, .timeline-step.current span{ color:var(--ink); font-weight:500; }
+  .case-detail-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .case-detail p.desc{ font-size:13.5px; color:var(--body-muted); margin-bottom:14px; max-width:600px; line-height:1.55; }
+
+  .empty-state{ padding:60px 22px; text-align:center; color:var(--muted); font-size:13.5px; display:none; }
+  .empty-state.show{ display:block; }
+
+  /* ===== sidebar ===== */
+  .side-stack{ display:flex; flex-direction:column; gap:20px; }
+  .side-panel{ border:1px solid var(--card-border); border-radius:var(--r-sm); padding:20px 22px; }
+  .side-panel h4{ font-size:16px; font-weight:500; margin-bottom:14px; }
+
+  .quick-actions-list{ display:flex; flex-direction:column; gap:10px; }
+  .qa-item{
+    display:flex; align-items:center; gap:12px; padding:12px; border-radius:var(--r-xs);
+    border:1px solid var(--card-border);
+  }
+  .qa-item:hover{ background:var(--soft-stone); }
+  .qa-item .qa-icon{ width:34px; height:34px; border-radius:var(--r-xs); background:var(--pale-green); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .qa-item .qa-copy strong{ display:block; font-size:13.5px; font-weight:500; }
+  .qa-item .qa-copy span{ font-size:12px; color:var(--muted); }
+
+  .todo-list{ display:flex; flex-direction:column; gap:2px; }
+  .todo-item{ display:flex; align-items:flex-start; gap:10px; padding:9px 0; border-bottom:1px solid var(--card-border); }
+  .todo-item:last-child{ border-bottom:none; }
+  .todo-check{
+    width:17px; height:17px; border-radius:5px; border:1.5px solid var(--border-light);
+    flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center; font-size:10px; color:#fff;
+  }
+  .todo-item.done .todo-check{ background:var(--deep-green); border-color:var(--deep-green); }
+  .todo-item .todo-text strong{ display:block; font-size:13px; font-weight:500; }
+  .todo-item.done .todo-text strong{ text-decoration:line-through; color:var(--muted); }
+  .todo-item .todo-text span{ font-size:11.5px; color:var(--muted); }
+
+  .doc-list{ display:flex; flex-direction:column; gap:2px; }
+  .doc-item{ display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--card-border); }
+  .doc-item:last-child{ border-bottom:none; }
+  .doc-icon{ font-size:16px; }
+  .doc-info{ flex:1; min-width:0; }
+  .doc-info strong{ display:block; font-size:13px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .doc-info span{ font-size:11px; color:var(--muted); }
+  .doc-remove{ width:22px; height:22px; border-radius:50%; font-size:11px; color:var(--muted); flex-shrink:0; }
+  .doc-remove:hover{ background:var(--soft-stone); color:var(--error); }
+  .upload-btn{
+    margin-top:14px; width:100%; border:1px dashed var(--border-light); border-radius:var(--r-xs);
+    padding:12px; font-size:13px; color:var(--body-muted); text-align:center;
+  }
+  .upload-btn:hover{ border-color:var(--deep-green); color:var(--deep-green); background:var(--pale-green); }
+
+  /* ===== activity feed ===== */
+  .activity-panel{ margin-top:24px; }
+  .activity-row{ display:flex; gap:12px; padding:13px 22px; border-bottom:1px solid var(--card-border); align-items:flex-start; }
+  .activity-row:last-child{ border-bottom:none; }
+  .activity-icon{ font-size:15px; margin-top:1px; }
+  .activity-text{ font-size:13.5px; color:var(--ink); }
+  .activity-time{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+
+  /* ===== toast ===== */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--primary); color:#fff; padding:12px 22px; border-radius:var(--r-sm);
+    font-size:14px; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s;
+    z-index:999; box-shadow:0 12px 28px rgba(0,0,0,.18);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media (max-width:640px){
+    .case-row{ grid-template-columns:1fr auto; grid-template-areas:"title chev" "status status" "date date"; row-gap:8px; }
+    .case-row .case-title-cell{ grid-area:title; }
+    .case-row .case-chevron{ grid-area:chev; }
+    .case-row .status-badge{ grid-area:status; }
+    .case-row .case-date{ grid-area:date; }
+    .panel-header{ flex-direction:column; align-items:flex-start; }
+    .search-box{ width:100%; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="site-nav">
+    <div class="nav-inner">
+      <a href="/" class="brand">
+        <span class="brand-icon">⚖️</span>
+        <span class="brand-text">NyaySetu</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" class="nav-link active">Dashboard</a>
+        <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
+        <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
+        <a href="/help-support" class="nav-link">Help &amp; Support</a>
+      </div>
+      <div class="nav-right">
+        <div class="lang-dropdown">
+          <button class="lang-toggle" id="langToggle">🌐 <span id="langLabel">English</span> ▾</button>
+          <ul class="dropdown-panel lang-menu" id="langMenu">
+            <li data-lang="English" class="selected">English</li>
+            <li data-lang="हिंदी">हिंदी</li>
+            <li data-lang="मराठी">मराठी</li>
+            <li data-lang="தமிழ்">தமிழ்</li>
+            <li data-lang="বাংলা">বাংলা</li>
+            <li data-lang="ਪੰਜਾਬੀ">ਪੰਜਾਬੀ</li>
+          </ul>
+        </div>
+        <div class="notif-dropdown">
+          <button class="icon-btn notif-btn" id="notifToggle" aria-label="Notifications">🔔<span class="notif-dot" id="notifDot"></span></button>
+          <div class="dropdown-panel notif-panel" id="notifPanel">
+            <div class="panel-head">Notifications</div>
+            <div id="notifList"></div>
+          </div>
+        </div>
+        <div class="account-area">
+          <button class="account-toggle" id="accountToggle">
+            <span class="account-avatar">A</span>
+            <span class="account-name">Aditi</span>
+            <span>▾</span>
+          </button>
+          <ul class="dropdown-panel account-menu" id="accountMenu">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#" id="settingsLink">Settings</a></li>
+            <li class="divider"><button class="danger" id="logoutBtn">Logout</button></li>
+          </ul>
+        </div>
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-sheet-backdrop" id="mobileSheetBackdrop"></div>
+  <div class="mobile-sheet" id="mobileSheet">
+    <button class="mobile-sheet-close" id="mobileSheetClose" aria-label="Close menu">✕</button>
+    <a href="#" class="nav-link">Dashboard</a>
+    <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
+    <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
+    <a href="/help-support" class="nav-link">Help &amp; Support</a>
+    <a href="/new-issue" class="btn btn-primary">Describe New Issue</a>
+  </div>
+
+  <div class="wrap">
+    <div class="page-header">
+      <div>
+        <span class="mono-label">Dashboard</span>
+        <h1>Welcome back, Aditi.</h1>
+        <p class="subtext">Here's where your cases, documents, and next steps stand today.</p>
+      </div>
+      <div class="header-actions">
+        <a href="/new-issue" class="btn btn-primary">+ Describe New Issue</a>
+      </div>
+    </div>
+
+    <div class="stats-row" id="statsRow"></div>
+
+    <div class="dash-grid">
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <h3>My Cases</h3>
+            <div class="search-box">
+              <span>🔍</span>
+              <input type="text" id="caseSearch" placeholder="Search your cases…">
+            </div>
+          </div>
+          <div class="filter-row" id="filterRow">
+            <button class="btn-pill-outline active" data-filter="all">All</button>
+            <button class="btn-pill-outline" data-filter="needs">Action needed</button>
+            <button class="btn-pill-outline" data-filter="review">In review</button>
+            <button class="btn-pill-outline" data-filter="resolved">Resolved</button>
+          </div>
+          <div class="case-table" id="caseTable"></div>
+          <div class="empty-state" id="emptyState">No cases match this filter yet.</div>
+        </div>
+
+        <div class="panel activity-panel">
+          <div class="panel-header"><h3>Recent Activity</h3></div>
+          <div id="activityList"></div>
+        </div>
+      </div>
+
+      <div class="side-stack">
+        <div class="side-panel">
+          <h4>Quick actions</h4>
+          <div class="quick-actions-list">
+            <a href="new-issue.html" class="qa-item">
+              <span class="qa-icon">💬</span>
+              <span class="qa-copy"><strong>Describe a new issue</strong><span>Start a fresh case intake</span></span>
+            </a>
+            <button class="qa-item" id="qaAnalyzeDoc" style="width:100%; text-align:left;">
+              <span class="qa-icon">📄</span>
+              <span class="qa-copy"><strong>Analyze a document</strong><span>Upload for a plain-language read</span></span>
+            </button>
+            <button class="qa-item" id="qaFindLawyer" style="width:100%; text-align:left;">
+              <span class="qa-icon">⚖️</span>
+              <span class="qa-copy"><strong>Find a lawyer</strong><span>Connect with a verified professional</span></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="side-panel">
+          <h4>Upcoming actions</h4>
+          <div class="todo-list" id="todoList"></div>
+        </div>
+
+        <div class="side-panel">
+          <h4>Recent documents</h4>
+          <div class="doc-list" id="docList"></div>
+          <button class="upload-btn" id="uploadDocBtn" type="button">＋ Upload a document</button>
+          <input type="file" id="docFileInput" hidden multiple>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ==========================================================================
+    // 🔌 DATA INTEGRATION POINT
+    // ==========================================================================
+    // Replace the bodies of these functions with real calls to your backend.
+    // Each returns (or resolves to) the shape shown by the sample data below —
+    // swap the SAMPLE_* constants for a fetch() to your API and everything
+    // downstream (rendering, filtering, search) keeps working unchanged.
+    // ==========================================================================
+    async function fetchStats()     { return SAMPLE_STATS; }
+    async function fetchCases()     { return SAMPLE_CASES; }
+    async function fetchTodos()     { return SAMPLE_TODOS; }
+    async function fetchDocuments() { return SAMPLE_DOCS; }
+    async function fetchActivity()  { return SAMPLE_ACTIVITY; }
+    async function fetchNotifications() { return SAMPLE_NOTIFS; }
+
+    // ---- sample data (delete once your API is wired up) ----
+    const SAMPLE_STATS = [
+      { label:'Active cases', value:'3', delta:'+1 this month', tone:'st-1' },
+      { label:'Resolved', value:'7', delta:'2 in the last 30 days', tone:'st-2' },
+      { label:'Pending actions', value:'2', delta:'1 due this week', tone:'st-3' },
+      { label:'Documents on file', value:'12', delta:'+3 this month', tone:'st-4' }
+    ];
+
+    const SAMPLE_CASES = [
+      { id:'c1', title:'Illegal eviction notice from landlord', category:'Tenant & Property', status:'needs', updated:'Today',
+        desc:"You reported a 3-day eviction notice with no written warning. Most State Rent Control Acts require a minimum notice period — we're preparing a response letter for you.",
+        step:1 },
+      { id:'c2', title:'Two months of unpaid salary', category:'Employment & Labour', status:'review', updated:'2 days ago',
+        desc:"Your employer has not responded to the wage demand. Our review is checking your applicable Labour Code and the fastest forum to file a claim.",
+        step:2 },
+      { id:'c3', title:'Refund denied for defective order', category:'Consumer Protection', status:'resolved', updated:'1 week ago',
+        desc:"Resolved — a refund was issued after filing under the Consumer Protection Act, 2019. Case closed and archived.",
+        step:4 },
+      { id:'c4', title:'RTI application follow-up', category:'Right to Information', status:'review', updated:'3 days ago',
+        desc:"Your RTI application has crossed the statutory response window. We've drafted a first-appeal letter for you to review.",
+        step:2 },
+      { id:'c5', title:'Security deposit not returned', category:'Tenant & Property', status:'needs', updated:'5 days ago',
+        desc:"Your landlord has not returned the deposit 45 days after move-out. A demand letter is ready for you to send.",
+        step:1 }
+    ];
+
+    const SAMPLE_TODOS = [
+      { text:'Send eviction response letter', due:'Due today', done:false },
+      { text:'Upload your rental agreement', due:'Due tomorrow', done:false },
+      { text:'Confirm RTI appeal draft', due:'Due in 3 days', done:false },
+      { text:'Review consumer case closure', due:'Completed', done:true }
+    ];
+
+    const SAMPLE_DOCS = [
+      { name:'Rental_Agreement_2024.pdf', size:'1.2 MB', date:'Uploaded Jun 12' },
+      { name:'Eviction_Notice_Photo.jpg', size:'3.4 MB', date:'Uploaded Jul 1' },
+      { name:'Salary_Slips_MayJune.pdf', size:'640 KB', date:'Uploaded Jun 28' }
+    ];
+
+    const SAMPLE_ACTIVITY = [
+      { icon:'📝', text:"Response letter drafted for 'Illegal eviction notice'", time:'2 hours ago' },
+      { icon:'📄', text:"You uploaded Eviction_Notice_Photo.jpg", time:'Yesterday' },
+      { icon:'✅', text:"'Refund denied for defective order' marked resolved", time:'1 week ago' },
+      { icon:'💬', text:"Follow-up questions answered for RTI case", time:'1 week ago' }
+    ];
+
+    const SAMPLE_NOTIFS = [
+      { text:'Your eviction case needs a response by Friday.', time:'2h ago', read:false },
+      { text:'RTI first-appeal draft is ready to review.', time:'1d ago', read:false },
+      { text:'Consumer refund case was marked resolved.', time:'1w ago', read:true }
+    ];
+
+    // ---- toast ----
+    let toastTimer;
+    function showToast(msg){
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    // ---- render: stats ----
+    function renderStats(stats){
+      const row = document.getElementById('statsRow');
+      row.innerHTML = stats.map(s => `
+        <div class="stat-card ${s.tone}">
+          <span class="stat-num">${s.value}</span>
+          <span class="stat-label">${s.label}</span>
+          <span class="stat-delta">${s.delta}</span>
+        </div>`).join('');
+    }
+
+    // ---- render: cases ----
+    let ALL_CASES = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    const STATUS_LABEL = { needs:'Action needed', review:'In review', resolved:'Resolved' };
+    const STEPS = ['Submitted','Under review','Guidance ready','Resolved'];
+
+    function renderCases(){
+      const table = document.getElementById('caseTable');
+      const empty = document.getElementById('emptyState');
+      const q = currentSearch.toLowerCase();
+      const filtered = ALL_CASES.filter(c =>
+        (currentFilter === 'all' || c.status === currentFilter) &&
+        (q === '' || c.title.toLowerCase().includes(q) || c.category.toLowerCase().includes(q))
+      );
+
+      if (filtered.length === 0){
+        table.innerHTML = '';
+        empty.classList.add('show');
+        return;
+      }
+      empty.classList.remove('show');
+
+      table.innerHTML = filtered.map(c => `
+        <div class="case-row" data-id="${c.id}">
+          <div class="case-title-cell">
+            <strong>${c.title}</strong>
+            <span class="case-cat">${c.category}</span>
+          </div>
+          <span class="status-badge ${c.status}">${STATUS_LABEL[c.status]}</span>
+          <span class="case-date">${c.updated}</span>
+          <span class="case-chevron">›</span>
+        </div>
+        <div class="case-detail" data-detail-for="${c.id}">
+          <p class="desc">${c.desc}</p>
+          <div class="timeline">
+            ${STEPS.map((label, i) => `
+              <div class="timeline-step ${i < c.step ? 'done' : i === c.step ? 'current' : ''}">
+                <div class="bar"></div>
+                <span>${label}</span>
+              </div>`).join('')}
+          </div>
+          <div class="case-detail-actions">
+            <a href="new-issue.html" class="btn btn-primary">Continue conversation</a>
+            <button class="btn-pill-outline mark-resolved" data-id="${c.id}">Mark as resolved</button>
+          </div>
+        </div>
+      `).join('');
+
+      table.querySelectorAll('.case-row').forEach(row => {
+        row.addEventListener('click', e => {
+          if (e.target.closest('.mark-resolved')) return;
+          const id = row.dataset.id;
+          const detail = table.querySelector(`.case-detail[data-detail-for="${id}"]`);
+          const isOpen = row.classList.contains('open');
+          table.querySelectorAll('.case-row.open').forEach(r => r.classList.remove('open'));
+          table.querySelectorAll('.case-detail.open').forEach(d => d.classList.remove('open'));
+          if (!isOpen){
+            row.classList.add('open');
+            detail.classList.add('open');
+          }
+        });
+      });
+
+      table.querySelectorAll('.mark-resolved').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const id = btn.dataset.id;
+          const c = ALL_CASES.find(x => x.id === id);
+          if (c){ c.status = 'resolved'; c.step = 4; c.updated = 'Just now'; }
+          showToast('Case marked as resolved.');
+          renderCases();
+        });
+      });
+    }
+
+    document.getElementById('filterRow').addEventListener('click', e => {
+      const btn = e.target.closest('.btn-pill-outline');
+      if (!btn) return;
+      document.querySelectorAll('#filterRow .btn-pill-outline').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFilter = btn.dataset.filter;
+      renderCases();
+    });
+
+    document.getElementById('caseSearch').addEventListener('input', e => {
+      currentSearch = e.target.value;
+      renderCases();
+    });
+
+    // ---- render: todos ----
+    function renderTodos(todos){
+      const list = document.getElementById('todoList');
+      list.innerHTML = todos.map((t, i) => `
+        <div class="todo-item ${t.done ? 'done' : ''}" data-i="${i}">
+          <div class="todo-check">${t.done ? '✓' : ''}</div>
+          <div class="todo-text"><strong>${t.text}</strong><span>${t.due}</span></div>
+        </div>`).join('');
+
+      list.querySelectorAll('.todo-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const i = item.dataset.i;
+          todos[i].done = !todos[i].done;
+          renderTodos(todos);
+        });
+      });
+    }
+
+    // ---- render: documents ----
+    let DOCS = [];
+    function renderDocs(){
+      const list = document.getElementById('docList');
+      list.innerHTML = DOCS.map((d, i) => `
+        <div class="doc-item">
+          <span class="doc-icon">📄</span>
+          <div class="doc-info"><strong>${d.name}</strong><span>${d.size} · ${d.date}</span></div>
+          <button class="doc-remove" data-i="${i}" aria-label="Remove document">✕</button>
+        </div>`).join('');
+
+      list.querySelectorAll('.doc-remove').forEach(btn => {
+        btn.addEventListener('click', () => {
+          DOCS.splice(btn.dataset.i, 1);
+          renderDocs();
+          showToast('Document removed.');
+        });
+      });
+    }
+
+    document.getElementById('uploadDocBtn').addEventListener('click', () => document.getElementById('docFileInput').click());
+    document.getElementById('docFileInput').addEventListener('change', e => {
+      Array.from(e.target.files).forEach(f => {
+        DOCS.unshift({ name:f.name, size:(f.size/1024).toFixed(0) + ' KB', date:'Uploaded just now' });
+      });
+      e.target.value = '';
+      renderDocs();
+      showToast('Document uploaded.');
+    });
+
+    // ---- render: activity ----
+    function renderActivity(activity){
+      document.getElementById('activityList').innerHTML = activity.map(a => `
+        <div class="activity-row">
+          <span class="activity-icon">${a.icon}</span>
+          <div><div class="activity-text">${a.text}</div><div class="activity-time">${a.time}</div></div>
+        </div>`).join('');
+    }
+
+    // ---- render: notifications ----
+    function renderNotifs(notifs){
+      const unread = notifs.filter(n => !n.read).length;
+      document.getElementById('notifDot').style.display = unread > 0 ? 'block' : 'none';
+      document.getElementById('notifList').innerHTML = notifs.map((n, i) => `
+        <div class="notif-item ${n.read ? 'read' : ''}" data-i="${i}">
+          <span class="dot"></span>
+          <p>${n.text}<span>${n.time}</span></p>
+        </div>`).join('');
+
+      document.querySelectorAll('.notif-item').forEach(item => {
+        item.addEventListener('click', () => {
+          notifs[item.dataset.i].read = true;
+          renderNotifs(notifs);
+        });
+      });
+    }
+
+    // ---- quick action buttons ----
+    document.getElementById('qaAnalyzeDoc').addEventListener('click', () => {
+      document.getElementById('docFileInput').click();
+    });
+    document.getElementById('qaFindLawyer').addEventListener('click', () => {
+      showToast('Opening Find a Lawyer — connect this to your /find-lawyer page.');
+    });
+
+    // ---- account / lang / notif dropdowns ----
+    function wireDropdown(toggleId, panelId){
+      const toggle = document.getElementById(toggleId);
+      const panel = document.getElementById(panelId);
+      toggle.addEventListener('click', e => {
+        e.stopPropagation();
+        document.querySelectorAll('.dropdown-panel').forEach(p => { if (p !== panel) p.classList.remove('open'); });
+        panel.classList.toggle('open');
+      });
+    }
+    wireDropdown('langToggle', 'langMenu');
+    wireDropdown('notifToggle', 'notifPanel');
+    wireDropdown('accountToggle', 'accountMenu');
+
+    document.getElementById('langMenu').addEventListener('click', e => {
+      const item = e.target.closest('li');
+      if (!item) return;
+      document.getElementById('langLabel').textContent = item.dataset.lang;
+      document.querySelectorAll('#langMenu li').forEach(li => li.classList.remove('selected'));
+      item.classList.add('selected');
+      document.getElementById('langMenu').classList.remove('open');
+    });
+
+    document.getElementById('settingsLink').addEventListener('click', e => {
+      e.preventDefault();
+      showToast('Opening Settings — connect this to your /settings page.');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      showToast("You've been logged out.");
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
+    });
+
+    // ---- mobile nav sheet ----
+    const mobileSheet = document.getElementById('mobileSheet');
+    const mobileSheetBackdrop = document.getElementById('mobileSheetBackdrop');
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      mobileSheet.classList.add('open');
+      mobileSheetBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+    function closeMobileSheet(){
+      mobileSheet.classList.remove('open');
+      mobileSheetBackdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('mobileSheetClose').addEventListener('click', closeMobileSheet);
+    mobileSheetBackdrop.addEventListener('click', closeMobileSheet);
+    mobileSheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileSheet));
+
+    // ---- init ----
+    (async function init(){
+      renderStats(await fetchStats());
+      ALL_CASES = await fetchCases();
+      renderCases();
+      renderTodos(await fetchTodos());
+      DOCS = await fetchDocuments();
+      renderDocs();
+      renderActivity(await fetchActivity());
+      renderNotifs(await fetchNotifications());
+    })();
+  </script>
+</body>
+</html>
