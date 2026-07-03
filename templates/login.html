@@ -9,213 +9,408 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --purple: #5b4dee;
-            --purple-dark: #4a3dd9;
-            --text-dark: #1a1a2e;
-            --text-gray: #6b7280;
-            --border: #e5e7eb;
-            --bg-soft: #f8f8fc;
+            --primary: #17171c;
+            --ink: #212121;
+            --canvas: #ffffff;
+            --soft-stone: #eeece7;
+            --pale-green: #edfce9;
+            --hairline: #d9d9dd;
+            --border-light: #e5e7eb;
+            --card-border: #f2f2f2;
+            --muted: #93939f;
+            --slate: #75758a;
+            --body-muted: #616161;
+            --action-blue: #1863dc;
+            --focus-blue: #4c6ee6;
+            --coral: #ff7759;
+            --coral-soft: #ffad9b;
+            --form-focus: #9b60aa;
+            --error: #b30000;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #eef0ff 0%, #f5eefc 100%);
+            font-family: "Unica77 Cohere Web", Inter, Arial, ui-sans-serif, system-ui, sans-serif;
+            background: var(--canvas);
+            color: var(--ink);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
         }
 
         a { text-decoration: none; color: inherit; }
 
-        .card {
-            background: #fff;
-            border-radius: 18px;
-            padding: 36px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+        .layout {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
         }
 
-        .logo {
+        /* ---------- Left panel : brand / signature ---------- */
+        .brand-panel {
+            background: var(--primary);
+            color: #ffffff;
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 56px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-top .mark {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            justify-content: center;
-            margin-bottom: 22px;
+            font-family: "CohereMono", Arial, ui-sans-serif, system-ui, monospace;
+            font-size: 14px;
+            letter-spacing: 0.28px;
+            color: var(--coral-soft);
+            text-transform: uppercase;
         }
 
-        .logo-icon { font-size: 28px; }
-
-        .logo-text h1 {
-            font-size: 18px;
-            font-weight: 800;
-            text-align: center;
+        .mark .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--coral);
+            display: inline-block;
         }
 
-        .logo-text span {
-            font-size: 11px;
-            color: var(--text-gray);
+        .brand-mid {
+            max-width: 460px;
+        }
+
+        .brand-mid .eyebrow {
+            font-family: "CohereMono", Arial, ui-sans-serif, system-ui, monospace;
+            font-size: 14px;
+            letter-spacing: 0.28px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 20px;
             display: block;
-            text-align: center;
         }
 
-        h2 {
-            font-size: 20px;
-            font-weight: 800;
-            margin-bottom: 4px;
-            text-align: center;
+        .brand-mid h1 {
+            font-family: "CohereText", "Space Grotesk", Inter, ui-sans-serif, system-ui, sans-serif;
+            font-weight: 400;
+            font-size: 60px;
+            line-height: 1.02;
+            letter-spacing: -1.2px;
+            margin-bottom: 24px;
         }
 
-        .sub {
+        .brand-mid p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #d7d7de;
+            max-width: 380px;
+        }
+
+        .lang-strip {
+            display: flex;
+            gap: 10px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .lang-chip {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #e8e8ec;
             font-size: 13px;
-            color: var(--text-gray);
-            text-align: center;
-            margin-bottom: 22px;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-family: inherit;
+        }
+
+        .brand-bottom {
+            font-size: 13px;
+            color: var(--muted);
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            padding-top: 20px;
+        }
+
+        /* subtle decorative line-art, thin geometric, on-brand not decorative-heavy */
+        .brand-panel::before {
+            content: "";
+            position: absolute;
+            right: -140px;
+            top: -140px;
+            width: 420px;
+            height: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+        .brand-panel::after {
+            content: "";
+            position: absolute;
+            right: -60px;
+            top: -60px;
+            width: 300px;
+            height: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+        }
+
+        /* ---------- Right panel : form ---------- */
+        .form-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: var(--canvas);
+        }
+
+        .form-card {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-card h2 {
+            font-family: "Unica77 Cohere Web", Inter, Arial, sans-serif;
+            font-weight: 400;
+            font-size: 32px;
+            letter-spacing: -0.32px;
+            margin-bottom: 8px;
+        }
+
+        .form-card .sub {
+            font-size: 14px;
+            color: var(--body-muted);
+            margin-bottom: 28px;
+        }
+
+        .flash {
+            background: #fdecec;
+            color: var(--error);
+            border: 1px solid #f6d0d0;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 20px;
         }
 
         .tabs {
             display: flex;
-            background: var(--bg-soft);
-            border-radius: 10px;
-            padding: 4px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 28px;
+            border-bottom: 1px solid var(--hairline);
         }
 
         .tab-btn {
-            flex: 1;
             border: none;
             background: none;
-            padding: 9px;
-            font-size: 13px;
-            font-weight: 600;
-            border-radius: 8px;
+            font-family: "Unica77 Cohere Web", Inter, Arial, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            padding: 10px 4px 12px;
             cursor: pointer;
-            color: var(--text-gray);
+            position: relative;
         }
 
-        .tab-btn.active {
-            background: #fff;
-            color: var(--purple);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        .tab-btn.active { color: var(--ink); }
+
+        .tab-btn.active::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -1px;
+            height: 2px;
+            background: var(--primary);
         }
 
-        form { display: none; flex-direction: column; gap: 14px; }
+        .tab-btn + .tab-btn { margin-left: 8px; }
+
+        form { display: none; flex-direction: column; gap: 18px; }
         form.active { display: flex; }
 
         .field label {
-            font-size: 12px;
-            font-weight: 600;
-            color: #374151;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--ink);
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
         }
 
         .field input {
             width: 100%;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 11px 12px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            padding: 12px 14px;
             font-size: 14px;
             font-family: inherit;
             outline: none;
+            background: var(--canvas);
+            color: var(--ink);
+            transition: border-color 0.15s ease;
         }
 
-        .field input:focus { border-color: var(--purple); }
+        .field input::placeholder { color: var(--muted); }
+
+        .field input:focus {
+            border-color: var(--form-focus);
+        }
 
         .submit-btn {
             width: 100%;
-            background: var(--purple);
-            color: #fff;
-            padding: 12px;
-            border-radius: 8px;
+            background: var(--primary);
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 32px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             border: none;
             cursor: pointer;
-            margin-top: 4px;
+            margin-top: 6px;
+            font-family: inherit;
+            transition: opacity 0.15s ease;
         }
 
-        .submit-btn:hover { background: var(--purple-dark); }
+        .submit-btn:hover { opacity: 0.85; }
+
+        .divider-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .divider-row::before,
+        .divider-row::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--hairline);
+        }
+
+        .google-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid var(--border-light);
+            border-radius: 32px;
+            padding: 11px 24px;
+            background: var(--canvas);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .google-btn:hover { border-color: var(--muted); }
 
         .back-link {
             display: block;
-            text-align: center;
-            margin-top: 22px;
+            margin-top: 28px;
             font-size: 13px;
-            color: var(--text-gray);
+            color: var(--slate);
         }
 
-        .back-link:hover { color: var(--purple); }
+        .back-link:hover { color: var(--action-blue); }
 
-        .flash {
-            background: #fee2e2;
-            color: #dc2626;
-            border-radius: 8px;
-            padding: 10px 12px;
-            font-size: 13px;
-            margin-bottom: 16px;
-            text-align: center;
+        @media (max-width: 860px) {
+            .layout { grid-template-columns: 1fr; }
+            .brand-panel { display: none; }
+            .form-panel { padding: 24px; min-height: 100vh; }
         }
     </style>
 </head>
 
 <body>
-    <div class="card">
-        <div class="logo">
-            <span class="logo-icon">⚖️</span>
+    <div class="layout">
+
+        <!-- Brand / signature panel -->
+        <div class="brand-panel">
+            <div class="brand-top">
+                <span class="mark"><span class="dot"></span>NyaySetu</span>
+            </div>
+
+            <div class="brand-mid">
+                <span class="eyebrow">Legal guidance, in your language</span>
+                <h1>Understand<br>your rights.</h1>
+                <p>Describe your issue, get grounded legal guidance, and track your case — in English, Hindi, or Marathi.</p>
+                <div class="lang-strip">
+                    <span class="lang-chip">English</span>
+                    <span class="lang-chip">हिंदी</span>
+                    <span class="lang-chip">मराठी</span>
+                </div>
+            </div>
+
+            <div class="brand-bottom">
+                <span>Batch 2025–2029</span>
+                <span>NyaySetu © 2026</span>
+            </div>
         </div>
-        <div class="logo-text">
-            <h1>NyaySetu</h1>
-            <span>Understand Your Rights</span>
+
+        <!-- Form panel -->
+        <div class="form-panel">
+            <div class="form-card">
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for msg in messages %}
+                            <div class="flash">{{ msg }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <h2 id="formTitle">Welcome back</h2>
+                <p class="sub" id="formSub">Sign in to save your issues and get personalised guidance.</p>
+
+                <div class="tabs">
+                    <button class="tab-btn active" id="tabLogin" type="button">Sign in</button>
+                    <button class="tab-btn" id="tabSignup" type="button">Sign up</button>
+                </div>
+
+                <form id="loginForm" class="active" action="/login" method="POST">
+                    <div class="field">
+                        <label>Email address</label>
+                        <input type="email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="field">
+                        <label>Password</label>
+                        <input type="password" name="password" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="submit-btn">Sign in</button>
+                </form>
+
+                <form id="signupForm" action="/signup" method="POST">
+                    <div class="field">
+                        <label>Full name</label>
+                        <input type="text" name="name" required placeholder="Your name">
+                    </div>
+                    <div class="field">
+                        <label>Email address</label>
+                        <input type="email" name="email" required placeholder="you@example.com">
+                    </div>
+                    <div class="field">
+                        <label>Password</label>
+                        <input type="password" name="password" required placeholder="••••••••" minlength="6">
+                    </div>
+                    <button type="submit" class="submit-btn">Create account</button>
+                </form>
+
+                <div class="divider-row">or</div>
+
+                <button class="google-btn" type="button" onclick="window.location.href='/login/google'">
+                    <svg width="16" height="16" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.5-.2-3-.4-4.5z"/>
+                        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5c-7.5 0-14 4.2-17.7 10.2z"/>
+                        <path fill="#4CAF50" d="M24 45.5c5.2 0 9.9-1.8 13.4-4.8l-6.2-5.2C29.2 37 26.7 37.9 24 37.9c-5.3 0-9.7-3-11.6-7.3l-6.5 5C9.5 41.3 16.2 45.5 24 45.5z"/>
+                        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3-3.3 5.4-6.1 6.9l6.2 5.2C39.4 37.5 44.5 32 44.5 25c0-1.5-.2-3-.4-4.5z"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <a href="/" class="back-link">← Back to home</a>
+            </div>
         </div>
-
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for msg in messages %}
-                    <div class="flash">{{ msg }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <h2 style="margin-top:18px;">Welcome back</h2>
-        <p class="sub">Sign in to save your issues and get personalised guidance.</p>
-
-        <div class="tabs">
-            <button class="tab-btn active" id="tabLogin" type="button">Sign in</button>
-            <button class="tab-btn" id="tabSignup" type="button">Sign up</button>
-        </div>
-
-        <form id="loginForm" class="active" action="/login" method="POST">
-            <div class="field">
-                <label>Email address</label>
-                <input type="email" name="email" required placeholder="you@example.com">
-            </div>
-            <div class="field">
-                <label>Password</label>
-                <input type="password" name="password" required placeholder="••••••••">
-            </div>
-            <button type="submit" class="submit-btn">Sign in</button>
-        </form>
-
-        <form id="signupForm" action="/signup" method="POST">
-            <div class="field">
-                <label>Full name</label>
-                <input type="text" name="name" required placeholder="Your name">
-            </div>
-            <div class="field">
-                <label>Email address</label>
-                <input type="email" name="email" required placeholder="you@example.com">
-            </div>
-            <div class="field">
-                <label>Password</label>
-                <input type="password" name="password" required placeholder="••••••••" minlength="6">
-            </div>
-            <button type="submit" class="submit-btn">Create account</button>
-        </form>
-
-        <a href="/" class="back-link">← Back to home</a>
     </div>
 
     <script>
@@ -223,12 +418,16 @@
         const tabSignup = document.getElementById('tabSignup');
         const loginForm = document.getElementById('loginForm');
         const signupForm = document.getElementById('signupForm');
+        const formTitle = document.getElementById('formTitle');
+        const formSub = document.getElementById('formSub');
 
         tabLogin.addEventListener('click', () => {
             tabLogin.classList.add('active');
             tabSignup.classList.remove('active');
             loginForm.classList.add('active');
             signupForm.classList.remove('active');
+            formTitle.textContent = 'Welcome back';
+            formSub.textContent = 'Sign in to save your issues and get personalised guidance.';
         });
 
         tabSignup.addEventListener('click', () => {
@@ -236,6 +435,8 @@
             tabLogin.classList.remove('active');
             signupForm.classList.add('active');
             loginForm.classList.remove('active');
+            formTitle.textContent = 'Create your account';
+            formSub.textContent = 'Get started with personalised legal guidance in minutes.';
         });
     </script>
 </body>
