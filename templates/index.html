@@ -8,7 +8,7 @@
     <meta name="description" content="NyaySetu turns your legal problem into clear next steps — free, private, and available in 8 Indian languages.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@600;700&family=Noto+Nastaliq+Urdu:wght@600;700&family=Noto+Sans+Bengali:wght@600;700&family=Noto+Sans+Tamil:wght@600;700&family=Noto+Sans+Telugu:wght@600;700&family=Noto+Sans+Kannada:wght@600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -516,6 +516,39 @@
             color: var(--accent);
         }
 
+        /* Hero language flip animation */
+        .lang-flip-wrap {
+            display: block;
+            overflow: hidden;
+            width: 100%;
+            margin-top: 2px;
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lang-flip-text {
+            display: block;
+            width: 100%;
+            text-align: center;
+            color: var(--accent);
+            line-height: 1.2;
+            white-space: normal;
+            word-break: normal;
+            overflow-wrap: break-word;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .lang-flip-text.flip-out {
+            opacity: 0;
+            transform: translateY(-0.4em);
+        }
+
+        .lang-flip-text.flip-in-start {
+            opacity: 0;
+            transform: translateY(0.4em);
+        }
+
         .hero p.lead {
             margin: 22px auto 0;
             max-width: 560px;
@@ -561,6 +594,35 @@
             flex-direction: column;
             gap: 16px;
             min-height: 320px;
+        }
+
+        /* Reveal-on-view: console card pops in with a slight bounce */
+        .reveal-pop {
+            opacity: 0;
+            transform: scale(0.88) translateY(26px);
+            transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
+                        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .reveal-pop.in-view {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Reveal-on-view: gentler fade for elements that shouldn't compete with the pop */
+        .reveal-fade {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.55s ease, transform 0.55s ease;
+        }
+
+        .reveal-fade.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-fade.reveal-delay {
+            transition-delay: 0.15s;
         }
 
         .console-card .console-head {
@@ -719,12 +781,34 @@
             margin-bottom: 20px;
         }
 
-        .trust-chips {
+        /* Infinite trust chip carousel */
+        .trust-marquee {
+            width: 100%;
+            overflow: hidden;
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .trust-track {
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 12px;
-            flex-wrap: wrap;
+            width: max-content;
+            animation: trust-scroll 26s linear infinite;
+        }
+
+        .trust-marquee:hover .trust-track {
+            animation-play-state: paused;
+        }
+
+        @keyframes trust-scroll {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
         }
 
         .trust-chip {
@@ -734,6 +818,8 @@
             font-size: 13px;
             font-weight: 600;
             color: var(--text-gray);
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         /* ========== QUICK ACTIONS ========== */
@@ -762,6 +848,23 @@
             gap: 16px;
             padding: 0 0 90px;
         }
+
+        /* Reveal-on-view: quick-action cards cascade in one after another */
+        .quick-actions .qa-card {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .quick-actions.in-view .qa-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .quick-actions.in-view .qa-card:nth-child(1) { transition-delay: 0s; }
+        .quick-actions.in-view .qa-card:nth-child(2) { transition-delay: 0.12s; }
+        .quick-actions.in-view .qa-card:nth-child(3) { transition-delay: 0.24s; }
+        .quick-actions.in-view .qa-card:nth-child(4) { transition-delay: 0.36s; }
 
         .qa-card {
             border-radius: var(--radius-lg);
@@ -1447,6 +1550,11 @@
                 gap: 8px;
             }
         }
+        .logo{
+            height: 100px;
+            width: auto;
+        }
+     
     </style>
 </head>
 
@@ -1454,7 +1562,7 @@
 
     <!-- ================= ANNOUNCEMENT BAR ================= -->
     <div class="announce" id="announceBar">
-        🇮🇳 NyaySetu is free for every Indian citizen — no fees, ever. <a href="/know-your-rights">Learn more</a>
+        🇮🇳 NyaySetu is free for every Indian citizen — no fees, ever. <a href="/know_rights">Learn more</a>
         <button class="announce-close" id="announceClose" aria-label="Dismiss announcement">✕</button>
     </div>
 
@@ -1462,12 +1570,12 @@
     <nav class="site-nav" id="siteNav">
         <div class="nav-inner">
             <a href="/" class="brand">
-                <span class="brand-icon">⚖️</span>
-                <span class="brand-text">NyaySetu</span>
+                <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="" class="logo"></span>
+                <!-- <span class="brand-text">NyaySetu</span> -->
             </a>
 
             <div class="nav-links">
-                <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
+                <a href="/know_rights" class="nav-link">Know Your Rights</a>
                 <a href="/government-services" class="nav-link">Government Services</a>
                 <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
                 <a href="#faq" class="nav-link">FAQ</a>
@@ -1509,7 +1617,7 @@
     <div class="mobile-sheet-backdrop" id="mobileSheetBackdrop"></div>
     <div class="mobile-sheet" id="mobileSheet">
         <button class="mobile-sheet-close" id="mobileSheetClose" aria-label="Close menu">✕</button>
-        <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
+        <a href="/know_rights" class="nav-link">Know Your Rights</a>
         <a href="/government-services" class="nav-link">Government Services</a>
         <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
         <a href="#faq" class="nav-link">FAQ</a>
@@ -1526,7 +1634,11 @@
     <section class="hero">
         <div class="wrap hero-copy">
             <span class="eyebrow">AI-powered legal guidance for India</span>
-            <h1>Understand your rights.<br>In <em>your</em> language.</h1>
+            <h1>Understand your rights.<br>
+                <span class="lang-flip-wrap">
+                    <span class="lang-flip-text" id="langFlipText" lang="en">In your language.</span>
+                </span>
+            </h1>
             <p class="lead">NyaySetu turns your legal problem into clear next steps — free, private, and available in 8 Indian languages.</p>
             <div class="hero-ctas">
                 <a href="/new-issue" class="btn btn-primary">Describe Your Issue →</a>
@@ -1536,7 +1648,7 @@
         </div>
 
         <div class="wrap hero-media">
-            <div class="console-card">
+            <div class="console-card reveal-pop">
                 <div class="console-head"><span class="console-dot"></span> NYAYSETU INTAKE — LIVE</div>
                 <div class="console-bubble user">"My landlord is asking me to vacate in 3 days without any notice. Is this legal?"</div>
                 <div class="console-bubble ai">This isn't legal under most state Rent Control Acts — landlords must give written notice. Here's what to do next, and the section that protects you.</div>
@@ -1548,7 +1660,7 @@
                     <div class="console-ring"></div>
                 </div>
             </div>
-            <div class="side-card">
+            <div class="side-card reveal-fade reveal-delay">
                 <div>
                     <div class="side-icon">🛡️</div>
                     <h4>Grounded in Indian law</h4>
@@ -1566,13 +1678,22 @@
     <section class="trust-strip">
         <div class="wrap">
             <p>Guidance grounded in</p>
-            <div class="trust-chips">
-                <span class="trust-chip">Consumer Protection Act, 2019</span>
-                <span class="trust-chip">Rent Control Acts</span>
-                <span class="trust-chip">Right to Information Act</span>
-                <span class="trust-chip">Labour Codes</span>
-                <span class="trust-chip">IT Act, 2000</span>
-                <span class="trust-chip">Bharatiya Nyaya Sanhita</span>
+            <div class="trust-marquee">
+                <div class="trust-track" id="trustTrack">
+                    <span class="trust-chip">Consumer Protection Act, 2019</span>
+                    <span class="trust-chip">Rent Control Acts</span>
+                    <span class="trust-chip">Right to Information Act</span>
+                    <span class="trust-chip">Labour Codes</span>
+                    <span class="trust-chip">IT Act, 2000</span>
+                    <span class="trust-chip">Bharatiya Nyaya Sanhita</span>
+                    <!-- duplicate set for seamless infinite loop -->
+                    <span class="trust-chip" aria-hidden="true">Consumer Protection Act, 2019</span>
+                    <span class="trust-chip" aria-hidden="true">Rent Control Acts</span>
+                    <span class="trust-chip" aria-hidden="true">Right to Information Act</span>
+                    <span class="trust-chip" aria-hidden="true">Labour Codes</span>
+                    <span class="trust-chip" aria-hidden="true">IT Act, 2000</span>
+                    <span class="trust-chip" aria-hidden="true">Bharatiya Nyaya Sanhita</span>
+                </div>
             </div>
         </div>
     </section>
@@ -1606,7 +1727,7 @@
                 <div class="qa-icon">⚖️</div>
                 <h4>Know Your Rights</h4>
                 <p>Explore legal information on various topics.</p>
-                <a href="/know-your-rights" class="btn-text">Explore Now →</a>
+                <a href="/know_rights" class="btn-text">Explore Now →</a>
             </div>
         </div>
     </section>
@@ -1663,7 +1784,7 @@
                     <li>Property inheritance basics</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#property" class="cat-link">Explore Tenant Rights →</a>
+                <a href="/know_rights" class="cat-link">Explore Tenant Rights →</a>
             </div>
             <div class="cat-card">
                 <div class="cat-icon">💼</div>
@@ -1674,7 +1795,7 @@
                     <li>Workplace harassment</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#employment" class="cat-link">Explore Employment Rights →</a>
+                <a href="/know_rights" class="cat-link">Explore Employment Rights →</a>
             </div>
             <div class="cat-card">
                 <div class="cat-icon">🛒</div>
@@ -1685,7 +1806,7 @@
                     <li>E-commerce fraud</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#consumer" class="cat-link">Explore Consumer Rights →</a>
+                <a href="/know_rights" class="cat-link">Explore Consumer Rights →</a>
             </div>
             <div class="cat-card">
                 <div class="cat-icon">👨‍👩‍👧</div>
@@ -1696,7 +1817,7 @@
                     <li>Child custody basics</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#family" class="cat-link">Explore Family Law →</a>
+                <a href="/know_rights" class="cat-link">Explore Family Law →</a>
             </div>
             <div class="cat-card">
                 <div class="cat-icon">🖥️</div>
@@ -1707,7 +1828,7 @@
                     <li>Harassment on social media</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#cyber" class="cat-link">Explore Cyber Law →</a>
+                <a href="/know_rights" class="cat-link">Explore Cyber Law →</a>
             </div>
             <div class="cat-card">
                 <div class="cat-icon">🚔</div>
@@ -1718,7 +1839,7 @@
                     <li>Bail and legal aid access</li>
                 </ul>
                 <div class="cat-divider"></div>
-                <a href="/know-your-rights#criminal" class="cat-link">Explore Criminal Justice →</a>
+                <a href="/know_rights" class="cat-link">Explore Criminal Justice →</a>
             </div>
         </div>
     </section>
@@ -1849,7 +1970,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <div class="brand">
-                        <span class="brand-icon">⚖️</span>
+                        <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="logo" class="logo"></span>
                         <span class="brand-text">NyaySetu</span>
                     </div>
                     <p>Free, private legal guidance for every Indian citizen — in the language you're most comfortable in.</p>
@@ -1866,7 +1987,7 @@
                 <div class="footer-col">
                     <h5>Resources</h5>
                     <ul>
-                        <li><a href="/know-your-rights">Know Your Rights</a></li>
+                        <li><a href="/know_rights">Know Your Rights</a></li>
                         <li><a href="/government-services">Government Services</a></li>
                         <li><a href="/find-lawyer">Find a Lawyer</a></li>
                         <li><a href="/help-support">Help &amp; Support</a></li>
@@ -2083,6 +2204,82 @@
                 }
             });
         });
+
+        // ===== Reveal-on-view animations =====
+        // Pops the console card in with a slight bounce, fades the side card in
+        // just after, and cascades the quick-action cards in one by one.
+        // Each element animates once, the first time it enters the viewport.
+        if ('IntersectionObserver' in window) {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('in-view');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.reveal-pop, .reveal-fade, .quick-actions')
+                .forEach(el => revealObserver.observe(el));
+        } else {
+            // No IntersectionObserver support — just show everything as-is.
+            document.querySelectorAll('.reveal-pop, .reveal-fade, .quick-actions')
+                .forEach(el => el.classList.add('in-view'));
+        }
+
+        // ===== Hero headline language-flip animation =====
+        // "In your language." cycles through translated equivalents.
+        const heroLangPhrases = [
+            { text: "In your language.", lang: "en" },
+            { text: "आपकी भाषा में।", lang: "hi" },
+            { text: "तुमच्या भाषेत.", lang: "mr" },
+            { text: "آپ کی زبان میں۔", lang: "ur" },
+            { text: "আপনার ভাষায়।", lang: "bn" },
+            { text: "உங்கள் மொழியில்.", lang: "ta" },
+            { text: "మీ భాషలో.", lang: "te" },
+            { text: "ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ.", lang: "kn" }
+        ];
+        let heroLangIndex = 0;
+        const langFlipText = document.getElementById('langFlipText');
+        const langFlipWrap = document.querySelector('.lang-flip-wrap');
+
+        function setFlipWrapHeight() {
+            if (!langFlipWrap || !langFlipText) return;
+            // Measure natural height of the current text (handles wrapping scripts
+            // like Urdu/Bengali/Tamil that may take more than one line) and size
+            // the wrapper to match so nothing gets cut off.
+            langFlipWrap.style.height = langFlipText.scrollHeight + 'px';
+        }
+
+        function cycleHeroLangFlip() {
+            if (!langFlipText) return;
+            langFlipText.classList.add('flip-out');
+            setTimeout(() => {
+                heroLangIndex = (heroLangIndex + 1) % heroLangPhrases.length;
+                const { text, lang } = heroLangPhrases[heroLangIndex];
+                langFlipText.textContent = text;
+                langFlipText.lang = lang;
+                langFlipText.classList.add('flip-in-start');
+                // force reflow so height/opacity read the new content before transitioning
+                void langFlipText.offsetWidth;
+                setFlipWrapHeight();
+                langFlipText.classList.remove('flip-out');
+                langFlipText.classList.remove('flip-in-start');
+            }, 400);
+        }
+
+        // Recalculate on resize since narrower viewports may wrap longer scripts
+        // onto an extra line.
+        window.addEventListener('resize', setFlipWrapHeight);
+
+        // Set the initial height once fonts/layout settle.
+        window.addEventListener('load', setFlipWrapHeight);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(setFlipWrapHeight);
+        }
+        setFlipWrapHeight();
+
+        setInterval(cycleHeroLangFlip, 2600);
 
         (async function init() {
             await loadLanguageData();
