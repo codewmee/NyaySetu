@@ -661,31 +661,25 @@
     }
 
     // ==========================================================================
-    // 🔌 LLM INTEGRATION POINT
+    // 🔌 LLM INTEGRATION — talks to the Flask /api/legal-chat route, which
+    // calls Gemini server-side (see legal_ai.py). The model is instructed to
+    // stay on Indian-legal-issue topics only, ask one follow-up question at a
+    // time, then return a final structured answer.
+    //
+    // Response shape from the backend:
+    //   { type: "question"|"answer"|"off_topic", reply: string,
+    //     category: string|null, summary: string|null, strength: number|null }
     // ==========================================================================
-    // Replace the body of this function with a real call to your backend / LLM.
-    // It's called with the user's message text and an array of attached File
-    // objects (from the 📎 button), and must return — or resolve to — either:
-    //   • a plain string to show as the AI's reply, or
-    //   • an object: { reply: string, category?: string, summary?: string }
-    //     (category/summary populate the coral result card above the input box)
-    //
-    // Example wiring:
-    //
-    //   async function getAIResponse(message, files) {
-    //     const formData = new FormData();
-    //     formData.append('message', message);
-    //     files.forEach(f => formData.append('attachments', f));
-    //
-    //     const res = await fetch('/api/chat', { method: 'POST', body: formData });
-    //     if (!res.ok) throw new Error('Request failed: ' + res.status);
-    //     return await res.json(); // { reply, category, summary }
-    //   }
-    // ==========================================================================
+    let chatHistory = []; // running transcript: [{ role: 'user'|'model', content }]
+
     async function getAIResponse(message, files) {
-      // --- placeholder response until you connect your own LLM/backend ---
-      return "No LLM is connected yet. Open the script and implement getAIResponse() " +
-             "to call your API — your model's reply will appear right here, in this bubble.";
+      const res = await fetch('/api/legal-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory })
+      });
+      if (!res.ok) throw new Error('Request failed: ' + res.status);
+      return await res.json();
     }
 
     // ---- chat intake ----
@@ -754,17 +748,24 @@
       try {
         const result = await getAIResponse(text, filesToSend);
         typing.remove();
-        const replyText = typeof result === 'string' ? result : result.reply;
-        addBubble(replyText, 'ai');
+        addBubble(result.reply, 'ai');
 
-        if (result && typeof result === 'object' && result.category) {
+        // Keep the transcript in sync so the backend has full context next turn.
+        if (text) chatHistory.push({ role: 'user', content: text });
+        chatHistory.push({ role: 'model', content: result.reply });
+
+        if (result.category) {
           resultBadge.textContent = result.category;
-          resultText.textContent = result.summary || '';
+          let line = result.summary || '';
+          if (result.strength !== null && result.strength !== undefined) {
+            line += (line ? ' ' : '') + `(Case strength: ${result.strength}/100)`;
+          }
+          resultText.textContent = line;
           resultCard.classList.add('show');
         }
       } catch (err) {
         typing.remove();
-        addBubble('Something went wrong reaching the LLM: ' + err.message, 'ai');
+        addBubble('Something went wrong reaching the AI: ' + err.message, 'ai');
       } finally {
         sendBtn.disabled = false;
       }

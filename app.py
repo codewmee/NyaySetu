@@ -3,12 +3,13 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, session, redirect, url_for, request, flash
+from flask import Flask, render_template, session, redirect, url_for, request, flash, jsonify
 from werkzeug.utils import secure_filename
 import cloudinary
 import cloudinary.uploader
 
 from db import db, init_db, User, Case, CaseDocument
+from legal_ai import get_legal_ai_reply
 
 load_dotenv()
 
@@ -103,6 +104,8 @@ CATEGORY_META = {
 @app.route("/know_rights")
 def urrights():
     return render_template("know_your_rights.html")
+
+
 @app.route("/")
 def home():
     user = current_user()
@@ -120,6 +123,40 @@ def home():
         cases=cases,
         activity=RECENT_ACTIVITY,
     )
+
+
+# ---------------- AI legal intake chat (Gemini) ----------------
+@app.route("/api/legal-chat", methods=["POST"])
+def legal_chat():
+    """
+    Body: { "message": str, "history": [{"role": "user"|"model", "content": str}, ...] }
+    Returns: { "type": "question"|"answer"|"off_topic", "reply": str,
+               "category": str|null, "summary": str|null, "strength": int|null }
+    """
+    data = request.get_json(silent=True) or {}
+    message = (data.get("message") or "").strip()
+    history = data.get("history") or []
+
+    if not message:
+        return jsonify({"error": "message is required"}), 400
+
+    # Keep the payload sane — only send the most recent turns to Gemini.
+    if len(history) > 30:
+        history = history[-30:]
+
+    try:
+        result = get_legal_ai_reply(history, message)
+    except Exception:
+        app.logger.exception("Gemini call failed")
+        return jsonify({
+            "type": "answer",
+            "reply": "Something went wrong reaching the AI — please try again in a moment.",
+            "category": None,
+            "summary": None,
+            "strength": None,
+        }), 200
+
+    return jsonify(result)
 
 
 # ---------------- New Issue wizard ----------------
@@ -182,11 +219,6 @@ def new_issue():
                     overwrite=False,
                 )
             except Exception as exc:  # network/credentials/quota issues, etc.
-                # Full traceback in the server console — check here first if
-                # uploads are failing. Common causes: wrong CLOUDINARY_*
-                # values in .env, or the .env file not being loaded (make
-                # sure it sits next to app.py and load_dotenv() runs before
-                # any request).
                 app.logger.exception("Cloudinary upload failed for %s", f.filename)
                 failed_count += 1
                 continue
