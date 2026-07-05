@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Case Chat — NyaySetu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  :root{
+    --dm-surface-dark:#181715;
+    --dm-surface-dark-elevated:#252320;
+    --dm-surface-dark-soft:#1f1e1b;
+    --dm-on-dark:#faf9f5;
+    --dm-on-dark-soft:#a09d96;
+    --dm-coral:#cc785c;
+    --dm-coral-active:#a9583e;
+    --dm-hairline-dark:rgba(255,255,255,.1);
+    --font-serif:'Cormorant Garamond','Tiempos Headline',Garamond,serif;
+    --font-display:'Space Grotesk',ui-sans-serif,system-ui;
+    --font-body:'Inter',ui-sans-serif,system-ui;
+    --font-mono:'IBM Plex Mono',ui-sans-serif,system-ui;
+    --r-md:16px; --r-lg:22px; --r-full:9999px;
+  }
+
+  html, body{ height:100%; }
+  body{
+    font-family:var(--font-body);
+    background:var(--dm-surface-dark);
+    color:var(--dm-on-dark);
+    -webkit-font-smoothing:antialiased;
+    display:flex; flex-direction:column;
+    overflow:hidden;
+  }
+  a{ text-decoration:none; color:inherit; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+
+  /* ===== top bar ===== */
+  .chat-topbar{
+    flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+    padding:18px 28px; border-bottom:1px solid var(--dm-hairline-dark);
+  }
+  .chat-back{
+    display:flex; align-items:center; gap:8px; font-size:14px; font-weight:500;
+    color:var(--dm-on-dark-soft); padding:8px 14px; border-radius:var(--r-full);
+    border:1px solid var(--dm-hairline-dark);
+  }
+  .chat-back:hover{ color:#fff; border-color:rgba(255,255,255,.22); }
+  .chat-brand{ display:flex; align-items:center; gap:8px; }
+  .chat-brand .brand-icon{ font-size:18px; }
+  .chat-brand .brand-text{ font-family:var(--font-display); font-size:15px; font-weight:600; letter-spacing:-.2px; }
+  .chat-status{
+    display:flex; align-items:center; gap:8px; font-family:var(--font-mono); font-size:12px;
+    letter-spacing:.28px; text-transform:uppercase; color:var(--dm-on-dark-soft);
+  }
+  .chat-dot{ width:7px; height:7px; border-radius:50%; background:var(--dm-coral); }
+
+  /* ===== main chat area ===== */
+  .chat-main{
+    flex:1; min-height:0; display:flex; flex-direction:column; align-items:center;
+    width:100%; overflow:hidden;
+  }
+  .chat-column{
+    width:100%; max-width:760px; flex:1; min-height:0;
+    display:flex; flex-direction:column; padding:0 20px;
+  }
+
+  .chat-log{
+    flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column;
+    gap:16px; padding:32px 4px 20px;
+  }
+  .chat-log::-webkit-scrollbar{ width:5px; }
+  .chat-log::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.15); border-radius:10px; }
+
+  .bubble{ border-radius:var(--r-md); padding:16px 20px; font-size:16px; line-height:1.6; max-width:80%; }
+  .bubble.user{ align-self:flex-end; background:var(--dm-surface-dark-elevated); border:1px solid var(--dm-hairline-dark); }
+  .bubble.ai{ align-self:flex-start; background:rgba(204,120,92,.14); border-left:2px solid var(--dm-coral); color:#fff; font-family:var(--font-serif); font-size:19px; font-weight:500; }
+  .bubble.system{ align-self:center; font-family:var(--font-mono); font-size:11px; letter-spacing:.28px; text-transform:uppercase; color:var(--dm-on-dark-soft); background:none; padding:2px 0; }
+
+  .typing-dots{ display:inline-flex; gap:4px; align-self:flex-start; padding:14px 18px; }
+  .typing-dots span{ width:6px; height:6px; border-radius:50%; background:var(--dm-on-dark-soft); animation:blink 1.2s infinite ease-in-out; }
+  .typing-dots span:nth-child(2){ animation-delay:.2s; }
+  .typing-dots span:nth-child(3){ animation-delay:.4s; }
+  @keyframes blink{ 0%,80%,100%{ opacity:.25; } 40%{ opacity:1; } }
+
+  .result-card{
+    margin:0 4px 16px; background:var(--dm-surface-dark-elevated); border:1px solid var(--dm-hairline-dark);
+    border-radius:var(--r-md); padding:18px 20px; display:none; flex-direction:column; gap:12px;
+  }
+  .result-card.show{ display:flex; }
+  .result-badge{
+    align-self:flex-start; font-family:var(--font-mono); font-size:11px; letter-spacing:.28px;
+    text-transform:uppercase; background:var(--dm-coral); color:#fff; border-radius:var(--r-full);
+    padding:6px 12px; font-weight:500;
+  }
+  .result-card p{ font-family:var(--font-serif); font-size:18px; font-weight:500; color:#f1efe9; line-height:1.5; }
+
+  .attachment-tray{ display:none; flex-wrap:wrap; gap:8px; margin:0 4px 12px; }
+  .attachment-tray.show{ display:flex; }
+  .attachment-chip{
+    display:flex; align-items:center; gap:8px; background:var(--dm-surface-dark-elevated);
+    border:1px solid var(--dm-hairline-dark); border-radius:var(--r-full);
+    padding:6px 8px 6px 14px; font-size:12.5px; color:#fff;
+  }
+  .attachment-chip .file-name{ max-width:180px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .attachment-chip .remove-file{
+    width:18px; height:18px; border-radius:50%; background:rgba(255,255,255,.14);
+    display:flex; align-items:center; justify-content:center; font-size:11px; color:#fff; flex-shrink:0;
+  }
+  .attachment-chip .remove-file:hover{ background:var(--dm-coral); }
+
+  /* ===== input dock ===== */
+  .chat-input-dock{ flex-shrink:0; padding:16px 4px 26px; }
+  .console-input-row{
+    display:flex; gap:6px; align-items:center;
+    background:var(--dm-surface-dark-soft); border:1px solid var(--dm-hairline-dark);
+    border-radius:var(--r-full); padding:8px 8px 8px 10px;
+  }
+  .attach-btn{
+    width:40px; height:40px; border-radius:50%; color:#fff; font-size:18px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .attach-btn:hover{ background:rgba(255,255,255,.1); }
+  .console-input-row input{
+    flex:1; background:none; border:none; color:#fff; font-family:var(--font-body); font-size:15px;
+    min-width:0;
+  }
+  .console-input-row input::placeholder{ color:var(--dm-on-dark-soft); }
+  .console-input-row input:focus{ outline:none; }
+  .send-btn{
+    background:var(--dm-coral); color:#fff; width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+  }
+  .send-btn:hover{ background:var(--dm-coral-active); }
+  .send-btn:disabled{ opacity:.5; cursor:default; }
+  .chat-foot{ margin-top:10px; font-size:11.5px; color:var(--dm-on-dark-soft); text-align:center; }
+
+  @media (max-width:640px){
+    .chat-topbar{ padding:14px 16px; }
+    .chat-back span.label{ display:none; }
+    .bubble{ max-width:92%; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="chat-topbar">
+    <a href="/" class="chat-back">← <span class="label">Back to NyaySetu</span></a>
+    <div class="chat-brand">
+      <span class="brand-icon">⚖️</span>
+      <span class="brand-text">NyaySetu Intake</span>
+    </div>
+    <span class="chat-status"><span class="chat-dot"></span> Live</span>
+  </div>
+
+  <div class="chat-main">
+    <div class="chat-column">
+      <div class="chat-log" id="chatLog"></div>
+
+      <div class="result-card" id="resultCard">
+        <span class="result-badge" id="resultBadge">Category</span>
+        <p id="resultText"></p>
+      </div>
+
+      <div class="attachment-tray" id="attachmentTray"></div>
+
+      <div class="chat-input-dock">
+        <div class="console-input-row">
+          <button class="attach-btn" id="attachBtn" type="button" aria-label="Attach a file">📎</button>
+          <input type="file" id="fileInput" multiple hidden>
+          <input type="text" id="chatInput" placeholder="Type your reply…" autocomplete="off">
+          <button class="send-btn" id="sendBtn" aria-label="Send message">➤</button>
+        </div>
+        <div class="chat-foot">Your description and files stay private and are never shared without your consent.</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================================================
+    // Full-screen continuation of the NyaySetu intake chat. If the user typed
+    // their first message on the landing page, it's handed off here via
+    // sessionStorage (see index.html) and auto-sent on load.
+    // ==========================================================================
+    let chatHistory = []; // [{ role: 'user'|'model', content }]
+
+    async function getAIResponse(message) {
+      const res = await fetch('/api/legal-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory })
+      });
+      if (!res.ok) throw new Error('Request failed: ' + res.status);
+      return await res.json();
+    }
+
+    const chatLog = document.getElementById('chatLog');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const attachBtn = document.getElementById('attachBtn');
+    const fileInput = document.getElementById('fileInput');
+    const attachmentTray = document.getElementById('attachmentTray');
+    const resultCard = document.getElementById('resultCard');
+    const resultBadge = document.getElementById('resultBadge');
+    const resultText = document.getElementById('resultText');
+
+    let pendingFiles = [];
+
+    function renderAttachmentTray(){
+      attachmentTray.innerHTML = '';
+      pendingFiles.forEach((file, i) => {
+        const chip = document.createElement('div');
+        chip.className = 'attachment-chip';
+        chip.innerHTML = '<span>📄</span><span class="file-name"></span><span class="remove-file" role="button" aria-label="Remove file">✕</span>';
+        chip.querySelector('.file-name').textContent = file.name;
+        chip.querySelector('.remove-file').addEventListener('click', () => {
+          pendingFiles.splice(i, 1);
+          renderAttachmentTray();
+        });
+        attachmentTray.appendChild(chip);
+      });
+      attachmentTray.classList.toggle('show', pendingFiles.length > 0);
+    }
+
+    attachBtn.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => {
+      pendingFiles = pendingFiles.concat(Array.from(fileInput.files));
+      fileInput.value = '';
+      renderAttachmentTray();
+    });
+
+    function addBubble(text, cls){
+      const div = document.createElement('div');
+      div.className = 'bubble ' + cls;
+      div.textContent = text;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
+      return div;
+    }
+
+    async function sendToAI(text){
+      sendBtn.disabled = true;
+      const typing = document.createElement('div');
+      typing.className = 'typing-dots';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      chatLog.appendChild(typing);
+      chatLog.scrollTop = chatLog.scrollHeight;
+
+      try {
+        const result = await getAIResponse(text);
+        typing.remove();
+        addBubble(result.reply, 'ai');
+
+        if (text) chatHistory.push({ role: 'user', content: text });
+        chatHistory.push({ role: 'model', content: result.reply });
+
+        if (result.category) {
+          resultBadge.textContent = result.category;
+          let line = result.summary || '';
+          if (result.strength !== null && result.strength !== undefined) {
+            line += (line ? ' ' : '') + `(Case strength: ${result.strength}/100)`;
+          }
+          resultText.textContent = line;
+          resultCard.classList.add('show');
+        }
+      } catch (err) {
+        typing.remove();
+        addBubble('Something went wrong reaching the AI: ' + err.message, 'ai');
+      } finally {
+        sendBtn.disabled = false;
+      }
+    }
+
+    async function handleSend(){
+      const text = chatInput.value.trim();
+      if (!text && pendingFiles.length === 0) return;
+
+      if (text) addBubble(text, 'user');
+      pendingFiles.forEach(f => addBubble('📎 ' + f.name, 'user'));
+      pendingFiles = [];
+      renderAttachmentTray();
+      chatInput.value = '';
+
+      await sendToAI(text);
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+
+    // ---- bootstrap: pick up the handed-off first message, or show a welcome ----
+    (function bootstrap(){
+      let initialMessage = null;
+      try { initialMessage = sessionStorage.getItem('nyaysetu_initial_message'); } catch(e){}
+
+      if (initialMessage) {
+        try { sessionStorage.removeItem('nyaysetu_initial_message'); } catch(e){}
+        addBubble('Session started', 'system');
+        addBubble(initialMessage, 'user');
+        sendToAI(initialMessage);
+      } else {
+        addBubble('Session started', 'system');
+        addBubble("Hi — I'm here to help you understand your legal situation. Go ahead and describe what happened, in your own words.", 'ai');
+      }
+      chatInput.focus();
+    })();
+  </script>
+</body>
+</html>

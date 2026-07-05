@@ -125,6 +125,16 @@ def home():
     )
 
 
+# ---------------- Full-screen case chat ----------------
+# The landing page's small intake console only captures the user's first
+# message (stashed into sessionStorage as 'nyaysetu_initial_message') and
+# redirects here. This page owns the actual back-and-forth with Gemini via
+# /api/legal-chat, including any file attachments.
+@app.route("/chat")
+def legal_chat_page():
+    return render_template("chat.html", active_page="chat", user=current_user())
+
+
 # ---------------- AI legal intake chat (Gemini) ----------------
 @app.route("/api/legal-chat", methods=["POST"])
 def legal_chat():
