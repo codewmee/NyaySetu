@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ 'Edit article' if article else 'New article' }} — Admin</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, Inter, sans-serif; background: #f5f5f4; color: #17171c; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 32px; }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 24px; }
+    .card { background: #fff; border-radius: 12px; padding: 28px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    label { display: block; font-size: 13px; font-weight: 500; color: #75758a; margin: 18px 0 6px; }
+    label:first-of-type { margin-top: 0; }
+    input, select, textarea { width: 100%; font-family: inherit; font-size: 14px; padding: 10px 12px; border: 1px solid #d9d9dd; border-radius: 8px; }
+    textarea { resize: vertical; }
+    .hint { font-size: 12px; color: #93939f; margin-top: 4px; }
+    .actions { margin-top: 24px; display: flex; gap: 10px; }
+    .btn { font-size: 13px; font-weight: 500; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; }
+    .btn-primary { background: #17171c; color: #fff; }
+    .btn-outline { background: #fff; color: #17171c; border: 1px solid #d9d9dd; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1>{{ 'Edit article' if article else 'New article' }}</h1>
+    <div class="card">
+        <form method="POST">
+            <label>Title</label>
+            <input type="text" name="title" required value="{{ article.title if article else '' }}">
+
+            <div class="row-2">
+                <div>
+                    <label>Category</label>
+                    <select name="category">
+                        {% for key, meta in category_meta.items() %}
+                        <option value="{{ key }}" {{ 'selected' if article and article.category == key }}>{{ meta.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="published" {{ 'selected' if not article or article.status == 'published' }}>Published</option>
+                        <option value="draft" {{ 'selected' if article and article.status == 'draft' }}>Draft</option>
+                    </select>
+                </div>
+            </div>
+
+            <label>Summary (shown on the article card)</label>
+            <textarea name="summary" rows="2" required>{{ article.summary if article else '' }}</textarea>
+
+            <label>Scenario (optional — a short real-world example, shown in a callout box)</label>
+            <textarea name="scenario" rows="3">{{ article.scenario if article else '' }}</textarea>
+
+            <label>Body</label>
+            <textarea name="body_html" rows="12" required placeholder="Plain text or basic HTML (p, b, i, ul, ol, li, a, blockquote, h3, h4). Anything else gets stripped.">{{ article.body_html if article else '' }}</textarea>
+            <p class="hint">Allowed tags: p, b, strong, i, em, ul, ol, li, a, blockquote, br, h3, h4 — everything else is stripped automatically.</p>
+
+            <label>Checklist (optional — one item per line)</label>
+            <textarea name="checklist" rows="4">{{ article.checklist | join('\n') if article else '' }}</textarea>
+
+            <label>Relevant law (optional — one act/section per line)</label>
+            <textarea name="relevant_law" rows="3">{{ article.relevant_law | join('\n') if article else '' }}</textarea>
+
+            <label>Image URL (optional)</label>
+            <input type="text" name="image_url" value="{{ article.image_url if article and article.image_url else '' }}">
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a href="{{ url_for('admin.article_list') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

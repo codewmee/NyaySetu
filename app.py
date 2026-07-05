@@ -10,6 +10,9 @@ import cloudinary.uploader
 
 from db import db, init_db, User, Case, CaseDocument
 from legal_ai import get_legal_ai_reply
+from articles_models import Article, FeedSource, CATEGORY_META
+from rss_ingest import fetch_all_active_feeds
+from admin_routes import admin_bp
 
 load_dotenv()
 
@@ -104,6 +107,44 @@ CATEGORY_META = {
 @app.route("/know_rights")
 def urrights():
     return render_template("know_your_rights.html")
+
+@app.route("/articles")
+def articles_page():
+    articles = Article.query.filter_by(status="published").order_by(Article.published_at.desc()).all()
+    return render_template(
+        "admin/articles.html",
+        active_page="articles",
+        user=current_user(),
+        articles=articles,
+        category_meta=CATEGORY_META,
+    )
+
+
+@app.route("/articles/<slug>")
+def article_detail(slug):
+    article = Article.query.filter_by(slug=slug, status="published").first()
+    if not article:
+        return redirect(url_for("articles_page"))
+
+    related = (
+        Article.query.filter(
+            Article.category == article.category,
+            Article.id != article.id,
+            Article.status == "published",
+        )
+        .order_by(Article.published_at.desc())
+        .limit(2)
+        .all()
+    )
+
+    return render_template(
+        "article_detail.html",
+        article=article,
+        related=related,
+        category_meta=CATEGORY_META,
+        user=current_user(),
+        active_page="articles",
+    )
 
 
 @app.route("/")
@@ -332,8 +373,10 @@ def document_helper():
 
 
 @app.route("/know-your-rights")
-def know_rights():
-    return "Know Your Rights page (coming soon)"
+def know_rights_redirect():
+    # old placeholder path — kept alive as a redirect in case it's linked
+    # anywhere else; the real destination is now /articles
+    return redirect(url_for("articles_page"))
 
 
 @app.route("/saved-reports")

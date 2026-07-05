@@ -5,10 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NyaySetu — Understand Your Rights</title>
-    <meta name="description" content="NyaySetu turns your legal problem into clear next steps — free, private, and available in 8 Indian languages.">
+    <meta name="description"
+        content="NyaySetu turns your legal problem into clear next steps — free, private, and available in 8 Indian languages.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@600;700&family=Noto+Nastaliq+Urdu:wght@600;700&family=Noto+Sans+Bengali:wght@600;700&family=Noto+Sans+Tamil:wght@600;700&family=Noto+Sans+Telugu:wght@600;700&family=Noto+Sans+Kannada:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@600;700&family=Noto+Nastaliq+Urdu:wght@600;700&family=Noto+Sans+Bengali:wght@600;700&family=Noto+Sans+Tamil:wght@600;700&family=Noto+Sans+Telugu:wght@600;700&family=Noto+Sans+Kannada:wght@600;700&display=swap"
+        rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -67,8 +70,17 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        h1, h2, h3, h4,
-        .brand-text, .btn, .nav-link, .account-name, .step h4, .cat-card h3, .qa-card h4 {
+        h1,
+        h2,
+        h3,
+        h4,
+        .brand-text,
+        .btn,
+        .nav-link,
+        .account-name,
+        .step h4,
+        .cat-card h3,
+        .qa-card h4 {
             font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
         }
 
@@ -601,7 +613,7 @@
             opacity: 0;
             transform: scale(0.88) translateY(26px);
             transition: opacity 0.6s cubic-bezier(0.34, 1.56, 0.64, 1),
-                        transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+                transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         .reveal-pop.in-view {
@@ -861,10 +873,21 @@
             transform: translateY(0);
         }
 
-        .quick-actions.in-view .qa-card:nth-child(1) { transition-delay: 0s; }
-        .quick-actions.in-view .qa-card:nth-child(2) { transition-delay: 0.12s; }
-        .quick-actions.in-view .qa-card:nth-child(3) { transition-delay: 0.24s; }
-        .quick-actions.in-view .qa-card:nth-child(4) { transition-delay: 0.36s; }
+        .quick-actions.in-view .qa-card:nth-child(1) {
+            transition-delay: 0s;
+        }
+
+        .quick-actions.in-view .qa-card:nth-child(2) {
+            transition-delay: 0.12s;
+        }
+
+        .quick-actions.in-view .qa-card:nth-child(3) {
+            transition-delay: 0.24s;
+        }
+
+        .quick-actions.in-view .qa-card:nth-child(4) {
+            transition-delay: 0.36s;
+        }
 
         .qa-card {
             border-radius: var(--radius-lg);
@@ -1001,7 +1024,7 @@
         .step-icon-wrap {
             width: 64px;
             height: 64px;
-            border-radius: 50%;
+            border-radius: 10px;
             background: rgba(255, 255, 255, 0.07);
             border: 1px solid rgba(255, 255, 255, 0.12);
             display: flex;
@@ -1174,10 +1197,24 @@
         }
 
         .article-card {
+            display: block;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             overflow: hidden;
             background: #fff;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: #cfd9d4;
+        }
+
+        .article-card:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
         }
 
         .article-thumb {
@@ -1186,7 +1223,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 30px;
+        }
+
+        .article-thumb img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
         }
 
         .article-body {
@@ -1550,11 +1592,11 @@
                 gap: 8px;
             }
         }
-        .logo{
+
+        .logo {
             height: 100px;
             width: auto;
         }
-     
     </style>
 </head>
 
@@ -1639,7 +1681,8 @@
                     <span class="lang-flip-text" id="langFlipText" lang="en">In your language.</span>
                 </span>
             </h1>
-            <p class="lead">NyaySetu turns your legal problem into clear next steps — free, private, and available in 8 Indian languages.</p>
+            <p class="lead">NyaySetu turns your legal problem into clear next steps — free, private, and available in 8
+                Indian languages.</p>
             <div class="hero-ctas">
                 <a href="/new-issue" class="btn btn-primary">Describe Your Issue →</a>
                 <a href="#how-it-works" class="btn btn-text">See how it works</a>
@@ -1650,8 +1693,10 @@
         <div class="wrap hero-media">
             <div class="console-card reveal-pop">
                 <div class="console-head"><span class="console-dot"></span> NYAYSETU INTAKE — LIVE</div>
-                <div class="console-bubble user">"My landlord is asking me to vacate in 3 days without any notice. Is this legal?"</div>
-                <div class="console-bubble ai">This isn't legal under most state Rent Control Acts — landlords must give written notice. Here's what to do next, and the section that protects you.</div>
+                <div class="console-bubble user">"My landlord is asking me to vacate in 3 days without any notice. Is
+                    this legal?"</div>
+                <div class="console-bubble ai">This isn't legal under most state Rent Control Acts — landlords must give
+                    written notice. Here's what to do next, and the section that protects you.</div>
                 <div class="console-result">
                     <div>
                         <div class="r-label">Case Category</div>
@@ -1664,7 +1709,8 @@
                 <div>
                     <div class="side-icon">🛡️</div>
                     <h4>Grounded in Indian law</h4>
-                    <p>Every answer is mapped to the actual acts and sections that apply to your state and situation.</p>
+                    <p>Every answer is mapped to the actual acts and sections that apply to your state and situation.
+                    </p>
                 </div>
                 <div class="side-stat">
                     <div><strong>8</strong><span>Languages</span></div>
@@ -1706,25 +1752,28 @@
         </div>
         <div class="quick-actions">
             <div class="qa-card qa-purple">
-                <div class="qa-icon">💬</div>
+                <div class="qa-icon"><img src="..//static/icons/nyaysetu_icons_transparent/issues.png" alt="issue icon">
+                </div>
                 <h4>Add New Issue</h4>
                 <p>Describe your legal issue in simple words.</p>
                 <a href="/new-issue" class="btn-text">Start Now →</a>
             </div>
             <div class="qa-card qa-green">
-                <div class="qa-icon">📄</div>
+                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/docs.png"
+                        alt="doc analyze icon"></div>
                 <h4>Analyze Document</h4>
                 <p>Upload any legal document for a simple explanation.</p>
                 <a href="/document-helper" class="btn-text">Upload Document →</a>
             </div>
             <div class="qa-card qa-blue">
-                <div class="qa-icon">📁</div>
+                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/cases.png"
+                        alt="my caeses icon"></div>
                 <h4>My Cases</h4>
                 <p>View and manage all your legal cases.</p>
                 <a href="/my-issues" class="btn-text">View Cases →</a>
             </div>
             <div class="qa-card qa-amber">
-                <div class="qa-icon">⚖️</div>
+                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/rights.png" alt=""></div>
                 <h4>Know Your Rights</h4>
                 <p>Explore legal information on various topics.</p>
                 <a href="/know_rights" class="btn-text">Explore Now →</a>
@@ -1742,25 +1791,29 @@
             </div>
             <div class="steps">
                 <div class="step">
-                    <div class="step-icon-wrap">💬<span class="step-num">1</span></div>
+                    <div class="step-icon-wrap"><img src="../static/icons/nyaysetu_icons_transparent/issues.png"
+                            alt="issues guied " style="filter: invert(1);"></div>
                     <h4>Tell us your issue</h4>
                     <p>Describe in your own words, in any of 8 languages.</p>
                 </div>
                 <div class="step-arrow">→</div>
                 <div class="step">
-                    <div class="step-icon-wrap">🔍<span class="step-num">2</span></div>
+                    <div class="step-icon-wrap"><img src="../static/icons/nyaysetu_icons_transparent/analyisi_black.png"
+                            alt="analyze guied" style="filter: invert(1);"></div>
                     <h4>We analyze it</h4>
                     <p>Our AI finds the relevant laws and precedent that apply.</p>
                 </div>
                 <div class="step-arrow">→</div>
                 <div class="step">
-                    <div class="step-icon-wrap">📋<span class="step-num">3</span></div>
+                    <div class="step-icon-wrap"><img src="../static/icons/nyaysetu_icons_transparent/guied_black.png"
+                            alt="guidance guide" style="filter: invert(1);"></div>
                     <h4>Get clear guidance</h4>
                     <p>Know your rights, next steps, and the evidence you need.</p>
                 </div>
                 <div class="step-arrow">→</div>
                 <div class="step">
-                    <div class="step-icon-wrap">✅<span class="step-num">4</span></div>
+                    <div class="step-icon-wrap"><img src="../static/icons/nyaysetu_icons_transparent/action_black.png"
+                            alt="action guied" style="filter: invert(1);"></div>
                     <h4>Take action</h4>
                     <p>Use the guidance yourself or connect with a lawyer.</p>
                 </div>
@@ -1776,7 +1829,7 @@
         </div>
         <div class="cat-grid">
             <div class="cat-card">
-                <div class="cat-icon">🏠</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
                 <h3>Tenant &amp; Property Rights</h3>
                 <ul class="cat-list">
                     <li>Illegal eviction and notice periods</li>
@@ -1787,7 +1840,7 @@
                 <a href="/know_rights" class="cat-link">Explore Tenant Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon">💼</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt=""></div>
                 <h3>Employment &amp; Labour</h3>
                 <ul class="cat-list">
                     <li>Wrongful termination</li>
@@ -1798,7 +1851,7 @@
                 <a href="/know_rights" class="cat-link">Explore Employment Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon">🛒</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt=""></div>
                 <h3>Consumer Protection</h3>
                 <ul class="cat-list">
                     <li>Defective products and refunds</li>
@@ -1809,7 +1862,7 @@
                 <a href="/know_rights" class="cat-link">Explore Consumer Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon">👨‍👩‍👧</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/family_right.png" alt=""></div>
                 <h3>Family &amp; Marriage</h3>
                 <ul class="cat-list">
                     <li>Divorce and maintenance</li>
@@ -1820,7 +1873,7 @@
                 <a href="/know_rights" class="cat-link">Explore Family Law →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon">🖥️</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/cyber_rights.png" alt=""></div>
                 <h3>Cyber Crime &amp; Fraud</h3>
                 <ul class="cat-list">
                     <li>Online financial fraud</li>
@@ -1831,7 +1884,7 @@
                 <a href="/know_rights" class="cat-link">Explore Cyber Law →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon">🚔</div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/criminal_rights.png" alt=""></div>
                 <h3>Criminal Justice Basics</h3>
                 <ul class="cat-list">
                     <li>What to do if detained</li>
@@ -1851,7 +1904,7 @@
                 <span class="eyebrow">Know your rights</span>
                 <h2 style="margin-top:8px;">Recent reads</h2>
             </div>
-            <a href="/know-your-rights" class="btn-text">View all topics →</a>
+            <a href="/articles" class="btn-text">View all topics →</a>
         </div>
         <div class="chip-row" id="chipRow">
             <button class="chip active" data-cat="all">All</button>
@@ -1862,62 +1915,63 @@
             <button class="chip" data-cat="women">Women's Rights</button>
         </div>
         <div class="article-grid" id="articleGrid">
-            <div class="article-card" data-cat="property">
-                <div class="article-thumb">🏠</div>
+            <a class="article-card" data-cat="property" href="/articles#landlord-eviction-notice">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Property</span>
                     <h4>Can your landlord evict you without notice?</h4>
                     <span class="article-meta">4 min read · Updated Jun 2026</span>
                 </div>
-            </div>
-            <div class="article-card" data-cat="rti">
-                <div class="article-thumb">📜</div>
+            </a>
+            <a class="article-card" data-cat="rti" href="/articles#rti-application-guide">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/docs.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">RTI</span>
                     <h4>Filing an RTI application: a step-by-step guide</h4>
                     <span class="article-meta">6 min read · Updated May 2026</span>
                 </div>
-            </div>
-            <div class="article-card" data-cat="employment">
-                <div class="article-thumb">💼</div>
+            </a>
+            <a class="article-card" data-cat="employment" href="/articles#wrongful-termination">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Employment</span>
                     <h4>What counts as wrongful termination in India?</h4>
                     <span class="article-meta">5 min read · Updated May 2026</span>
                 </div>
-            </div>
-            <div class="article-card" data-cat="consumer">
-                <div class="article-thumb">🛒</div>
+            </a>
+            <a class="article-card" data-cat="consumer" href="/articles#consumer-refund-guide">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Consumer</span>
                     <h4>Getting a refund for a defective online order</h4>
                     <span class="article-meta">3 min read · Updated Apr 2026</span>
                 </div>
-            </div>
-            <div class="article-card" data-cat="women">
-                <div class="article-thumb">🛡️</div>
+            </a>
+            <a class="article-card" data-cat="women" href="/articles#domestic-violence-protection">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/women_rights.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Women's Rights</span>
                     <h4>Protection orders under the Domestic Violence Act</h4>
                     <span class="article-meta">7 min read · Updated Apr 2026</span>
                 </div>
-            </div>
-            <div class="article-card" data-cat="property">
-                <div class="article-thumb">🏡</div>
+            </a>
+            <a class="article-card" data-cat="property" href="/articles#security-deposit-rights">
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Property</span>
                     <h4>Understanding your security deposit rights</h4>
                     <span class="article-meta">4 min read · Updated Mar 2026</span>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
     <!-- ================= TESTIMONIAL ================= -->
     <section class="quote-strip">
         <div class="wrap">
-            <blockquote>"NyaySetu helped me understand my tenancy rights when my landlord threatened an illegal eviction — in Hindi, in five minutes."</blockquote>
-            <cite>— A renter, Pune</cite>
+            <blockquote>"NyaySetu helped me understand my tenancy rights when my landlord threatened an illegal eviction
+                — in Hindi, in five minutes."</blockquote>
+            — A renter, Pune
         </div>
     </section>
 
@@ -1929,23 +1983,39 @@
         <div class="faq-list" id="faqList">
             <div class="faq-item">
                 <button class="faq-q">Is NyaySetu free to use?<span class="faq-plus">+</span></button>
-                <div class="faq-a"><p>Yes. Every core feature — describing an issue, analyzing documents, and reading rights guides — is free for all Indian citizens, with no hidden fees.</p></div>
+                <div class="faq-a">
+                    <p>Yes. Every core feature — describing an issue, analyzing documents, and reading rights guides —
+                        is free for all Indian citizens, with no hidden fees.</p>
+                </div>
             </div>
             <div class="faq-item">
                 <button class="faq-q">Is my information kept private?<span class="faq-plus">+</span></button>
-                <div class="faq-a"><p>Your case details and documents are stored securely and are never shared with third parties without your consent.</p></div>
+                <div class="faq-a">
+                    <p>Your case details and documents are stored securely and are never shared with third parties
+                        without your consent.</p>
+                </div>
             </div>
             <div class="faq-item">
                 <button class="faq-q">Does NyaySetu replace a lawyer?<span class="faq-plus">+</span></button>
-                <div class="faq-a"><p>No. NyaySetu helps you understand your situation and prepare, but it is not a substitute for professional legal advice. For representation, use Find a Lawyer to connect with a verified professional.</p></div>
+                <div class="faq-a">
+                    <p>No. NyaySetu helps you understand your situation and prepare, but it is not a substitute for
+                        professional legal advice. For representation, use Find a Lawyer to connect with a verified
+                        professional.</p>
+                </div>
             </div>
             <div class="faq-item">
                 <button class="faq-q">Which languages are supported?<span class="faq-plus">+</span></button>
-                <div class="faq-a"><p>NyaySetu currently supports English, Hindi, and six other Indian languages, with more being added.</p></div>
+                <div class="faq-a">
+                    <p>NyaySetu currently supports English, Hindi, and six other Indian languages, with more being
+                        added.</p>
+                </div>
             </div>
             <div class="faq-item">
                 <button class="faq-q">How does the AI understand my case?<span class="faq-plus">+</span></button>
-                <div class="faq-a"><p>You describe your situation conversationally, and the system asks follow-up questions to build a structured case file, mapped against the relevant laws.</p></div>
+                <div class="faq-a">
+                    <p>You describe your situation conversationally, and the system asks follow-up questions to build a
+                        structured case file, mapped against the relevant laws.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -1960,7 +2030,8 @@
                 <input type="email" id="newsletterEmail" placeholder="you@example.com" required>
                 <button type="submit" class="btn btn-primary on-dark">Subscribe</button>
             </form>
-            <p class="cta-legal">By subscribing, you agree to receive occasional emails from NyaySetu. Unsubscribe anytime.</p>
+            <p class="cta-legal">By subscribing, you agree to receive occasional emails from NyaySetu. Unsubscribe
+                anytime.</p>
         </section>
     </div>
 
@@ -1973,7 +2044,8 @@
                         <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="logo" class="logo"></span>
                         <span class="brand-text">NyaySetu</span>
                     </div>
-                    <p>Free, private legal guidance for every Indian citizen — in the language you're most comfortable in.</p>
+                    <p>Free, private legal guidance for every Indian citizen — in the language you're most comfortable
+                        in.</p>
                 </div>
                 <div class="footer-col">
                     <h5>Product</h5>
@@ -2006,7 +2078,8 @@
             <div class="footer-bottom">
                 <div>
                     <span>© 2026 NyaySetu. All rights reserved.</span>
-                    <p class="footer-legal-note">🔒 NyaySetu provides general legal information and is not a substitute for professional legal advice.</p>
+                    <p class="footer-legal-note">🔒 NyaySetu provides general legal information and is not a substitute
+                        for professional legal advice.</p>
                 </div>
                 <div class="footer-socials">
                     <a href="#" aria-label="Twitter">🐦</a>
@@ -2245,9 +2318,6 @@
 
         function setFlipWrapHeight() {
             if (!langFlipWrap || !langFlipText) return;
-            // Measure natural height of the current text (handles wrapping scripts
-            // like Urdu/Bengali/Tamil that may take more than one line) and size
-            // the wrapper to match so nothing gets cut off.
             langFlipWrap.style.height = langFlipText.scrollHeight + 'px';
         }
 
@@ -2260,7 +2330,6 @@
                 langFlipText.textContent = text;
                 langFlipText.lang = lang;
                 langFlipText.classList.add('flip-in-start');
-                // force reflow so height/opacity read the new content before transitioning
                 void langFlipText.offsetWidth;
                 setFlipWrapHeight();
                 langFlipText.classList.remove('flip-out');
@@ -2268,11 +2337,7 @@
             }, 400);
         }
 
-        // Recalculate on resize since narrower viewports may wrap longer scripts
-        // onto an extra line.
         window.addEventListener('resize', setFlipWrapHeight);
-
-        // Set the initial height once fonts/layout settle.
         window.addEventListener('load', setFlipWrapHeight);
         if (document.fonts && document.fonts.ready) {
             document.fonts.ready.then(setFlipWrapHeight);

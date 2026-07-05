@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RSS feeds — Admin</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, Inter, sans-serif; background: #f5f5f4; color: #17171c; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 32px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .topbar h1 { font-size: 22px; font-weight: 600; }
+    .tabs { display: flex; gap: 16px; margin-bottom: 20px; font-size: 14px; }
+    .tabs a { color: #75758a; padding: 8px 0; border-bottom: 2px solid transparent; }
+    .tabs a.active { color: #17171c; border-bottom-color: #17171c; font-weight: 600; }
+    .flash { background: #edfce9; border: 1px solid #b8e6a3; color: #1c5b1c; padding: 10px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; }
+    .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); margin-bottom: 24px; }
+    .card h3 { font-size: 15px; font-weight: 600; margin-bottom: 16px; }
+    .add-form { display: grid; grid-template-columns: 1.4fr 2fr 1fr 0.8fr auto; gap: 10px; align-items: end; }
+    .add-form label { display: block; font-size: 12px; color: #75758a; margin-bottom: 4px; }
+    .add-form input, .add-form select { width: 100%; font-size: 13.5px; padding: 9px 10px; border: 1px solid #d9d9dd; border-radius: 8px; }
+    .btn { font-size: 13px; font-weight: 500; padding: 10px 16px; border-radius: 8px; border: none; cursor: pointer; }
+    .btn-primary { background: #17171c; color: #fff; }
+    .btn-outline { background: #fff; color: #17171c; border: 1px solid #d9d9dd; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+    th, td { text-align: left; padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid #f0f0ef; vertical-align: middle; }
+    th { color: #75758a; font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+    tr:last-child td { border-bottom: none; }
+    .status-ok { color: #1c5b1c; }
+    .status-error { color: #b30000; }
+    .status-dim { color: #93939f; }
+    .row-actions { display: flex; gap: 8px; }
+    .row-actions form { display: inline; }
+    .row-actions button { font-size: 12px; padding: 5px 10px; border-radius: 6px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; }
+    .row-actions button:hover { background: #f5f5f4; }
+    .pill { font-size: 11px; padding: 3px 9px; border-radius: 12px; font-weight: 500; }
+    .pill-active { background: #edfce9; color: #1c5b1c; }
+    .pill-inactive { background: #f2f2f2; color: #616161; }
+    .url-cell { color: #93939f; font-size: 12px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="topbar">
+        <h1>RSS feeds</h1>
+        <form method="POST" action="{{ url_for('admin.feed_fetch_all') }}">
+            <button type="submit" class="btn btn-primary">Fetch all feeds now</button>
+        </form>
+    </div>
+    <div class="tabs">
+        <a href="{{ url_for('admin.article_list') }}">Articles</a>
+        <a href="{{ url_for('admin.feed_list') }}" class="active">RSS feeds</a>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% for m in messages %}<div class="flash">{{ m }}</div>{% endfor %}
+    {% endwith %}
+
+    <div class="card">
+        <h3>Add a feed</h3>
+        <form class="add-form" method="POST" action="{{ url_for('admin.feed_new') }}">
+            <div>
+                <label>Name</label>
+                <input type="text" name="name" required placeholder="e.g. LiveLaw — Consumer">
+            </div>
+            <div>
+                <label>RSS/Atom URL</label>
+                <input type="text" name="url" required placeholder="https://example.com/feed">
+            </div>
+            <div>
+                <label>Default category</label>
+                <select name="default_category">
+                    {% for key, meta in category_meta.items() %}
+                    <option value="{{ key }}">{{ meta.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>Check every (min)</label>
+                <input type="number" name="fetch_interval_minutes" value="60" min="15">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Add feed</button>
+            </div>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>URL</th>
+                <th>Category</th>
+                <th>Interval</th>
+                <th>Last fetch</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in feeds %}
+            <tr>
+                <td>{{ f.name }}</td>
+                <td class="url-cell" title="{{ f.url }}">{{ f.url }}</td>
+                <td>{{ category_meta.get(f.default_category, {}).get('label', f.default_category) }}</td>
+                <td>{{ f.fetch_interval_minutes }} min</td>
+                <td>
+                    {% if f.last_fetched_at %}
+                    <span class="{{ 'status-ok' if f.last_fetch_status == 'ok' else 'status-error' }}">
+                        {{ f.last_fetch_message }}
+                    </span><br>
+                    <span class="status-dim">{{ f.last_fetched_at.strftime('%d %b, %H:%M') }}</span>
+                    {% else %}
+                    <span class="status-dim">Never fetched</span>
+                    {% endif %}
+                </td>
+                <td><span class="pill {{ 'pill-active' if f.is_active else 'pill-inactive' }}">{{ 'Active' if f.is_active else 'Paused' }}</span></td>
+                <td>
+                    <div class="row-actions">
+                        <form method="POST" action="{{ url_for('admin.feed_fetch_now', feed_id=f.id) }}">
+                            <button type="submit">Fetch now</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.feed_toggle_active', feed_id=f.id) }}">
+                            <button type="submit">{{ 'Pause' if f.is_active else 'Resume' }}</button>
+                        </form>
+                        <form method="POST" action="{{ url_for('admin.feed_delete', feed_id=f.id) }}" onsubmit="return confirm('Remove this feed? Already-imported articles stay.');">
+                            <button type="submit" style="color:#b30000;">Remove</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" style="text-align:center; color:#93939f; padding:40px;">No feeds added yet.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
