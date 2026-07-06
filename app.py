@@ -391,7 +391,7 @@ def government_services():
 
 @app.route("/help-support")
 def help_support():
-    return "Help & Support page (coming soon)"
+    return render_template("help.html")
 
 
 @app.route("/settings")

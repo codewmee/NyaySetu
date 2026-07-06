@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -285,17 +284,150 @@
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 6px;
+        }
+
+        .nav-item {
+            position: relative;
         }
 
         .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
             font-size: 14px;
             font-weight: 600;
             color: var(--text-gray);
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
         }
 
         .nav-link:hover {
             color: var(--ink);
+            background: var(--bg-soft);
+        }
+
+        .nav-item.open .nav-link {
+            color: var(--ink);
+            background: var(--bg-soft);
+        }
+
+        .nav-caret {
+            font-size: 9px;
+            color: var(--stone);
+            transition: transform 0.18s ease;
+            margin-top: 1px;
+        }
+
+        .nav-item.open .nav-caret {
+            transform: rotate(180deg);
+            color: var(--ink);
+        }
+
+        /* Per-nav-item dropdown panel */
+        .nav-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            width: 300px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 10px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.16s ease, transform 0.16s ease;
+            z-index: 320;
+        }
+
+        .nav-item.open .nav-dropdown {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .nav-dropdown-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            width: 100%;
+        }
+
+        .nav-dropdown-item:hover {
+            background: var(--bg-soft);
+        }
+
+        .nav-dropdown-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius-sm);
+            background: var(--accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .nav-dropdown-icon.step {
+            background: var(--sidebar-dark);
+        }
+
+        .nav-dropdown-text strong {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 2px;
+        }
+
+        .nav-dropdown-text span {
+            display: block;
+            font-size: 12px;
+            color: var(--text-gray);
+            line-height: 1.4;
+        }
+
+        .nav-dropdown-foot {
+            border-top: 1px solid var(--hairline-soft);
+            margin-top: 6px;
+            padding-top: 8px;
+        }
+
+        .nav-dropdown-foot a {
+            display: block;
+            padding: 8px 12px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--accent-dark);
+            border-radius: var(--radius-md);
+        }
+
+        .nav-dropdown-foot a:hover {
+            background: var(--accent-soft);
+        }
+
+        /* "How it works" dropdown gets its numbered-step treatment */
+        .nav-dropdown.how-it-works-dropdown {
+            width: 320px;
+        }
+
+        .step-num-badge {
+            width: 34px;
+            height: 34px;
+            /* border-radius: var(--radius-sm); */
+
+            /* color: #8fe3c2; */
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
         }
 
         .nav-right {
@@ -319,6 +451,7 @@
             font-size: 13px;
             font-weight: 600;
             background: #fff;
+           
         }
 
         .lang-toggle:hover {
@@ -475,6 +608,7 @@
             display: flex;
             flex-direction: column;
             gap: 4px;
+            overflow-y: auto;
         }
 
         .mobile-sheet.open {
@@ -498,10 +632,50 @@
             padding: 12px 6px;
             border-bottom: 1px solid var(--hairline-soft);
             color: var(--text-dark);
+            border-radius: 0;
+            justify-content: space-between;
         }
 
         .mobile-sheet .btn {
             margin-top: 16px;
+        }
+
+        .mobile-accordion {
+            border-bottom: 1px solid var(--hairline-soft);
+        }
+
+        .mobile-accordion .nav-link {
+            width: 100%;
+        }
+
+        .mobile-accordion-panel {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.22s ease;
+        }
+
+        .mobile-accordion.open .mobile-accordion-panel {
+            /* max-height set inline via JS */
+        }
+
+        .mobile-accordion.open .nav-caret {
+            transform: rotate(180deg);
+        }
+
+        .mobile-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 6px 9px 10px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .mobile-dropdown-item .nav-dropdown-icon,
+        .mobile-dropdown-item .step-num-badge {
+            width: 26px;
+            height: 26px;
+            font-size: 13px;
         }
 
         /* ========== HERO ========== */
@@ -1008,17 +1182,24 @@
             color: var(--accent-amber);
         }
 
-        /* ========== DARK FEATURE BAND — HOW IT WORKS ========== */
+        /* ========== DARK FEATURE BAND — HOW IT WORKS (pinned scrollytelling) ========== */
         .how-band {
+            position: relative;
+            height: 420vh;
+            margin: 0 24px;
+        }
+
+        .how-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
             background: var(--band-dark);
             color: #fff;
-            padding: 130px 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
             border-radius: var(--radius-xl);
-            margin: 0 24px;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .how-band .section-head h2,
@@ -1030,44 +1211,45 @@
             color: var(--on-dark-muted);
         }
 
-        /* Vertical scroll timeline */
-        .steps-vertical {
+        .steps-stage {
             position: relative;
-            max-width: 980px;
-            margin: 70px auto 0;
-            padding-left: 96px;
-            display: flex;
-            flex-direction: column;
-            gap: 90px;
-        }
-
-        .steps-line-track {
-            position: absolute;
-            left: 39px;
-            top: 6px;
-            bottom: 6px;
-            width: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-        }
-
-        .steps-line-fill {
-            position: absolute;
-            left: 0;
-            top: 0;
             width: 100%;
-            height: 0%;
-            background: linear-gradient(180deg, #8fe3c2, var(--accent));
-            border-radius: 3px;
-            transition: height 0.1s linear;
+            max-width: 980px;
+            margin: 44px auto 0;
+            height: 46vh;
+            min-height: 320px;
+        }
+
+        .steps-progress {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .steps-progress .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .steps-progress .dot.active {
+            background: #8fe3c2;
+            transform: scale(1.3);
         }
 
         .step-v {
-            position: relative;
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
-            gap: 36px;
+            gap: 56px;
             flex-wrap: wrap;
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
         }
 
         .step-v[data-step="2"],
@@ -1075,108 +1257,40 @@
             flex-direction: row-reverse;
         }
 
-        .step-v-shape {
-            position: absolute;
-            left: -96px;
-            top: 0;
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            flex-shrink: 0;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-            will-change: transform;
-        }
-
-        .step-v-shape img {
-            width: 30px;
-            height: 30px;
-            filter: invert(1);
-            opacity: 0.7;
-            transition: opacity 0.4s ease, filter 0.4s ease;
-        }
-
         .step-v-num {
-            position: absolute;
-            bottom: -8px;
-            right: -8px;
-            width: 26px;
-            height: 26px;
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
-            border-radius: 50%;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid var(--band-dark);
-            transition: background 0.4s ease;
-        }
-
-        .step-v.active .step-v-shape {
-            background: var(--accent);
-            border-color: #8fe3c2;
-            transform: scale(1.08);
-            box-shadow: 0 0 0 10px rgba(0, 104, 74, 0.18), 0 12px 28px rgba(0, 0, 0, 0.35);
-        }
-
-        .step-v.active .step-v-shape img {
-            opacity: 1;
-            filter: invert(1) brightness(1.4);
-        }
-
-        .step-v.active .step-v-num {
-            background: #8fe3c2;
-            color: var(--band-dark);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: #8fe3c2;
+            margin-bottom: 10px;
+            display: block;
         }
 
         .step-v-content {
             flex: 1 1 260px;
-            padding-top: 0;
-            opacity: 0.55;
-            transition: opacity 0.4s ease;
-        }
-
-        .step-v.active .step-v-content {
-            opacity: 1;
         }
 
         .step-v-visual {
-            flex: 0 0 300px;
-            max-width: 300px;
+            flex: 1 1 340px;
+            max-width: 420px;
         }
 
         .step-v-card {
             display: block;
             width: 100%;
             height: auto;
-            opacity: 0.3;
-            transform: translateY(36px) scale(0.96);
-            filter: saturate(0.4) brightness(0.85);
-            transition: opacity 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-                transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1),
-                filter 0.7s ease;
-            will-change: transform, opacity;
+            border-radius: var(--radius-lg);
+            will-change: transform;
         }
 
-        /* First card is already in view by default — no need to wait for scroll */
-        .step-v[data-step="1"] .step-v-card {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            filter: none;
+        .step-v[data-step="4"] {
+            justify-content: center;
         }
 
-        .step-v.active .step-v-card {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            filter: none;
+        .step-v[data-step="4"] .step-v-content {
+            flex: 0 1 480px;
+            text-align: center;
         }
 
         .step-v h4 {
@@ -1191,6 +1305,45 @@
             color: var(--on-dark-muted);
             line-height: 1.55;
             max-width: 360px;
+        }
+
+        .step-v[data-step="4"] p {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .how-band.no-pin {
+            height: auto;
+        }
+
+        .how-band.no-pin .how-sticky {
+            position: static;
+            height: auto;
+            padding: 80px 0;
+        }
+
+        .how-band.no-pin .steps-stage {
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 64px;
+        }
+
+        .how-band.no-pin .step-v {
+            position: static;
+            opacity: 0;
+            transform: translateY(28px);
+            pointer-events: auto;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .how-band.no-pin .step-v.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .how-band.no-pin .steps-progress {
+            display: none;
         }
 
         /* ========== CATEGORY / PRODUCT CARDS ========== */
@@ -1679,41 +1832,23 @@
 
             .how-band {
                 margin: 0 16px;
-                padding: 80px 0;
-                min-height: auto;
             }
 
-            .steps-vertical {
-                padding-left: 78px;
-                gap: 64px;
-            }
-
-            .steps-line-track {
-                left: 31px;
-            }
-
-            .step-v-shape {
-                left: -78px;
-                width: 64px;
-                height: 64px;
-                border-radius: 16px;
-            }
-
-            .step-v-shape img {
-                width: 24px;
-                height: 24px;
-            }
-
-            .step-v,
-            .step-v[data-step="2"],
-            .step-v[data-step="4"] {
+            .how-band.no-pin .step-v,
+            .how-band.no-pin .step-v[data-step="2"],
+            .how-band.no-pin .step-v[data-step="4"] {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 24px;
+            }
+
+            .how-band.no-pin .step-v[data-step="4"] {
+                align-items: center;
             }
 
             .step-v-visual {
                 flex: 1 1 auto;
-                max-width: 220px;
+                max-width: 100%;
             }
 
             .cta-band {
@@ -1762,6 +1897,17 @@
             height: 100px;
             width: auto;
         }
+
+        .multilang_icon {
+            height: 20px;
+            width: auto;
+        }
+
+        .multilang {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 
@@ -1781,18 +1927,188 @@
                 <!-- <span class="brand-text">NyaySetu</span> -->
             </a>
 
-            <div class="nav-links">
-                <a href="/know_rights" class="nav-link">Know Your Rights</a>
-                <a href="/government-services" class="nav-link">Government Services</a>
-                <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="/help-support" class="nav-link">Help &amp; Support</a>
+            <div class="nav-links" id="navLinks">
+
+                <!-- Know Your Rights -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        Know Your Rights <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a class="nav-dropdown-item" href="/know_rights#tenant">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/tenents_right.jpg" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Tenant &amp; Property</strong><span>Eviction
+                                    notice, deposits, inheritance</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/know_rights#employment">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/employ_right.jpg" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Employment &amp; Labour</strong><span>Wages,
+                                    termination, harassment</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/know_rights#consumer">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/consumer_right.jpg" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Consumer Protection</strong><span>Refunds,
+                                    deficiency, e-commerce fraud</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/know_rights#family">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/family_right.jpg" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Family &amp; Marriage</strong><span>Divorce,
+                                    custody, domestic violence</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="/know_rights">View all topics →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Government Services -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        Government Services <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a class="nav-dropdown-item" href="/government-services#rti">
+                            <span class="nav-dropdown-icon">📄</span>
+                            <span class="nav-dropdown-text"><strong>RTI Portal</strong><span>File and track RTI
+                                    applications</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/government-services#helpline">
+                            <span class="nav-dropdown-icon">📞</span>
+                            <span class="nav-dropdown-text"><strong>Consumer Helpline</strong><span>National
+                                    consumer grievance number</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/government-services#legal-aid">
+                            <span class="nav-dropdown-icon">⚖️</span>
+                            <span class="nav-dropdown-text"><strong>Free Legal Aid</strong><span>NALSA and state
+                                    legal services</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="/government-services">Browse all services →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Find a Lawyer -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        Find a Lawyer <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a class="nav-dropdown-item" href="/find-lawyer#specialization">
+                            <span class="nav-dropdown-icon">🔎</span>
+                            <span class="nav-dropdown-text"><strong>Browse by Specialization</strong><span>Property,
+                                    family, criminal &amp; more</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/find-lawyer#verified">
+                            <span class="nav-dropdown-icon">✅</span>
+                            <span class="nav-dropdown-text"><strong>Verified Profiles</strong><span>Bar Council
+                                    verified advocates</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/find-lawyer#consult">
+                            <span class="nav-dropdown-icon">🗓️</span>
+                            <span class="nav-dropdown-text"><strong>Book a Consultation</strong><span>Schedule a
+                                    call in minutes</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="/find-lawyer">See all lawyers →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- How It Works (new dropdown, icon-based, no images) -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        How It Works <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown how-it-works-dropdown">
+                        <a class="nav-dropdown-item" href="#how-it-works">
+                            <span class="step-num-badge"><img src="../static/icons/hand.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Tell us your issue</strong><span>Describe it in
+                                    any of 8 languages</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="#how-it-works">
+                            <span class="step-num-badge"><img src="../static/icons/two.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>We analyze it</strong><span>AI finds the laws
+                                    that apply to you</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="#how-it-works">
+                            <span class="step-num-badge"><img src="../static/icons/three.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Get clear guidance</strong><span>Rights, next
+                                    steps, and evidence needed</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="#how-it-works">
+                            <span class="step-num-badge"><img src="../static/icons/four.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Take action</strong><span>Go it alone or connect
+                                    with a lawyer</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="#how-it-works">See the full walkthrough →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        FAQ <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a class="nav-dropdown-item" href="#faq">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/free.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Is NyaySetu free?</strong><span>Yes — every core
+                                    feature, always</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="#faq">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/secured.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Is my data private?</strong><span>Stored
+                                    securely, never sold or shared</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="#faq">
+                            <span class="nav-dropdown-icon"><img src="../static/icons/languages.png" alt=""></span>
+                            <span class="nav-dropdown-text"><strong>Which languages?</strong><span>English, Hindi +
+                                    6 more Indian languages</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="#faq">View all FAQs →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Help & Support -->
+                <div class="nav-item" data-nav-item>
+                    <button class="nav-link" data-nav-trigger>
+                        Help &amp; Support <span class="nav-caret">▾</span>
+                    </button>
+                    <div class="nav-dropdown">
+                        <a class="nav-dropdown-item" href="/help-support#contact">
+                            <span class="nav-dropdown-icon">✉️</span>
+                            <span class="nav-dropdown-text"><strong>Contact Us</strong><span>Reach the NyaySetu team
+                                    directly</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/help-support#report">
+                            <span class="nav-dropdown-icon">🚩</span>
+                            <span class="nav-dropdown-text"><strong>Report an Issue</strong><span>Something broken?
+                                    Let us know</span></span>
+                        </a>
+                        <a class="nav-dropdown-item" href="/help-support#center">
+                            <span class="nav-dropdown-icon">📚</span>
+                            <span class="nav-dropdown-text"><strong>Help Center</strong><span>Guides on using every
+                                    feature</span></span>
+                        </a>
+                        <div class="nav-dropdown-foot">
+                            <a href="/help-support">Visit Help &amp; Support →</a>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div class="nav-right">
                 <div class="lang-dropdown" id="navLangDropdown">
                     <button class="lang-toggle" id="navLangToggle">
-                        <span>🌐 <span class="navLangSelected">English</span></span>
+
+                        <span><img src="../static/icons/languages.png" alt="change language" class="multilang_icon">
+                           
                         <span>▾</span>
                     </button>
                     <ul class="lang-menu lang-menu-instance" id="navLangMenu"></ul>
@@ -1824,11 +2140,87 @@
     <div class="mobile-sheet-backdrop" id="mobileSheetBackdrop"></div>
     <div class="mobile-sheet" id="mobileSheet">
         <button class="mobile-sheet-close" id="mobileSheetClose" aria-label="Close menu">✕</button>
-        <a href="/know_rights" class="nav-link">Know Your Rights</a>
-        <a href="/government-services" class="nav-link">Government Services</a>
-        <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-        <a href="#faq" class="nav-link">FAQ</a>
-        <a href="/help-support" class="nav-link">Help &amp; Support</a>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>Know Your Rights <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="/know_rights#tenant"><span class="nav-dropdown-icon">🏠</span>
+                    Tenant &amp; Property</a>
+                <a class="mobile-dropdown-item" href="/know_rights#employment"><span class="nav-dropdown-icon">💼</span>
+                    Employment &amp; Labour</a>
+                <a class="mobile-dropdown-item" href="/know_rights#consumer"><span class="nav-dropdown-icon">🛒</span>
+                    Consumer Protection</a>
+                <a class="mobile-dropdown-item" href="/know_rights#family"><span class="nav-dropdown-icon">👪</span>
+                    Family &amp; Marriage</a>
+                <a class="mobile-dropdown-item" href="/know_rights"><strong>View all topics →</strong></a>
+            </div>
+        </div>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>Government Services <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="/government-services#rti"><span
+                        class="nav-dropdown-icon">📄</span> RTI Portal</a>
+                <a class="mobile-dropdown-item" href="/government-services#helpline"><span
+                        class="nav-dropdown-icon">📞</span> Consumer Helpline</a>
+                <a class="mobile-dropdown-item" href="/government-services#legal-aid"><span
+                        class="nav-dropdown-icon">⚖️</span> Free Legal Aid</a>
+                <a class="mobile-dropdown-item" href="/government-services"><strong>Browse all services
+                        →</strong></a>
+            </div>
+        </div>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>Find a Lawyer <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="/find-lawyer#specialization"><span
+                        class="nav-dropdown-icon">🔎</span> Browse by Specialization</a>
+                <a class="mobile-dropdown-item" href="/find-lawyer#verified"><span class="nav-dropdown-icon">✅</span>
+                    Verified Profiles</a>
+                <a class="mobile-dropdown-item" href="/find-lawyer#consult"><span class="nav-dropdown-icon">🗓️</span>
+                    Book a Consultation</a>
+                <a class="mobile-dropdown-item" href="/find-lawyer"><strong>See all lawyers →</strong></a>
+            </div>
+        </div>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>How It Works <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="#how-it-works"><span class="step-num-badge">01</span> Tell us
+                    your issue</a>
+                <a class="mobile-dropdown-item" href="#how-it-works"><span class="step-num-badge">02</span> We
+                    analyze it</a>
+                <a class="mobile-dropdown-item" href="#how-it-works"><span class="step-num-badge">03</span> Get
+                    clear guidance</a>
+                <a class="mobile-dropdown-item" href="#how-it-works"><span class="step-num-badge">04</span> Take
+                    action</a>
+            </div>
+        </div>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>FAQ <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="#faq"><span class="nav-dropdown-icon">🆓</span> Is NyaySetu
+                    free?</a>
+                <a class="mobile-dropdown-item" href="#faq"><span class="nav-dropdown-icon">🔒</span> Is my data
+                    private?</a>
+                <a class="mobile-dropdown-item" href="#faq"><span class="nav-dropdown-icon">🌐</span> Which
+                    languages?</a>
+            </div>
+        </div>
+
+        <div class="mobile-accordion" data-mobile-accordion>
+            <button class="nav-link" data-mobile-trigger>Help &amp; Support <span class="nav-caret">▾</span></button>
+            <div class="mobile-accordion-panel">
+                <a class="mobile-dropdown-item" href="/help-support#contact"><span class="nav-dropdown-icon">✉️</span>
+                    Contact Us</a>
+                <a class="mobile-dropdown-item" href="/help-support#report"><span class="nav-dropdown-icon">🚩</span>
+                    Report an Issue</a>
+                <a class="mobile-dropdown-item" href="/help-support#center"><span class="nav-dropdown-icon">📚</span>
+                    Help Center</a>
+            </div>
+        </div>
+
         {% if user %}
         <a href="/" class="btn btn-primary">Go to Dashboard</a>
         {% else %}
@@ -1846,7 +2238,8 @@
                     <span class="lang-flip-text" id="langFlipText" lang="en">In your language.</span>
                 </span>
             </h1>
-            <p class="lead">NyaySetu turns your legal problem into clear next steps — free, private, and available in 8
+            <p class="lead">NyaySetu turns your legal problem into clear next steps — free, private, and available
+                in 8
                 Indian languages.</p>
             <div class="hero-ctas">
                 <a href="/new-issue" class="btn btn-primary">Describe Your Issue →</a>
@@ -1858,9 +2251,11 @@
         <div class="wrap hero-media">
             <div class="console-card reveal-pop">
                 <div class="console-head"><span class="console-dot"></span> NYAYSETU INTAKE — LIVE</div>
-                <div class="console-bubble user">"My landlord is asking me to vacate in 3 days without any notice. Is
+                <div class="console-bubble user">"My landlord is asking me to vacate in 3 days without any notice.
+                    Is
                     this legal?"</div>
-                <div class="console-bubble ai">This isn't legal under most state Rent Control Acts — landlords must give
+                <div class="console-bubble ai">This isn't legal under most state Rent Control Acts — landlords must
+                    give
                     written notice. Here's what to do next, and the section that protects you.</div>
                 <div class="console-result">
                     <div>
@@ -1874,7 +2269,8 @@
                 <div>
                     <div class="side-icon">🛡️</div>
                     <h4>Grounded in Indian law</h4>
-                    <p>Every answer is mapped to the actual acts and sections that apply to your state and situation.
+                    <p>Every answer is mapped to the actual acts and sections that apply to your state and
+                        situation.
                     </p>
                 </div>
                 <div class="side-stat">
@@ -1897,7 +2293,6 @@
                     <span class="trust-chip">Labour Codes</span>
                     <span class="trust-chip">IT Act, 2000</span>
                     <span class="trust-chip">Bharatiya Nyaya Sanhita</span>
-                    <!-- duplicate set for seamless infinite loop -->
                     <span class="trust-chip" aria-hidden="true">Consumer Protection Act, 2019</span>
                     <span class="trust-chip" aria-hidden="true">Rent Control Acts</span>
                     <span class="trust-chip" aria-hidden="true">Right to Information Act</span>
@@ -1946,70 +2341,67 @@
         </div>
     </section>
 
-    <!-- ================= HOW IT WORKS (dark band) ================= -->
+    <!-- ================= HOW IT WORKS (pinned scroll section) ================= -->
     <section class="how-band" id="how-it-works">
-        <div class="wrap">
-            <div class="section-head">
-                <span class="eyebrow on-dark">The process</span>
-                <h2 style="margin-top:10px;">How it works</h2>
-                <p>From a confusing situation to a clear plan — in four steps.</p>
-            </div>
-            <div class="steps-vertical" id="stepsVertical">
-                <div class="steps-line-track">
-                    <div class="steps-line-fill" id="stepsLineFill"></div>
+        <div class="how-sticky">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="eyebrow on-dark">The process</span>
+                    <h2 style="margin-top:10px;">How it works</h2>
+                    <p>From a confusing situation to a clear plan — in four steps.</p>
                 </div>
 
-                <div class="step-v" data-step="1">
-                    <div class="step-v-shape">
-                        <img src="../static/icons/nyaysetu_icons_transparent/issues.png" alt="issues icon">
-                        <span class="step-v-num">1</span>
+                <div class="steps-stage" id="stepsStage">
+                    <div class="step-v" data-step="1">
+                        <div class="step-v-content">
+                            <span class="step-v-num">Step 01</span>
+                            <h4>Tell us your issue</h4>
+                            <p>Describe in your own words, in any of 8 languages.</p>
+                        </div>
+                        <div class="step-v-visual">
+                            <img class="step-v-card" src="../static/howitworks-1.png"
+                                alt="Chat card showing a user describing a tenancy issue">
+                        </div>
                     </div>
-                    <div class="step-v-content">
-                        <h4>Tell us your issue</h4>
-                        <p>Describe in your own words, in any of 8 languages.</p>
+
+                    <div class="step-v" data-step="2">
+                        <div class="step-v-content">
+                            <span class="step-v-num">Step 02</span>
+                            <h4>We analyze it</h4>
+                            <p>Our AI finds the relevant laws and precedent that apply.</p>
+                        </div>
+                        <div class="step-v-visual">
+                            <img class="step-v-card" src="../static/howitworks-2.png"
+                                alt="Document analysis card highlighting rights, risk, and evidence">
+                        </div>
                     </div>
-                    <div class="step-v-visual">
-                        <img class="step-v-card" src="../static/howitworks-1.png" alt="Chat card showing a user describing a tenancy issue">
+
+                    <div class="step-v" data-step="3">
+                        <div class="step-v-content">
+                            <span class="step-v-num">Step 03</span>
+                            <h4>Get clear guidance</h4>
+                            <p>Know your rights, next steps, and the evidence you need.</p>
+                        </div>
+                        <div class="step-v-visual">
+                            <img class="step-v-card" src="../static/howitworks-3.png"
+                                alt="Guidance card with a checklist and take action button">
+                        </div>
+                    </div>
+
+                    <div class="step-v" data-step="4">
+                        <div class="step-v-content">
+                            <span class="step-v-num">Step 04</span>
+                            <h4>Take action</h4>
+                            <p>Use the guidance yourself or connect with a lawyer.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="step-v" data-step="2">
-                    <div class="step-v-shape">
-                        <img src="../static/icons/nyaysetu_icons_transparent/analyisi_black.png" alt="analyze icon">
-                        <span class="step-v-num">2</span>
-                    </div>
-                    <div class="step-v-content">
-                        <h4>We analyze it</h4>
-                        <p>Our AI finds the relevant laws and precedent that apply.</p>
-                    </div>
-                    <div class="step-v-visual">
-                        <img class="step-v-card" src="../static/howitworks-2.png" alt="Document analysis card highlighting rights, risk, and evidence">
-                    </div>
-                </div>
-
-                <div class="step-v" data-step="3">
-                    <div class="step-v-shape">
-                        <img src="../static/icons/nyaysetu_icons_transparent/guied_black.png" alt="guidance icon">
-                        <span class="step-v-num">3</span>
-                    </div>
-                    <div class="step-v-content">
-                        <h4>Get clear guidance</h4>
-                        <p>Know your rights, next steps, and the evidence you need.</p>
-                    </div>
-                    <div class="step-v-visual">
-                        <img class="step-v-card" src="../static/howitworks-3.png" alt="Guidance card with a checklist and take action button">
-                    </div>
-                </div>
-
-                <div class="step-v" data-step="4">
-                    <div class="step-v-shape">
-                        <img src="../static/icons/nyaysetu_icons_transparent/action_black.png" alt="action icon">
-                        <span class="step-v-num">4</span>
-                    </div>
-                    <div class="step-v-content">
-                        <h4>Take action</h4>
-                        <p>Use the guidance yourself or connect with a lawyer.</p>
-                    </div>
+                <div class="steps-progress" id="stepsProgress">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
                 </div>
             </div>
         </div>
@@ -2023,7 +2415,8 @@
         </div>
         <div class="cat-grid">
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt="">
+                </div>
                 <h3>Tenant &amp; Property Rights</h3>
                 <ul class="cat-list">
                     <li>Illegal eviction and notice periods</li>
@@ -2034,7 +2427,8 @@
                 <a href="/know_rights" class="cat-link">Explore Tenant Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt="">
+                </div>
                 <h3>Employment &amp; Labour</h3>
                 <ul class="cat-list">
                     <li>Wrongful termination</li>
@@ -2045,7 +2439,8 @@
                 <a href="/know_rights" class="cat-link">Explore Employment Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt="">
+                </div>
                 <h3>Consumer Protection</h3>
                 <ul class="cat-list">
                     <li>Defective products and refunds</li>
@@ -2056,7 +2451,8 @@
                 <a href="/know_rights" class="cat-link">Explore Consumer Rights →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/family_right.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/family_right.png" alt="">
+                </div>
                 <h3>Family &amp; Marriage</h3>
                 <ul class="cat-list">
                     <li>Divorce and maintenance</li>
@@ -2067,7 +2463,8 @@
                 <a href="/know_rights" class="cat-link">Explore Family Law →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/cyber_rights.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/cyber_rights.png" alt="">
+                </div>
                 <h3>Cyber Crime &amp; Fraud</h3>
                 <ul class="cat-list">
                     <li>Online financial fraud</li>
@@ -2078,7 +2475,8 @@
                 <a href="/know_rights" class="cat-link">Explore Cyber Law →</a>
             </div>
             <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/criminal_rights.png" alt=""></div>
+                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/criminal_rights.png" alt="">
+                </div>
                 <h3>Criminal Justice Basics</h3>
                 <ul class="cat-list">
                     <li>What to do if detained</li>
@@ -2110,7 +2508,8 @@
         </div>
         <div class="article-grid" id="articleGrid">
             <a class="article-card" data-cat="property" href="/articles#landlord-eviction-notice">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png"
+                        alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Property</span>
                     <h4>Can your landlord evict you without notice?</h4>
@@ -2118,7 +2517,8 @@
                 </div>
             </a>
             <a class="article-card" data-cat="rti" href="/articles#rti-application-guide">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/docs.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/docs.png" alt="">
+                </div>
                 <div class="article-body">
                     <span class="article-tag">RTI</span>
                     <h4>Filing an RTI application: a step-by-step guide</h4>
@@ -2126,7 +2526,8 @@
                 </div>
             </a>
             <a class="article-card" data-cat="employment" href="/articles#wrongful-termination">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png"
+                        alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Employment</span>
                     <h4>What counts as wrongful termination in India?</h4>
@@ -2134,7 +2535,8 @@
                 </div>
             </a>
             <a class="article-card" data-cat="consumer" href="/articles#consumer-refund-guide">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png"
+                        alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Consumer</span>
                     <h4>Getting a refund for a defective online order</h4>
@@ -2142,7 +2544,8 @@
                 </div>
             </a>
             <a class="article-card" data-cat="women" href="/articles#domestic-violence-protection">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/women_rights.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/women_rights.png"
+                        alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Women's Rights</span>
                     <h4>Protection orders under the Domestic Violence Act</h4>
@@ -2150,7 +2553,8 @@
                 </div>
             </a>
             <a class="article-card" data-cat="property" href="/articles#security-deposit-rights">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt=""></div>
+                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png"
+                        alt=""></div>
                 <div class="article-body">
                     <span class="article-tag">Property</span>
                     <h4>Understanding your security deposit rights</h4>
@@ -2163,7 +2567,8 @@
     <!-- ================= TESTIMONIAL ================= -->
     <section class="quote-strip">
         <div class="wrap">
-            <blockquote>"NyaySetu helped me understand my tenancy rights when my landlord threatened an illegal eviction
+            <blockquote>"NyaySetu helped me understand my tenancy rights when my landlord threatened an illegal
+                eviction
                 — in Hindi, in five minutes."</blockquote>
             — A renter, Pune
         </div>
@@ -2178,7 +2583,8 @@
             <div class="faq-item">
                 <button class="faq-q">Is NyaySetu free to use?<span class="faq-plus">+</span></button>
                 <div class="faq-a">
-                    <p>Yes. Every core feature — describing an issue, analyzing documents, and reading rights guides —
+                    <p>Yes. Every core feature — describing an issue, analyzing documents, and reading rights guides
+                        —
                         is free for all Indian citizens, with no hidden fees.</p>
                 </div>
             </div>
@@ -2207,7 +2613,8 @@
             <div class="faq-item">
                 <button class="faq-q">How does the AI understand my case?<span class="faq-plus">+</span></button>
                 <div class="faq-a">
-                    <p>You describe your situation conversationally, and the system asks follow-up questions to build a
+                    <p>You describe your situation conversationally, and the system asks follow-up questions to
+                        build a
                         structured case file, mapped against the relevant laws.</p>
                 </div>
             </div>
@@ -2238,7 +2645,8 @@
                         <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="logo" class="logo"></span>
                         <span class="brand-text">NyaySetu</span>
                     </div>
-                    <p>Free, private legal guidance for every Indian citizen — in the language you're most comfortable
+                    <p>Free, private legal guidance for every Indian citizen — in the language you're most
+                        comfortable
                         in.</p>
                 </div>
                 <div class="footer-col">
@@ -2272,7 +2680,8 @@
             <div class="footer-bottom">
                 <div>
                     <span>© 2026 NyaySetu. All rights reserved.</span>
-                    <p class="footer-legal-note">🔒 NyaySetu provides general legal information and is not a substitute
+                    <p class="footer-legal-note">🔒 NyaySetu provides general legal information and is not a
+                        substitute
                         for professional legal advice.</p>
                 </div>
                 <div class="footer-socials">
@@ -2388,6 +2797,50 @@
             siteNav.classList.toggle('scrolled', window.scrollY > 8);
         }, { passive: true });
 
+        // ===== Desktop nav-item dropdowns (hover + click) =====
+        const navItems = Array.from(document.querySelectorAll('#navLinks .nav-item'));
+        let navCloseTimer = null;
+
+        function closeAllNavItems(except) {
+            navItems.forEach(item => {
+                if (item !== except) item.classList.remove('open');
+            });
+        }
+
+        navItems.forEach(item => {
+            const trigger = item.querySelector('[data-nav-trigger]');
+
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isOpen = item.classList.contains('open');
+                closeAllNavItems(item);
+                item.classList.toggle('open', !isOpen);
+            });
+
+            item.addEventListener('mouseenter', () => {
+                clearTimeout(navCloseTimer);
+                closeAllNavItems(item);
+                item.classList.add('open');
+            });
+
+            item.addEventListener('mouseleave', () => {
+                navCloseTimer = setTimeout(() => item.classList.remove('open'), 160);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#navLinks')) closeAllNavItems();
+        });
+
+        document.querySelectorAll('#navLinks .nav-dropdown a').forEach(a => {
+            a.addEventListener('click', () => closeAllNavItems());
+        });
+
+        // Close nav dropdowns with Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAllNavItems();
+        });
+
         // Mobile nav sheet
         const mobileSheet = document.getElementById('mobileSheet');
         const mobileSheetBackdrop = document.getElementById('mobileSheetBackdrop');
@@ -2408,6 +2861,23 @@
         mobileSheetClose.addEventListener('click', closeMobileSheet);
         mobileSheetBackdrop.addEventListener('click', closeMobileSheet);
         mobileSheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileSheet));
+
+        // Mobile per-item accordions (small dropdown for every nav element)
+        document.querySelectorAll('[data-mobile-accordion]').forEach(acc => {
+            const trigger = acc.querySelector('[data-mobile-trigger]');
+            const panel = acc.querySelector('.mobile-accordion-panel');
+            trigger.addEventListener('click', () => {
+                const isOpen = acc.classList.contains('open');
+                document.querySelectorAll('[data-mobile-accordion]').forEach(other => {
+                    other.classList.remove('open');
+                    other.querySelector('.mobile-accordion-panel').style.maxHeight = null;
+                });
+                if (!isOpen) {
+                    acc.classList.add('open');
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                }
+            });
+        });
 
         // FAQ accordion
         document.querySelectorAll('.faq-item').forEach(item => {
@@ -2473,9 +2943,6 @@
         });
 
         // ===== Reveal-on-view animations =====
-        // Pops the console card in with a slight bounce, fades the side card in
-        // just after, and cascades the quick-action cards in one by one.
-        // Each element animates once, the first time it enters the viewport.
         if ('IntersectionObserver' in window) {
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -2489,13 +2956,11 @@
             document.querySelectorAll('.reveal-pop, .reveal-fade, .quick-actions')
                 .forEach(el => revealObserver.observe(el));
         } else {
-            // No IntersectionObserver support — just show everything as-is.
             document.querySelectorAll('.reveal-pop, .reveal-fade, .quick-actions')
                 .forEach(el => el.classList.add('in-view'));
         }
 
         // ===== Hero headline language-flip animation =====
-        // "In your language." cycles through translated equivalents.
         const heroLangPhrases = [
             { text: "In your language.", lang: "en" },
             { text: "आपकी भाषा में।", lang: "hi" },
@@ -2540,56 +3005,105 @@
 
         setInterval(cycleHeroLangFlip, 2600);
 
-        // ===== "How it works" vertical timeline: parallax fill + step highlight =====
-        const stepsVertical = document.getElementById('stepsVertical');
-        const stepsLineFill = document.getElementById('stepsLineFill');
-        const stepEls = document.querySelectorAll('.step-v');
+        // ===== "How it works" pinned scrollytelling =====
+        const howBand = document.getElementById('how-it-works');
+        const stepsStage = document.getElementById('stepsStage');
+        const stepVEls = howBand ? Array.from(howBand.querySelectorAll('.step-v')) : [];
+        const progressDots = howBand ? Array.from(howBand.querySelectorAll('.steps-progress .dot')) : [];
+        const numSteps = stepVEls.length;
 
-        function updateStepsParallax() {
-            if (!stepsVertical || !stepsLineFill) return;
-            const rect = stepsVertical.getBoundingClientRect();
+        const howBandMobileQuery = window.matchMedia('(max-width: 900px)');
+        let howBandPinned = false;
+
+        function setupHowBandMode() {
+            if (!howBand || !numSteps) return;
+            howBandPinned = !howBandMobileQuery.matches;
+            howBand.classList.toggle('no-pin', !howBandPinned);
+            stepVEls.forEach(step => {
+                step.style.opacity = '';
+                step.style.transform = '';
+                step.classList.remove('in-view');
+            });
+            if (!howBandPinned && 'IntersectionObserver' in window) {
+                const stepRevealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            stepRevealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                stepVEls.forEach(step => stepRevealObserver.observe(step));
+            } else if (!howBandPinned) {
+                stepVEls.forEach(step => step.classList.add('in-view'));
+            }
+        }
+
+        function updateHowBandPinned() {
+            if (!howBandPinned || !howBand || !numSteps) return;
+            const rect = howBand.getBoundingClientRect();
             const vh = window.innerHeight;
-
-            // Progress fill: line fills as the timeline travels through the viewport.
-            const total = rect.height;
-            const traveled = (vh * 0.7) - rect.top;
-            let progress = total > 0 ? traveled / total : 0;
+            const scrollableDistance = howBand.offsetHeight - vh;
+            let progress = scrollableDistance > 0 ? (0 - rect.top) / scrollableDistance : 0;
             progress = Math.max(0, Math.min(1, progress));
-            stepsLineFill.style.height = (progress * 100) + '%';
+            const scaled = progress * numSteps;
 
-            // Subtle parallax drift on each shape based on distance from viewport center.
-            stepEls.forEach(step => {
-                const shape = step.querySelector('.step-v-shape');
-                if (!shape) return;
-                const sRect = step.getBoundingClientRect();
-                const centerOffset = (sRect.top + sRect.height / 2) - vh / 2;
-                const drift = Math.max(-18, Math.min(18, centerOffset * -0.06));
-                const activeScale = step.classList.contains('active') ? 1.08 : 1;
-                shape.style.transform = `translateY(${drift}px) scale(${activeScale})`;
+            stepVEls.forEach((step, i) => {
+                let local = scaled - i;
+                local = Math.max(-1, Math.min(2, local));
+
+                let opacity, translateY, scale;
+                if (local <= 0) {
+                    opacity = 0; translateY = 60; scale = 0.94;
+                } else if (local < 0.2) {
+                    const t = local / 0.2;
+                    opacity = t; translateY = 60 * (1 - t); scale = 0.94 + 0.06 * t;
+                } else if (local <= 0.8) {
+                    opacity = 1; scale = 1;
+                    translateY = (local - 0.5) * -20;
+                } else if (local < 1) {
+                    const t = (local - 0.8) / 0.2;
+                    opacity = 1 - t; translateY = -60 * t; scale = 1 - 0.06 * t;
+                } else {
+                    opacity = 0; translateY = -60; scale = 0.94;
+                }
+
+                step.style.opacity = opacity;
+                step.style.transform = `translateY(${translateY}px) scale(${scale})`;
+                step.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
+
+                const img = step.querySelector('.step-v-card');
+                if (img) img.style.transform = `translateY(${translateY * 1.6}px)`;
             });
+
+            const activeIndex = Math.max(0, Math.min(numSteps - 1, Math.floor(scaled)));
+            progressDots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
         }
 
-        if ('IntersectionObserver' in window && stepEls.length) {
-            const stepObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    entry.target.classList.toggle('active', entry.isIntersecting);
-                });
-            }, { threshold: 0.55 });
-            stepEls.forEach(step => stepObserver.observe(step));
-        }
-
-        let stepsParallaxTicking = false;
-        function onScrollForSteps() {
-            if (stepsParallaxTicking) return;
-            stepsParallaxTicking = true;
+        let howBandTicking = false;
+        function onScrollForHowBand() {
+            if (!howBandPinned) return;
+            if (howBandTicking) return;
+            howBandTicking = true;
             requestAnimationFrame(() => {
-                updateStepsParallax();
-                stepsParallaxTicking = false;
+                updateHowBandPinned();
+                howBandTicking = false;
             });
         }
-        window.addEventListener('scroll', onScrollForSteps, { passive: true });
-        window.addEventListener('resize', onScrollForSteps);
-        updateStepsParallax();
+
+        setupHowBandMode();
+        updateHowBandPinned();
+        window.addEventListener('scroll', onScrollForHowBand, { passive: true });
+        window.addEventListener('resize', () => {
+            setupHowBandMode();
+            updateHowBandPinned();
+        });
+        if (howBandMobileQuery.addEventListener) {
+            howBandMobileQuery.addEventListener('change', () => {
+                setupHowBandMode();
+                updateHowBandPinned();
+            });
+        }
 
         (async function init() {
             await loadLanguageData();
