@@ -1,5 +1,6 @@
 import os
 import uuid
+import base64
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -9,7 +10,7 @@ import cloudinary
 import cloudinary.uploader
 
 from db import db, init_db, User, Case, CaseDocument
-from legal_ai import get_legal_ai_reply
+from legal_ai import get_legal_ai_reply, analyze_legal_document
 
 load_dotenv()
 
@@ -159,6 +160,38 @@ def legal_chat():
     return jsonify(result)
 
 
+# ---------------- Document analysis (Gemini reads the PDF directly) ----------------
+@app.route("/api/analyze-document", methods=["POST"])
+def analyze_document():
+    """
+    Body: { "file_name": str, "mime_type": str, "file_base64": str }
+    Returns: { "explanation": str, "trust_score": int, "trust_reasons": [str, ...] }
+    """
+    data = request.get_json(silent=True) or {}
+    file_b64 = data.get("file_base64")
+    mime_type = data.get("mime_type") or "application/pdf"
+    file_name = data.get("file_name", "")
+
+    if not file_b64:
+        return jsonify({"error": "file_base64 is required"}), 400
+
+    try:
+        file_bytes = base64.b64decode(file_b64)
+    except Exception:
+        return jsonify({"error": "Invalid base64 file data"}), 400
+
+    if len(file_bytes) > 15 * 1024 * 1024:  # 15MB cap
+        return jsonify({"error": "File too large (max 15MB)"}), 400
+
+    try:
+        result = analyze_legal_document(file_bytes, mime_type, file_name)
+    except Exception:
+        app.logger.exception("Gemini document analysis failed")
+        return jsonify({"error": "Something went wrong analyzing this document. Please try again."}), 500
+
+    return jsonify(result)
+
+
 # ---------------- New Issue wizard ----------------
 @app.route("/new-issue", methods=["GET", "POST"])
 def new_issue():
@@ -254,7 +287,7 @@ def new_issue():
         greeting_key=greeting_key_for_now(),
     )
 
-
+    
 # ---------------- Local login/signup ----------------
 @app.route("/login")
 def login_page():
