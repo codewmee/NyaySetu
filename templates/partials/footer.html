@@ -1,0 +1,207 @@
+<!-- ================= FOOTER STYLES ================= -->
+    <style>
+        footer {
+            background: var(--sidebar-dark);
+            color: var(--on-dark-muted);
+            padding: 90px 0 30px;
+            margin-top: 60px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.6fr repeat(3, 1fr);
+            gap: 32px;
+            padding-bottom: 50px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-brand .brand {
+            margin-bottom: 14px;
+        }
+
+        .footer-brand .brand-text {
+            color: #fff;
+        }
+
+        .footer-brand p {
+            font-size: 13.5px;
+            max-width: 260px;
+            line-height: 1.6;
+        }
+
+        .footer-col h5 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .footer-col ul {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-col a {
+            font-size: 13.5px;
+        }
+
+        .footer-col a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            padding-top: 26px;
+            font-size: 12.5px;
+        }
+
+        .footer-legal-note {
+            font-size: 12px;
+            max-width: 560px;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 10px;
+        }
+
+        .footer-socials a {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .footer-socials a:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* ---- Toast (lives here since the element is rendered in this partial) ---- */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--ink);
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 2000;
+            max-width: 90vw;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ---- Footer responsive ---- */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 28px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="wrap">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="brand">
+                        <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="logo" class="logo"></span>
+                        <span class="brand-text">NyaySetu</span>
+                    </div>
+                    <p>Free, private legal guidance for every Indian citizen — in the language you're most
+                        comfortable
+                        in.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="/">Dashboard</a></li>
+                        <li><a href="/new-issue">New Issue</a></li>
+                        <li><a href="/document-helper">Document Analysis</a></li>
+                        <li><a href="/saved-reports">Saved Reports</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="/know_rights">Know Your Rights</a></li>
+                        <li><a href="/government-services">Government Services</a></li>
+                        <li><a href="/find-lawyer">Find a Lawyer</a></li>
+                        <li><a href="/help-support">Help &amp; Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/help-support">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>
+                    <span>© 2026 NyaySetu. All rights reserved.</span>
+                    <p class="footer-legal-note">🔒 NyaySetu provides general legal information and is not a
+                        substitute
+                        for professional legal advice.</p>
+                </div>
+                <div class="footer-socials">
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="Instagram">📸</a>
+                    <a href="#" aria-label="LinkedIn">💼</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- ================= FOOTER SCRIPT ================= -->
+    <script>
+        // ---- Toast helper (used by newsletter form and available globally for any other page section) ----
+        let toastTimer;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+        }
+    </script>

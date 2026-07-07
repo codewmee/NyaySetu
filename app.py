@@ -1,4 +1,5 @@
 import os
+import json
 import uuid
 from datetime import datetime
 
@@ -8,7 +9,7 @@ from werkzeug.utils import secure_filename
 import cloudinary
 import cloudinary.uploader
 
-from db import db, init_db, User, Case, CaseDocument
+from db import db, init_db, User, Case, CaseDocument, ChatMessage
 from legal_ai import get_legal_ai_reply
 from articles_models import Article, FeedSource, CATEGORY_META
 from rss_ingest import fetch_all_active_feeds
@@ -93,7 +94,10 @@ RECENT_ACTIVITY = [
 # Maps the value of each category radio button in the New Issue form to the
 # display label + icon styling used both on the form and on the resulting
 # Case card in the dashboard.
-CATEGORY_META = {
+# Kept as its own name — this used to be called CATEGORY_META too, which
+# silently overwrote the CATEGORY_META imported from articles_models above,
+# breaking category display on /articles and /articles/<slug>.
+CASE_CATEGORY_META = {
     "job": {"label": "Job & Employment", "icon": "💼", "icon_bg": "#e3e8ff", "icon_color": "#4a4ad9"},
     "landlord": {"label": "Landlord & Tenant", "icon": "🏠", "icon_bg": "#ffe9d6", "icon_color": "#d97706"},
     "consumer": {"label": "Consumer Complaint", "icon": "🛒", "icon_bg": "#ffe1e1", "icon_color": "#dc2626"},
@@ -171,42 +175,173 @@ def home():
 # message (stashed into sessionStorage as 'nyaysetu_initial_message') and
 # redirects here. This page owns the actual back-and-forth with Gemini via
 # /api/legal-chat, including any file attachments.
+#
+# Pass ?case_id=<id> to resume an existing case's conversation (e.g. the
+# "Continue conversation" button on a dashboard case card) — otherwise a
+# fresh Case row is created on the first message sent from here.
 @app.route("/chat")
 def legal_chat_page():
-    return render_template("chat.html", active_page="chat", user=current_user())
+    user = current_user()
+    if not user:
+        return redirect(url_for("login_page"))
+
+    case = None
+    case_id = request.args.get("case_id")
+    if case_id:
+        case = Case.query.filter_by(id=case_id, user_id=user.id).first()
+
+    history = [m.to_history_dict() for m in case.messages] if case else []
+
+    return render_template(
+        "chat.html",
+        active_page="chat",
+        user=user,
+        case=case,
+        history=history,
+    )
 
 
 # ---------------- AI legal intake chat (Gemini) ----------------
 @app.route("/api/legal-chat", methods=["POST"])
 def legal_chat():
     """
-    Body: { "message": str, "history": [{"role": "user"|"model", "content": str}, ...] }
-    Returns: { "type": "question"|"answer"|"off_topic", "reply": str,
-               "category": str|null, "summary": str|null, "strength": int|null }
-    """
-    data = request.get_json(silent=True) or {}
-    message = (data.get("message") or "").strip()
-    history = data.get("history") or []
+    Accepts either:
+      - JSON: { "message": str, "history": [...], "case_id": int|null }
+      - multipart/form-data (when files are attached): same fields, plus
+        one or more files under the "documents" field.
 
-    if not message:
+    On the first call for a conversation (no case_id, or an id that doesn't
+    resolve to one of the user's cases) a new Case row is created — its
+    title/description/category/strength get filled in and kept in sync from
+    whatever Gemini infers on each turn. Every user + model turn is saved as
+    a ChatMessage so the conversation can be reloaded later via
+    GET /chat?case_id=<id>. Any attached files are uploaded to Cloudinary and
+    saved as CaseDocument rows, same as the /new-issue flow.
+
+    Returns: { "type": "question"|"answer"|"off_topic", "reply": str,
+               "category": str|null, "summary": str|null, "strength": int|null,
+               "case_id": int, "uploaded_count": int }
+    """
+    user = current_user()
+    if not user:
+        return jsonify({"error": "login required"}), 401
+
+    is_multipart = (request.content_type or "").startswith("multipart/form-data")
+
+    if is_multipart:
+        message = (request.form.get("message") or "").strip()
+        case_id = request.form.get("case_id") or None
+        try:
+            history = json.loads(request.form.get("history") or "[]")
+        except ValueError:
+            history = []
+        files = request.files.getlist("documents")
+    else:
+        data = request.get_json(silent=True) or {}
+        message = (data.get("message") or "").strip()
+        case_id = data.get("case_id") or None
+        history = data.get("history") or []
+        files = []
+
+    if not message and not files:
         return jsonify({"error": "message is required"}), 400
 
     # Keep the payload sane — only send the most recent turns to Gemini.
     if len(history) > 30:
         history = history[-30:]
 
+    # ---- find or create the Case this conversation belongs to ----
+    case = None
+    if case_id:
+        case = Case.query.filter_by(id=case_id, user_id=user.id).first()
+
+    if not case:
+        title = message if message else "New conversation"
+        title = title if len(title) <= 60 else title[:60].rstrip() + "…"
+        case = Case(
+            user_id=user.id,
+            title=title,
+            description=message or None,
+            status="in_progress",
+            strength=20,
+        )
+        db.session.add(case)
+        db.session.commit()  # need case.id below, for the Cloudinary folder + FK rows
+
+    if message:
+        db.session.add(ChatMessage(case_id=case.id, role="user", content=message))
+
+    # ---- upload any attached files to Cloudinary (same pattern as /new-issue) ----
+    uploaded_count = 0
+    failed_count = 0
+    for f in files:
+        if not f or not f.filename:
+            continue
+
+        safe_name = secure_filename(f.filename) or "file"
+        name_no_ext = os.path.splitext(safe_name)[0] or "file"
+        public_id = f"{uuid.uuid4().hex}_{name_no_ext}"
+        content_type = f.mimetype or "application/octet-stream"
+
+        try:
+            upload_result = cloudinary.uploader.upload(
+                f,
+                folder=f"nyaysetu/cases/{case.id}",
+                public_id=public_id,
+                resource_type="auto",
+                use_filename=False,
+                unique_filename=False,
+                overwrite=False,
+            )
+        except Exception:
+            app.logger.exception("Cloudinary upload failed for %s", f.filename)
+            failed_count += 1
+            continue
+
+        db.session.add(CaseDocument(
+            case_id=case.id,
+            file_name=f.filename,
+            cloudinary_public_id=upload_result.get("public_id"),
+            cloudinary_url=upload_result.get("secure_url"),
+            resource_type=upload_result.get("resource_type"),
+            content_type=content_type,
+            bytes=upload_result.get("bytes"),
+        ))
+        uploaded_count += 1
+
+    db.session.commit()
+
     try:
         result = get_legal_ai_reply(history, message)
     except Exception:
         app.logger.exception("Gemini call failed")
-        return jsonify({
+        result = {
             "type": "answer",
             "reply": "Something went wrong reaching the AI — please try again in a moment.",
             "category": None,
             "summary": None,
             "strength": None,
-        }), 200
+        }
 
+    db.session.add(ChatMessage(case_id=case.id, role="model", content=result.get("reply", "")))
+
+    # Keep the Case row in sync with whatever Gemini has inferred so far.
+    if result.get("category"):
+        case.category = result["category"]
+    if result.get("summary"):
+        case.description = result["summary"]
+        case.title = (
+            result["summary"] if len(result["summary"]) <= 60
+            else result["summary"][:60].rstrip() + "…"
+        )
+    if result.get("strength") is not None:
+        case.strength = result["strength"]
+
+    db.session.commit()
+
+    result["case_id"] = case.id
+    result["uploaded_count"] = uploaded_count
+    result["failed_count"] = failed_count
     return jsonify(result)
 
 
@@ -225,7 +360,7 @@ def new_issue():
             flash("Please describe your issue before submitting.")
             return redirect(url_for("new_issue"))
 
-        meta = CATEGORY_META.get(category_key, CATEGORY_META["other"])
+        meta = CASE_CATEGORY_META.get(category_key, CASE_CATEGORY_META["other"])
 
         # A short, human-readable title derived from the free-text description.
         title = description if len(description) <= 60 else description[:60].rstrip() + "…"
@@ -362,9 +497,36 @@ def logout():
 
 
 # ---------------- placeholder routes ----------------
+@app.route("/api/cases/<int:case_id>/resolve", methods=["POST"])
+def resolve_case(case_id):
+    user = current_user()
+    if not user:
+        return jsonify({"error": "login required"}), 401
+
+    case = Case.query.filter_by(id=case_id, user_id=user.id).first()
+    if not case:
+        return jsonify({"error": "not found"}), 404
+
+    case.status = "resolved"
+    db.session.commit()
+    return jsonify({"ok": True, "status": case.status, "status_label": case.status_label})
+
+
 @app.route("/dashboard")
 def my_issues():
-    return render_template("dashboard.html")
+    user = current_user()
+    if not user:
+        return redirect(url_for("login_page"))
+
+    cases = Case.query.filter_by(user_id=user.id).order_by(Case.created_at.desc()).all()
+
+    return render_template(
+        "dashboard.html",
+        active_page="dashboard",
+        user=user,
+        cases=cases,
+        activity=RECENT_ACTIVITY,
+    )
 
 
 @app.route("/document-helper")

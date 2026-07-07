@@ -128,62 +128,6 @@
   .announce-close:hover{ background:rgba(255,255,255,.1); color:#fff; }
   .announce.hidden{ display:none; }
 
-  /* ===== nav — three zone ===== */
-  .site-nav{
-    position:sticky; top:0; z-index:300; background:rgba(255,255,255,.92);
-    backdrop-filter:blur(10px); border-bottom:1px solid transparent;
-    transition:border-color .2s ease;
-  }
-  .site-nav.scrolled{ border-bottom-color:var(--border-light); }
-  .nav-inner{
-    display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
-    max-width:var(--container); margin:0 auto; padding:18px 32px;
-  }
-  .brand{ display:flex; align-items:center; gap:8px; }
-  .brand-icon{ font-size:20px; }
-  .brand-text{ font-family:var(--font-display); font-size:16px; font-weight:600; letter-spacing:-.2px; }
-  .nav-links{ display:flex; align-items:center; gap:28px; justify-self:center; }
-  .nav-link{ font-size:14px; font-weight:500; color:var(--body-muted); }
-  .nav-link:hover{ color:var(--ink); }
-  .nav-right{ display:flex; align-items:center; gap:14px; justify-self:end; }
-  .lang-dropdown{ position:relative; }
-  .lang-toggle{
-    display:flex; align-items:center; gap:6px; font-size:13px; font-weight:500;
-    color:var(--ink); border:1px solid var(--border-light); border-radius:var(--r-full);
-    padding:7px 13px;
-  }
-  .lang-toggle:hover{ background:var(--soft-stone); }
-  .lang-menu{
-    display:none; position:absolute; right:0; top:calc(100% + 8px);
-    background:#fff; border:1px solid var(--border-light); border-radius:var(--r-sm);
-    width:170px; box-shadow:0 12px 28px rgba(0,0,0,.1); overflow:hidden; z-index:350;
-  }
-  .lang-menu.open{ display:block; }
-  .lang-menu li{ padding:10px 14px; font-size:13px; cursor:pointer; }
-  .lang-menu li:hover{ background:var(--soft-stone); }
-  .lang-menu li.selected{ color:var(--deep-green); font-weight:600; background:var(--pale-green); }
-
-  .hamburger{ display:none; font-size:18px; width:36px; height:36px; align-items:center; justify-content:center; border-radius:var(--r-sm); }
-  .hamburger:hover{ background:var(--soft-stone); }
-  @media (max-width:900px){
-    .nav-links{ display:none; }
-    .hamburger{ display:flex; }
-    .nav-inner{ grid-template-columns:1fr auto; }
-  }
-
-  .mobile-sheet-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:399; }
-  .mobile-sheet-backdrop.open{ display:block; }
-  .mobile-sheet{
-    position:fixed; top:0; right:0; height:100vh; width:280px; max-width:84vw;
-    background:#fff; z-index:400; padding:20px; transform:translateX(100%);
-    transition:transform .25s ease; display:flex; flex-direction:column; gap:4px;
-  }
-  .mobile-sheet.open{ transform:translateX(0); }
-  .mobile-sheet-close{ align-self:flex-end; width:34px; height:34px; border-radius:var(--r-sm); font-size:17px; margin-bottom:10px; }
-  .mobile-sheet-close:hover{ background:var(--soft-stone); }
-  .mobile-sheet .nav-link{ padding:12px 6px; border-bottom:1px solid var(--card-border); color:var(--ink); }
-  .mobile-sheet .btn{ margin-top:16px; }
-
   /* ===== hero ===== */
   .hero{ padding:64px 0 40px; }
   .hero-copy{ max-width:680px; }
@@ -358,33 +302,6 @@
   }
   .contact-form-card .btn-primary{ width:100%; margin-top:6px; padding:13px 24px; }
 
-  /* ===== footer ===== */
-  footer{ background:var(--primary); color:var(--muted); padding:90px 0 28px; margin-top:60px; }
-  .footer-newsletter{ display:grid; grid-template-columns:1fr auto; align-items:flex-end; gap:24px; padding-bottom:56px; border-bottom:1px solid rgba(255,255,255,.08); }
-  .footer-newsletter .mono-label{ color:var(--coral); margin-bottom:12px; display:block; }
-  .footer-newsletter h3{ color:#fff; font-size:clamp(1.5rem,2.6vw,2.1rem); font-weight:500; letter-spacing:-.4px; max-width:420px; }
-  .footer-newsletter p{ margin-top:10px; font-size:13px; color:var(--muted); max-width:420px; }
-  .newsletter-form{ display:flex; gap:8px; }
-  .newsletter-form input{
-    width:250px; max-width:60vw; padding:12px 16px; border-radius:var(--r-full);
-    border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); color:#fff; font-size:13.5px;
-  }
-  .newsletter-form input::placeholder{ color:var(--muted); }
-  .newsletter-form button{
-    width:42px; height:42px; border-radius:50%; background:#fff; color:var(--primary);
-    display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
-  }
-  @media (max-width:700px){ .footer-newsletter{ grid-template-columns:1fr; } .newsletter-form input{ width:100%; max-width:100%; } }
-
-  .footer-grid{ display:grid; grid-template-columns:1.6fr repeat(3,1fr); gap:28px; padding:44px 0 30px; }
-  @media (max-width:700px){ .footer-grid{ grid-template-columns:1fr 1fr; } }
-  .footer-brand p{ font-size:13px; max-width:250px; line-height:1.6; margin-top:12px; }
-  .footer-col h5{ font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:#fff; margin-bottom:14px; }
-  .footer-col ul{ display:flex; flex-direction:column; gap:9px; }
-  .footer-col a{ font-size:13px; }
-  .footer-col a:hover{ color:#fff; }
-  .footer-bottom{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-top:22px; border-top:1px solid rgba(255,255,255,.06); font-size:12px; }
-
   /* ===== toast ===== */
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
@@ -396,52 +313,10 @@
 </style>
 </head>
 <body>
-
+{% include 'partials/nav.html' %}
   <div class="announce" id="announceBar">
     🇮🇳 NyaySetu is free for every Indian citizen — no fees, ever. <a href="/know-your-rights">Learn more</a>
     <button class="announce-close" id="announceClose" aria-label="Dismiss announcement">✕</button>
-  </div>
-
-  <nav class="site-nav" id="siteNav">
-    <div class="nav-inner">
-      <a href="/" class="brand">
-        <span class="brand-icon">⚖️</span>
-        <span class="brand-text">NyaySetu</span>
-      </a>
-      <div class="nav-links">
-        <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
-        <a href="/government-services" class="nav-link">Government Services</a>
-        <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-        <a href="/help-support" class="nav-link">Help &amp; Support</a>
-      </div>
-      <div class="nav-right">
-        <div class="lang-dropdown" id="langDropdown">
-          <button class="lang-toggle" id="langToggle">🌐 <span id="langLabel">English</span> ▾</button>
-          <ul class="lang-menu" id="langMenu">
-            <li data-lang="English" class="selected">English</li>
-            <li data-lang="हिंदी">हिंदी</li>
-            <li data-lang="मराठी">मराठी</li>
-            <li data-lang="தமிழ்">தமிழ்</li>
-            <li data-lang="বাংলা">বাংলা</li>
-            <li data-lang="ਪੰਜਾਬੀ">ਪੰਜਾਬੀ</li>
-            <li data-lang="తెలుగు">తెలుగు</li>
-            <li data-lang="ગુજરાતી">ગુજરાતી</li>
-          </ul>
-        </div>
-        <a href="/login" class="btn btn-primary">Sign Up</a>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
-      </div>
-    </div>
-  </nav>
-
-  <div class="mobile-sheet-backdrop" id="mobileSheetBackdrop"></div>
-  <div class="mobile-sheet" id="mobileSheet">
-    <button class="mobile-sheet-close" id="mobileSheetClose" aria-label="Close menu">✕</button>
-    <a href="/know-your-rights" class="nav-link">Know Your Rights</a>
-    <a href="/government-services" class="nav-link">Government Services</a>
-    <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-    <a href="/help-support" class="nav-link">Help &amp; Support</a>
-    <a href="/login" class="btn btn-primary">Sign Up</a>
   </div>
 
   <!-- ================= HERO / INTAKE ================= -->
@@ -596,75 +471,13 @@
       </div>
     </div>
   </section>
-
-  <!-- ================= FOOTER ================= -->
-  <footer>
-    <div class="wrap">
-      <div class="footer-newsletter">
-        <div>
-          <span class="mono-label">Stay informed</span>
-          <h3>Get legal updates in your language</h3>
-          <p>New rights guides and law changes, sent monthly. No spam.</p>
-        </div>
-        <form class="newsletter-form" id="newsletterForm">
-          <input type="email" id="newsletterEmail" placeholder="you@example.com" required>
-          <button type="submit" aria-label="Subscribe">→</button>
-        </form>
-      </div>
-
-      <div class="footer-grid">
-        <div class="footer-col footer-brand">
-          <div class="brand">
-            <span class="brand-icon">⚖️</span>
-            <span class="brand-text" style="color:#fff;">NyaySetu</span>
-          </div>
-          <p>Free, private legal guidance for every Indian citizen — in the language you're most comfortable in.</p>
-        </div>
-        <div class="footer-col">
-          <h5>Product</h5>
-          <ul>
-            <li><a href="/">Dashboard</a></li>
-            <li><a href="/new-issue">New Issue</a></li>
-            <li><a href="/document-helper">Document Analysis</a></li>
-            <li><a href="/saved-reports">Saved Reports</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h5>Resources</h5>
-          <ul>
-            <li><a href="/know-your-rights">Know Your Rights</a></li>
-            <li><a href="/government-services">Government Services</a></li>
-            <li><a href="/find-lawyer">Find a Lawyer</a></li>
-            <li><a href="/help-support">Help &amp; Support</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h5>Company</h5>
-          <ul>
-            <li><a href="/about">About</a></li>
-            <li><a href="/privacy">Privacy Policy</a></li>
-            <li><a href="/terms">Terms of Service</a></li>
-            <li><a href="/help-support">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="footer-bottom">
-        <span>© 2026 NyaySetu. General legal information — not a substitute for professional legal advice.</span>
-      </div>
-    </div>
-  </footer>
-
+{% include 'partials/footer.html' %}
   <div class="toast" id="toast"></div>
 
   <script>
     // ---- announcement bar ----
     const announceBar = document.getElementById('announceBar');
     document.getElementById('announceClose').addEventListener('click', () => announceBar.classList.add('hidden'));
-
-    // ---- nav scroll shadow ----
-    const siteNav = document.getElementById('siteNav');
-    window.addEventListener('scroll', () => siteNav.classList.toggle('scrolled', window.scrollY > 8), { passive:true });
 
     // ---- toast ----
     let toastTimer;
@@ -704,60 +517,10 @@
       });
     });
 
-    // ---- language dropdown ----
-    const langDropdown = document.getElementById('langDropdown');
-    const langToggle = document.getElementById('langToggle');
-    const langMenu = document.getElementById('langMenu');
-    const langLabel = document.getElementById('langLabel');
-    langToggle.addEventListener('click', e => {
-      e.stopPropagation();
-      langMenu.classList.toggle('open');
-    });
-    langMenu.addEventListener('click', e => {
-      const item = e.target.closest('li');
-      if (!item) return;
-      langLabel.textContent = item.dataset.lang;
-      langMenu.querySelectorAll('li').forEach(li => li.classList.remove('selected'));
-      item.classList.add('selected');
-      langMenu.classList.remove('open');
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('.lang-dropdown')) langMenu.classList.remove('open');
-    });
-
-    // ---- mobile nav sheet ----
-    const mobileSheet = document.getElementById('mobileSheet');
-    const mobileSheetBackdrop = document.getElementById('mobileSheetBackdrop');
-    const hamburgerBtn = document.getElementById('hamburgerBtn');
-    const mobileSheetClose = document.getElementById('mobileSheetClose');
-    function openMobileSheet(){
-      mobileSheet.classList.add('open');
-      mobileSheetBackdrop.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMobileSheet(){
-      mobileSheet.classList.remove('open');
-      mobileSheetBackdrop.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    hamburgerBtn.addEventListener('click', openMobileSheet);
-    mobileSheetClose.addEventListener('click', closeMobileSheet);
-    mobileSheetBackdrop.addEventListener('click', closeMobileSheet);
-    mobileSheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileSheet));
-
     // ---- fallback form ----
     document.getElementById('fallbackForm').addEventListener('submit', e => {
       e.preventDefault();
       showToast("Got it — we're preparing your guidance now.");
-      e.target.reset();
-    });
-
-    // ---- newsletter ----
-    document.getElementById('newsletterForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const email = document.getElementById('newsletterEmail').value.trim();
-      if (!email) return;
-      showToast("You're subscribed! Updates will go to " + email);
       e.target.reset();
     });
   </script>

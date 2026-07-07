@@ -198,334 +198,6 @@
       background: var(--soft-stone);
     }
 
-    /* ===== nav ===== */
-    .site-nav {
-      position: sticky;
-      top: 0;
-      z-index: 300;
-      background: rgba(255, 255, 255, .94);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .nav-inner {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      max-width: var(--container);
-      margin: 0 auto;
-      padding: 16px 32px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-icon {
-      font-size: 20px;
-    }
-
-    .brand-text {
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: -.2px;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-      justify-self: center;
-    }
-
-    .nav-link {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--body-muted);
-      padding: 6px 0;
-      border-bottom: 2px solid transparent;
-    }
-
-    .nav-link:hover {
-      color: var(--ink);
-    }
-
-    .nav-link.active {
-      color: var(--ink);
-      border-bottom-color: var(--deep-green);
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      justify-self: end;
-    }
-
-    .notif-dropdown,
-    .lang-dropdown,
-    .account-area {
-      position: relative;
-    }
-
-    .notif-btn {
-      position: relative;
-    }
-
-    .notif-dot {
-      position: absolute;
-      top: 6px;
-      right: 7px;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--coral);
-    }
-
-    .dropdown-panel {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: calc(100% + 10px);
-      background: #fff;
-      border: 1px solid var(--border-light);
-      border-radius: var(--r-sm);
-      box-shadow: 0 12px 28px rgba(0, 0, 0, .1);
-      z-index: 350;
-    }
-
-    .dropdown-panel.open {
-      display: block;
-    }
-
-    .lang-menu {
-      width: 170px;
-      overflow: hidden;
-    }
-
-    .lang-menu li {
-      padding: 10px 14px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .lang-menu li:hover {
-      background: var(--soft-stone);
-    }
-
-    .lang-menu li.selected {
-      color: var(--deep-green);
-      font-weight: 600;
-      background: var(--pale-green);
-    }
-
-    .lang-toggle {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      border: 1px solid var(--border-light);
-      border-radius: var(--r-full);
-      padding: 7px 13px;
-    }
-
-    .lang-toggle:hover {
-      background: var(--soft-stone);
-    }
-
-    .notif-panel {
-      width: 320px;
-      padding: 8px 0;
-    }
-
-    .notif-panel .panel-head {
-      padding: 12px 16px 8px;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .notif-item {
-      display: flex;
-      gap: 10px;
-      padding: 10px 16px;
-      align-items: flex-start;
-    }
-
-    .notif-item:hover {
-      background: var(--soft-stone);
-    }
-
-    .notif-item .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--coral);
-      margin-top: 6px;
-      flex-shrink: 0;
-    }
-
-    .notif-item.read .dot {
-      background: var(--border-light);
-    }
-
-    .notif-item p {
-      font-size: 13px;
-      line-height: 1.4;
-    }
-
-    .notif-item span {
-      display: block;
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .account-toggle {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 5px 10px 5px 5px;
-      border: 1px solid var(--border-light);
-      border-radius: var(--r-sm);
-    }
-
-    .account-toggle:hover {
-      background: var(--soft-stone);
-    }
-
-    .account-avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--deep-green);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .account-name {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .account-menu {
-      width: 170px;
-      overflow: hidden;
-    }
-
-    .account-menu li a,
-    .account-menu li button {
-      display: block;
-      width: 100%;
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 13px;
-    }
-
-    .account-menu li a:hover,
-    .account-menu li button:hover {
-      background: var(--soft-stone);
-    }
-
-    .account-menu li.divider {
-      border-top: 1px solid var(--card-border);
-    }
-
-    .account-menu li .danger {
-      color: var(--error);
-    }
-
-    .hamburger {
-      display: none;
-      font-size: 18px;
-      width: 36px;
-      height: 36px;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--r-sm);
-    }
-
-    .hamburger:hover {
-      background: var(--soft-stone);
-    }
-
-    @media (max-width:900px) {
-      .nav-links {
-        display: none;
-      }
-
-      .hamburger {
-        display: flex;
-      }
-
-      .nav-inner {
-        grid-template-columns: 1fr auto;
-      }
-    }
-
-    .mobile-sheet-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .45);
-      z-index: 399;
-    }
-
-    .mobile-sheet-backdrop.open {
-      display: block;
-    }
-
-    .mobile-sheet {
-      position: fixed;
-      top: 0;
-      right: 0;
-      height: 100vh;
-      width: 280px;
-      max-width: 84vw;
-      background: #fff;
-      z-index: 400;
-      padding: 20px;
-      transform: translateX(100%);
-      transition: transform .25s ease;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .mobile-sheet.open {
-      transform: translateX(0);
-    }
-
-    .mobile-sheet-close {
-      align-self: flex-end;
-      width: 34px;
-      height: 34px;
-      border-radius: var(--r-sm);
-      font-size: 17px;
-      margin-bottom: 10px;
-    }
-
-    .mobile-sheet-close:hover {
-      background: var(--soft-stone);
-    }
-
-    .mobile-sheet .nav-link {
-      padding: 12px 6px;
-      border-bottom: 1px solid var(--card-border);
-      color: var(--ink);
-    }
-
-    .mobile-sheet .btn {
-      margin-top: 16px;
-    }
-
     /* ===== page header ===== */
     .page-header {
       padding: 48px 0 32px;
@@ -1114,79 +786,16 @@
         width: 100%;
       }
     }
-      .logo{
-            height: 100px;
-            width: auto;
-        }
   </style>
 </head>
 
 <body>
-
-  <nav class="site-nav">
-    <div class="nav-inner">
-      <a href="/" class="brand">
-        <span class="brand-icon"><img src="../static/icons/logo.jpg" alt="logo" class="logo"></span>
-        <span class="brand-text">NyaySetu</span>
-      </a>
-      <div class="nav-links">
-        <a href="#" class="nav-link active">Dashboard</a>
-        <a href="/know_rights" class="nav-link">Know Your Rights</a>
-        <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-        <a href="/help-support" class="nav-link">Help &amp; Support</a>
-      </div>
-      <div class="nav-right">
-        <div class="lang-dropdown">
-          <button class="lang-toggle" id="langToggle">🌐 <span id="langLabel">English</span> ▾</button>
-          <ul class="dropdown-panel lang-menu" id="langMenu">
-            <li data-lang="English" class="selected">English</li>
-            <li data-lang="हिंदी">हिंदी</li>
-            <li data-lang="मराठी">मराठी</li>
-            <li data-lang="தமிழ்">தமிழ்</li>
-            <li data-lang="বাংলা">বাংলা</li>
-            <li data-lang="ਪੰਜਾਬੀ">ਪੰਜਾਬੀ</li>
-          </ul>
-        </div>
-        <div class="notif-dropdown">
-          <button class="icon-btn notif-btn" id="notifToggle" aria-label="Notifications">🔔<span class="notif-dot"
-              id="notifDot"></span></button>
-          <div class="dropdown-panel notif-panel" id="notifPanel">
-            <div class="panel-head">Notifications</div>
-            <div id="notifList"></div>
-          </div>
-        </div>
-        <div class="account-area">
-          <button class="account-toggle" id="accountToggle">
-            <span class="account-avatar">A</span>
-            <span class="account-name">Aditi</span>
-            <span>▾</span>
-          </button>
-          <ul class="dropdown-panel account-menu" id="accountMenu">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#" id="settingsLink">Settings</a></li>
-            <li class="divider"><button class="danger" id="logoutBtn">Logout</button></li>
-          </ul>
-        </div>
-        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu">☰</button>
-      </div>
-    </div>
-  </nav>
-
-  <div class="mobile-sheet-backdrop" id="mobileSheetBackdrop"></div>
-  <div class="mobile-sheet" id="mobileSheet">
-    <button class="mobile-sheet-close" id="mobileSheetClose" aria-label="Close menu">✕</button>
-    <a href="#" class="nav-link">Dashboard</a>
-    <a href="/know_rights" class="nav-link">Know Your Rights</a>
-    <a href="/find-lawyer" class="nav-link">Find a Lawyer</a>
-    <a href="/help-support" class="nav-link">Help &amp; Support</a>
-    <a href="/new-issue" class="btn btn-primary">Describe New Issue</a>
-  </div>
-
+ {% include 'partials/nav.html' %}
   <div class="wrap">
     <div class="page-header">
       <div>
         <span class="mono-label">Dashboard</span>
-        <h1>Welcome back, Aditi.</h1>
+        <h1>Welcome back, {{ user.name.split(' ')[0] if user and user.name else 'there' }}.</h1>
         <p class="subtext">Here's where your cases, documents, and next steps stand today.</p>
       </div>
       <div class="header-actions">
@@ -1261,6 +870,7 @@
   </div>
 
   <div class="toast" id="toast"></div>
+   {% include 'partials/footer.html' %}
 
   <script>
     // ==========================================================================
@@ -1270,13 +880,13 @@
     // Each returns (or resolves to) the shape shown by the sample data below —
     // swap the SAMPLE_* constants for a fetch() to your API and everything
     // downstream (rendering, filtering, search) keeps working unchanged.
+    // The welcome name above is server-rendered from `user` — no JS needed for that one.
     // ==========================================================================
     async function fetchStats() { return SAMPLE_STATS; }
     async function fetchCases() { return SAMPLE_CASES; }
     async function fetchTodos() { return SAMPLE_TODOS; }
     async function fetchDocuments() { return SAMPLE_DOCS; }
     async function fetchActivity() { return SAMPLE_ACTIVITY; }
-    async function fetchNotifications() { return SAMPLE_NOTIFS; }
 
     // ---- sample data (delete once your API is wired up) ----
     const SAMPLE_STATS = [
@@ -1332,12 +942,6 @@
       { icon: '📄', text: "You uploaded Eviction_Notice_Photo.jpg", time: 'Yesterday' },
       { icon: '✅', text: "'Refund denied for defective order' marked resolved", time: '1 week ago' },
       { icon: '💬', text: "Follow-up questions answered for RTI case", time: '1 week ago' }
-    ];
-
-    const SAMPLE_NOTIFS = [
-      { text: 'Your eviction case needs a response by Friday.', time: '2h ago', read: false },
-      { text: 'RTI first-appeal draft is ready to review.', time: '1d ago', read: false },
-      { text: 'Consumer refund case was marked resolved.', time: '1w ago', read: true }
     ];
 
     // ---- toast ----
@@ -1508,24 +1112,6 @@
         </div>`).join('');
     }
 
-    // ---- render: notifications ----
-    function renderNotifs(notifs) {
-      const unread = notifs.filter(n => !n.read).length;
-      document.getElementById('notifDot').style.display = unread > 0 ? 'block' : 'none';
-      document.getElementById('notifList').innerHTML = notifs.map((n, i) => `
-        <div class="notif-item ${n.read ? 'read' : ''}" data-i="${i}">
-          <span class="dot"></span>
-          <p>${n.text}<span>${n.time}</span></p>
-        </div>`).join('');
-
-      document.querySelectorAll('.notif-item').forEach(item => {
-        item.addEventListener('click', () => {
-          notifs[item.dataset.i].read = true;
-          renderNotifs(notifs);
-        });
-      });
-    }
-
     // ---- quick action buttons ----
     document.getElementById('qaAnalyzeDoc').addEventListener('click', () => {
       document.getElementById('docFileInput').click();
@@ -1533,58 +1119,6 @@
     document.getElementById('qaFindLawyer').addEventListener('click', () => {
       showToast('Opening Find a Lawyer — connect this to your /find-lawyer page.');
     });
-
-    // ---- account / lang / notif dropdowns ----
-    function wireDropdown(toggleId, panelId) {
-      const toggle = document.getElementById(toggleId);
-      const panel = document.getElementById(panelId);
-      toggle.addEventListener('click', e => {
-        e.stopPropagation();
-        document.querySelectorAll('.dropdown-panel').forEach(p => { if (p !== panel) p.classList.remove('open'); });
-        panel.classList.toggle('open');
-      });
-    }
-    wireDropdown('langToggle', 'langMenu');
-    wireDropdown('notifToggle', 'notifPanel');
-    wireDropdown('accountToggle', 'accountMenu');
-
-    document.getElementById('langMenu').addEventListener('click', e => {
-      const item = e.target.closest('li');
-      if (!item) return;
-      document.getElementById('langLabel').textContent = item.dataset.lang;
-      document.querySelectorAll('#langMenu li').forEach(li => li.classList.remove('selected'));
-      item.classList.add('selected');
-      document.getElementById('langMenu').classList.remove('open');
-    });
-
-    document.getElementById('settingsLink').addEventListener('click', e => {
-      e.preventDefault();
-      showToast('Opening Settings — connect this to your /settings page.');
-    });
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      showToast("You've been logged out.");
-    });
-
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.dropdown-panel').forEach(p => p.classList.remove('open'));
-    });
-
-    // ---- mobile nav sheet ----
-    const mobileSheet = document.getElementById('mobileSheet');
-    const mobileSheetBackdrop = document.getElementById('mobileSheetBackdrop');
-    document.getElementById('hamburgerBtn').addEventListener('click', () => {
-      mobileSheet.classList.add('open');
-      mobileSheetBackdrop.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    });
-    function closeMobileSheet() {
-      mobileSheet.classList.remove('open');
-      mobileSheetBackdrop.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    document.getElementById('mobileSheetClose').addEventListener('click', closeMobileSheet);
-    mobileSheetBackdrop.addEventListener('click', closeMobileSheet);
-    mobileSheet.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMobileSheet));
 
     // ---- init ----
     (async function init() {
@@ -1595,7 +1129,6 @@
       DOCS = await fetchDocuments();
       renderDocs();
       renderActivity(await fetchActivity());
-      renderNotifs(await fetchNotifications());
     })();
   </script>
 </body>
