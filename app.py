@@ -1,23 +1,48 @@
 import os
 import json
 import uuid
+import logging
 from datetime import datetime
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, session, redirect, url_for, request, flash, jsonify
 from werkzeug.utils import secure_filename
+from werkzeug.middleware.proxy_fix import ProxyFix
 import cloudinary
 import cloudinary.uploader
 
 from db import db, init_db, User, Case, CaseDocument, ChatMessage
 from legal_ai import get_legal_ai_reply
-from articles_models import Article, FeedSource, CATEGORY_META
-from rss_ingest import fetch_all_active_feeds
-from admin_routes import admin_bp
+
+# ---------------- Optional CMS/RSS/admin modules ----------------
+# These weren't in the file set. Importing them unconditionally meant the
+# whole app refused to boot the moment one was missing/renamed. They're now
+# optional: if present, everything works as before; if not, the site still
+# runs and the articles/admin routes degrade gracefully instead of crashing.
+try:
+    from articles_models import Article, FeedSource, CATEGORY_META
+except ImportError:
+    logging.warning("articles_models.py not found — /articles will show an empty list until it's added.")
+    Article = FeedSource = None
+    CATEGORY_META = {}
+
+try:
+    from rss_ingest import fetch_all_active_feeds
+except ImportError:
+    def fetch_all_active_feeds(*args, **kwargs):
+        logging.warning("rss_ingest.py not found — feed ingestion is disabled.")
+        return None
+
+try:
+    from admin_routes import admin_bp
+except ImportError:
+    logging.warning("admin_routes.py not found — admin blueprint not registered.")
+    admin_bp = None
 
 load_dotenv()
 
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)  # correct client IP/scheme behind Render/Railway/etc.
 
 # ---------------- Secret key (REQUIRED from .env, no hardcoded fallback) ----------------
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -28,8 +53,31 @@ if not SECRET_KEY:
     )
 app.secret_key = SECRET_KEY
 
+# ---------------- Session / cookie hardening ----------------
+IS_PRODUCTION = os.environ.get("FLASK_ENV", "production").lower() == "production"
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,         # JS can't read the session cookie (mitigates XSS token theft)
+    SESSION_COOKIE_SAMESITE="Lax",        # basic CSRF mitigation for cross-site requests
+    SESSION_COOKIE_SECURE=IS_PRODUCTION,  # only send cookie over HTTPS in prod; set FLASK_ENV=development locally
+    MAX_CONTENT_LENGTH=25 * 1024 * 1024,  # 25MB cap on request body — stops giant-file DoS uploads
+)
+
+# ---------------- CSRF protection ----------------
+# Requires: pip install flask-wtf
+from flask_wtf import CSRFProtect
+csrf = CSRFProtect(app)
+
+# ---------------- Rate limiting (brute-force protection) ----------------
+# Requires: pip install flask-limiter
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
+
 # ---------------- Neon Postgres (users + cases) ----------------
 init_db(app)
+
+if admin_bp is not None:
+    app.register_blueprint(admin_bp)
 
 # ---------------- Cloudinary (file storage: PDFs, images, etc.) ----------------
 
@@ -49,6 +97,17 @@ cloudinary.config(
     api_secret=CLOUDINARY_API_SECRET,
     secure=True,
 )
+
+# ---------------- Upload allow-list ----------------
+# Cloudinary's resource_type="auto" will happily accept literally anything a
+# user sends. Restricting to what a legal-intake flow actually needs closes
+# off arbitrary file-type uploads landing in your Cloudinary account.
+ALLOWED_UPLOAD_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "webp", "doc", "docx"}
+
+
+def is_allowed_upload(filename):
+    ext = (filename.rsplit(".", 1)[-1] if "." in filename else "").lower()
+    return ext in ALLOWED_UPLOAD_EXTENSIONS
 
 
 def current_user():
@@ -278,6 +337,11 @@ def legal_chat():
         if not f or not f.filename:
             continue
 
+        if not is_allowed_upload(f.filename):
+            app.logger.info("Rejected disallowed file type: %s", f.filename)
+            failed_count += 1
+            continue
+
         safe_name = secure_filename(f.filename) or "file"
         name_no_ext = os.path.splitext(safe_name)[0] or "file"
         public_id = f"{uuid.uuid4().hex}_{name_no_ext}"
@@ -389,6 +453,11 @@ def new_issue():
             if not f or not f.filename:
                 continue
 
+            if not is_allowed_upload(f.filename):
+                app.logger.info("Rejected disallowed file type: %s", f.filename)
+                failed_count += 1
+                continue
+
             safe_name = secure_filename(f.filename) or "file"
             name_no_ext = os.path.splitext(safe_name)[0] or "file"
             public_id = f"{uuid.uuid4().hex}_{name_no_ext}"
@@ -450,6 +519,7 @@ def login_page():
 
 
 @app.route("/signup", methods=["POST"])
+@limiter.limit("10 per hour")
 def signup():
     email = request.form.get("email", "").strip().lower()
     password = request.form.get("password", "")
@@ -477,6 +547,7 @@ def signup():
 
 
 @app.route("/login", methods=["POST"])
+@limiter.limit("10 per minute")
 def login_submit():
     email = request.form.get("email", "").strip().lower()
     password = request.form.get("password", "")
@@ -556,6 +627,54 @@ def help_support():
     return render_template("help.html")
 
 
+@app.route("/support/contact", methods=["POST"])
+@limiter.limit("5 per hour")
+def support_contact():
+    """Handles help.html's #contactForm. No ContactMessage model exists yet,
+    so this just logs + flashes for now — swap in a real model/email send
+    when you're ready to store/action these."""
+    name = (request.form.get("name") or "").strip()
+    email = (request.form.get("email") or "").strip()
+    message = (request.form.get("message") or "").strip()
+
+    if not email or not message:
+        flash("Please fill in your email and message before sending.")
+        return redirect(url_for("help_support"))
+
+    app.logger.info("Support contact from %s <%s>: %s", name, email, message[:200])
+    flash("Thanks — we've received your message and will get back to you soon.")
+    return redirect(url_for("help_support"))
+
+
+@app.route("/support/report", methods=["POST"])
+@limiter.limit("5 per hour")
+def support_report():
+    """Handles help.html's #reportForm (bug/issue report, optionally with a
+    screenshot). Same placeholder-storage caveat as support_contact above."""
+    description = (request.form.get("description") or "").strip()
+    if not description:
+        flash("Please describe the issue before submitting a report.")
+        return redirect(url_for("help_support"))
+
+    attachment = request.files.get("attachment")
+    if attachment and attachment.filename:
+        if not is_allowed_upload(attachment.filename):
+            flash("That attachment type isn't supported — try a PDF or image instead.")
+            return redirect(url_for("help_support"))
+        try:
+            cloudinary.uploader.upload(
+                attachment,
+                folder="nyaysetu/support-reports",
+                resource_type="auto",
+            )
+        except Exception:
+            app.logger.exception("Support report attachment upload failed")
+
+    app.logger.info("Support report: %s", description[:300])
+    flash("Thanks for the report — our team will take a look.")
+    return redirect(url_for("help_support"))
+
+
 @app.route("/settings")
 def settings_page():
     return "Settings page (coming soon)"
@@ -579,4 +698,8 @@ def set_language(lang):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=9000)
+    # debug=True exposes Werkzeug's interactive debugger (arbitrary code
+    # execution) to anyone who can reach an error page. Only enable it when
+    # you explicitly set FLASK_DEBUG=1 in your local .env — never in prod.
+    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(debug=debug_mode, port=9000)

@@ -68,7 +68,9 @@ class Case(db.Model):
     __tablename__ = "cases"
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    user_id = db.Column(
+        db.Integer, db.ForeignKey("users.id"), nullable=False, index=True
+    )
 
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
@@ -92,6 +94,14 @@ class Case(db.Model):
         cascade="all, delete-orphan",
         order_by="CaseDocument.uploaded_at",
     )
+    messages = db.relationship(
+        "ChatMessage",
+        backref="case",
+        lazy=True,
+        cascade="all, delete-orphan",
+        order_by="ChatMessage.created_at",
+        foreign_keys="ChatMessage.case_id",
+    )
 
     STATUS_LABELS = {
         "in_progress": "In Progress",
@@ -101,14 +111,16 @@ class Case(db.Model):
     }
 
     STRENGTH_COLORS = {
-        "low": "#d97706",     # < 40
+        "low": "#d97706",  # < 40
         "medium": "#7c3aed",  # 40-69
-        "high": "#16a34a",    # 70+
+        "high": "#16a34a",  # 70+
     }
 
     @property
     def status_label(self):
-        return self.STATUS_LABELS.get(self.status, self.status.replace("_", " ").title())
+        return self.STATUS_LABELS.get(
+            self.status, self.status.replace("_", " ").title()
+        )
 
     @property
     def strength_color(self):
@@ -134,7 +146,9 @@ class CaseDocument(db.Model):
     __tablename__ = "case_documents"
 
     id = db.Column(db.Integer, primary_key=True)
-    case_id = db.Column(db.Integer, db.ForeignKey("cases.id"), nullable=False, index=True)
+    case_id = db.Column(
+        db.Integer, db.ForeignKey("cases.id"), nullable=False, index=True
+    )
 
     # Original filename as uploaded by the user, e.g. "rental_agreement.pdf"
     file_name = db.Column(db.String(255), nullable=False)
@@ -169,3 +183,33 @@ class CaseDocument(db.Model):
         if self.bytes < 1024 * 1024:
             return f"{self.bytes / 1024:.1f} KB"
         return f"{self.bytes / (1024 * 1024):.1f} MB"
+
+
+class ChatMessage(db.Model):
+    """A single message in a case's chat/assistant conversation thread."""
+
+    __tablename__ = "chat_messages"
+
+    id = db.Column(db.Integer, primary_key=True)
+    case_id = db.Column(
+        db.Integer, db.ForeignKey("cases.id"), nullable=False, index=True
+    )
+
+    # "user" or "assistant" (add "system" later if needed)
+    role = db.Column(db.String(20), nullable=False)
+
+    # Can be empty if the message is just an attachment
+    content = db.Column(db.Text, nullable=True)
+
+    # Optional: link to a doc/image uploaded as part of this message
+    document_id = db.Column(
+        db.Integer, db.ForeignKey("case_documents.id"), nullable=True
+    )
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    document = db.relationship("CaseDocument", foreign_keys=[document_id])
+
+    @property
+    def timestamp_label(self):
+        return self.created_at.strftime("%d %b %Y, %H:%M") if self.created_at else ""

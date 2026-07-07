@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Case Chat — NyaySetu</title>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Space+Grotesk:wght@500;600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -186,11 +187,12 @@
     // sessionStorage (see index.html) and auto-sent on load.
     // ==========================================================================
     let chatHistory = []; // [{ role: 'user'|'model', content }]
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
     async function getAIResponse(message) {
       const res = await fetch('/api/legal-chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
         body: JSON.stringify({ message, history: chatHistory })
       });
       if (!res.ok) throw new Error('Request failed: ' + res.status);
