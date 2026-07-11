@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign in - NyaySetu</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         :root {
             --primary: #17171c;
@@ -35,7 +39,10 @@
             min-height: 100vh;
         }
 
-        a { text-decoration: none; color: inherit; }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
 
         .layout {
             min-height: 100vh;
@@ -140,6 +147,7 @@
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 50%;
         }
+
         .brand-panel::after {
             content: "";
             position: absolute;
@@ -208,7 +216,9 @@
             position: relative;
         }
 
-        .tab-btn.active { color: var(--ink); }
+        .tab-btn.active {
+            color: var(--ink);
+        }
 
         .tab-btn.active::after {
             content: "";
@@ -220,10 +230,19 @@
             background: var(--primary);
         }
 
-        .tab-btn + .tab-btn { margin-left: 8px; }
+        .tab-btn+.tab-btn {
+            margin-left: 8px;
+        }
 
-        form { display: none; flex-direction: column; gap: 18px; }
-        form.active { display: flex; }
+        form {
+            display: none;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        form.active {
+            display: flex;
+        }
 
         .field label {
             font-size: 13px;
@@ -246,7 +265,9 @@
             transition: border-color 0.15s ease;
         }
 
-        .field input::placeholder { color: var(--muted); }
+        .field input::placeholder {
+            color: var(--muted);
+        }
 
         .field input:focus {
             border-color: var(--form-focus);
@@ -267,7 +288,9 @@
             transition: opacity 0.15s ease;
         }
 
-        .submit-btn:hover { opacity: 0.85; }
+        .submit-btn:hover {
+            opacity: 0.85;
+        }
 
         .divider-row {
             display: flex;
@@ -303,7 +326,9 @@
             font-family: inherit;
         }
 
-        .google-btn:hover { border-color: var(--muted); }
+        .google-btn:hover {
+            border-color: var(--muted);
+        }
 
         .back-link {
             display: block;
@@ -312,12 +337,23 @@
             color: var(--slate);
         }
 
-        .back-link:hover { color: var(--action-blue); }
+        .back-link:hover {
+            color: var(--action-blue);
+        }
 
         @media (max-width: 860px) {
-            .layout { grid-template-columns: 1fr; }
-            .brand-panel { display: none; }
-            .form-panel { padding: 24px; min-height: 100vh; }
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .brand-panel {
+                display: none;
+            }
+
+            .form-panel {
+                padding: 24px;
+                min-height: 100vh;
+            }
         }
     </style>
 </head>
@@ -334,7 +370,8 @@
             <div class="brand-mid">
                 <span class="eyebrow">Legal guidance, in your language</span>
                 <h1>Understand<br>your rights.</h1>
-                <p>Describe your issue, get grounded legal guidance, and track your case — in English, Hindi, or Marathi.</p>
+                <p>Describe your issue, get grounded legal guidance, and track your case — in English, Hindi, or
+                    Marathi.</p>
                 <div class="lang-strip">
                     <span class="lang-chip">English</span>
                     <span class="lang-chip">हिंदी</span>
@@ -353,11 +390,11 @@
             <div class="form-card">
 
                 {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for msg in messages %}
-                            <div class="flash">{{ msg }}</div>
-                        {% endfor %}
-                    {% endif %}
+                {% if messages %}
+                {% for msg in messages %}
+                <div class="flash">{{ msg }}</div>
+                {% endfor %}
+                {% endif %}
                 {% endwith %}
 
                 <h2 id="formTitle">Welcome back</h2>
@@ -369,6 +406,7 @@
                 </div>
 
                 <form id="loginForm" class="active" action="/login" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="field">
                         <label>Email address</label>
                         <input type="email" name="email" required placeholder="you@example.com">
@@ -381,6 +419,7 @@
                 </form>
 
                 <form id="signupForm" action="/signup" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="field">
                         <label>Full name</label>
                         <input type="text" name="name" required placeholder="Your name">
@@ -400,10 +439,14 @@
 
                 <button class="google-btn" type="button" onclick="window.location.href='/login/google'">
                     <svg width="16" height="16" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.5-.2-3-.4-4.5z"/>
-                        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5c-7.5 0-14 4.2-17.7 10.2z"/>
-                        <path fill="#4CAF50" d="M24 45.5c5.2 0 9.9-1.8 13.4-4.8l-6.2-5.2C29.2 37 26.7 37.9 24 37.9c-5.3 0-9.7-3-11.6-7.3l-6.5 5C9.5 41.3 16.2 45.5 24 45.5z"/>
-                        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-1.1 3-3.3 5.4-6.1 6.9l6.2 5.2C39.4 37.5 44.5 32 44.5 25c0-1.5-.2-3-.4-4.5z"/>
+                        <path fill="#FFC107"
+                            d="M43.6 20.5H42V20H24v8h11.3C33.7 32.1 29.3 35 24 35c-6.1 0-11-4.9-11-11s4.9-11 11-11c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.5-.2-3-.4-4.5z" />
+                        <path fill="#FF3D00"
+                            d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c2.8 0 5.3 1 7.3 2.7l6-6C33.9 6.5 29.2 4.5 24 4.5c-7.5 0-14 4.2-17.7 10.2z" />
+                        <path fill="#4CAF50"
+                            d="M24 45.5c5.2 0 9.9-1.8 13.4-4.8l-6.2-5.2C29.2 37 26.7 37.9 24 37.9c-5.3 0-9.7-3-11.6-7.3l-6.5 5C9.5 41.3 16.2 45.5 24 45.5z" />
+                        <path fill="#1976D2"
+                            d="M43.6 20.5H42V20H24v8h11.3c-1.1 3-3.3 5.4-6.1 6.9l6.2 5.2C39.4 37.5 44.5 32 44.5 25c0-1.5-.2-3-.4-4.5z" />
                     </svg>
                     Continue with Google
                 </button>

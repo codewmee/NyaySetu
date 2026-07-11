@@ -114,19 +114,7 @@
   .btn-pill-outline.active{ background:var(--dm-coral); color:#fff; border-color:var(--dm-coral); }
 
   /* ===== announcement bar ===== */
-  .announce{
-    background:var(--cohere-black); color:var(--on-dark);
-    font-family:var(--font-body); font-size:12px; text-align:center;
-    height:36px; display:flex; align-items:center; justify-content:center; gap:6px;
-    padding:0 40px; position:relative;
-  }
-  .announce a{ text-decoration:underline; text-underline-offset:2px; font-weight:500; }
-  .announce-close{
-    position:absolute; right:10px; top:50%; transform:translateY(-50%);
-    color:#9a9a9a; font-size:13px; width:24px; height:24px; border-radius:50%;
-  }
-  .announce-close:hover{ background:rgba(255,255,255,.1); color:#fff; }
-  .announce.hidden{ display:none; }
+
 
   /* ===== hero ===== */
   .hero{ padding:64px 0 40px; }
@@ -313,11 +301,10 @@
 </style>
 </head>
 <body>
+{% include 'partials/announcement.html' %}
+
 {% include 'partials/nav.html' %}
-  <div class="announce" id="announceBar">
-    🇮🇳 NyaySetu is free for every Indian citizen — no fees, ever. <a href="/know-your-rights">Learn more</a>
-    <button class="announce-close" id="announceClose" aria-label="Dismiss announcement">✕</button>
-  </div>
+
 
   <!-- ================= HERO / INTAKE ================= -->
   <section class="hero">
@@ -475,10 +462,8 @@
   <div class="toast" id="toast"></div>
 
   <script>
-    // ---- announcement bar ----
-    const announceBar = document.getElementById('announceBar');
-    document.getElementById('announceClose').addEventListener('click', () => announceBar.classList.add('hidden'));
 
+   
     // ---- toast ----
     let toastTimer;
     function showToast(msg){

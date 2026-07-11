@@ -74,6 +74,7 @@
             color: var(--text-dark);
             line-height: 1.55;
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
         h1,
@@ -206,6 +207,7 @@
         .hero {
             padding: 110px 0 80px;
             min-height: 94vh;
+            min-height: 94dvh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -222,7 +224,7 @@
         }
 
         .hero h1 {
-            font-size: clamp(2.6rem, 6vw, 5rem);
+            font-size: clamp(2.2rem, 6vw, 5rem);
             font-weight: 800;
             line-height: 1.05;
             letter-spacing: -1.5px;
@@ -717,6 +719,7 @@
             position: sticky;
             top: 0;
             height: 100vh;
+            height: 100dvh;
             background: var(--band-dark);
             color: #fff;
             border-radius: var(--radius-xl);
@@ -1208,6 +1211,38 @@
         }
 
         /* ========== RESPONSIVE (shared page layout — nav/footer have their own) ========== */
+
+        /* Large tablets / small laptops */
+        @media (max-width: 1180px) {
+            :root {
+                --container: 100%;
+            }
+
+            .hero-media {
+                grid-template-columns: 1fr;
+            }
+
+            .console-card,
+            .side-card {
+                min-height: unset;
+            }
+
+            .side-card {
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .side-card>div:first-child {
+                flex: 1 1 200px;
+            }
+
+            .side-card .side-stat {
+                margin-top: 0;
+            }
+        }
+
         @media (max-width: 1024px) {
             .quick-actions {
                 grid-template-columns: repeat(2, 1fr);
@@ -1223,8 +1258,31 @@
         }
 
         @media (max-width: 900px) {
+            html {
+                font-size: 16px;
+            }
+
+            .wrap {
+                padding: 0 20px;
+            }
+
+            .hero {
+                padding: 44px 0 40px;
+                min-height: auto;
+            }
+
             .hero-media {
-                grid-template-columns: 1fr;
+                margin-top: 44px;
+            }
+
+            .trust-strip {
+                padding: 60px 0 50px;
+                min-height: auto;
+            }
+
+            .actions-section {
+                min-height: auto;
+                padding: 50px 20px;
             }
 
             .how-band {
@@ -1246,19 +1304,49 @@
             .step-v-visual {
                 flex: 1 1 auto;
                 max-width: 100%;
+                width: 100%;
+            }
+
+            .step-v p {
+                max-width: 100%;
+            }
+
+            .category-section {
+                padding: 70px 0 60px;
+                min-height: auto;
+            }
+
+            .rights-section {
+                padding: 20px 0 70px;
+                min-height: auto;
+            }
+
+            .quote-strip {
+                padding: 70px 0;
+                min-height: auto;
+            }
+
+            .faq-section {
+                padding: 20px 0 70px;
+                min-height: auto;
             }
 
             .cta-band {
                 margin: 0 16px;
                 padding: 50px 24px;
+                min-height: auto;
             }
 
-            .wrap {
-                padding: 0 20px;
+            .section-head {
+                margin-bottom: 36px;
             }
         }
 
         @media (max-width: 640px) {
+            html {
+                font-size: 15px;
+            }
+
             .quick-actions {
                 grid-template-columns: 1fr;
             }
@@ -1272,11 +1360,120 @@
             }
 
             .hero {
-                padding: 44px 0 24px;
+                padding: 32px 0 24px;
+            }
+
+            .hero-ctas {
+                flex-direction: column;
+                width: 100%;
+                gap: 14px;
+            }
+
+            .hero-ctas .btn,
+            .hero-ctas a.btn-text {
+                width: 100%;
+            }
+
+            .hero-ctas .btn-primary {
+                padding: 15px 28px;
             }
 
             .trust-chips {
                 gap: 8px;
+            }
+
+            .side-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .side-card .side-stat {
+                margin-top: 16px;
+            }
+
+            .console-card,
+            .side-card {
+                padding: 24px;
+            }
+
+            .console-bubble {
+                max-width: 100%;
+            }
+
+            .console-result {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .rights-head {
+                align-items: flex-start;
+            }
+
+            .rights-head a.btn-text {
+                margin-top: 4px;
+            }
+
+            .cta-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .cta-form input,
+            .cta-form .btn {
+                width: 100%;
+            }
+
+            .faq-q {
+                font-size: 15.5px;
+                padding: 20px 2px;
+            }
+
+            .step-v h4 {
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .wrap {
+                padding: 0 16px;
+            }
+
+            .hero-note {
+                padding: 0 8px;
+            }
+
+            .cat-card,
+            .qa-card {
+                padding: 24px 20px;
+            }
+
+            .article-body {
+                padding: 18px 18px 20px;
+            }
+
+            .cta-band {
+                padding: 40px 18px;
+            }
+
+            .quote-strip blockquote {
+                padding: 0 4px;
+            }
+        }
+
+        /* Respect users who prefer reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            .reveal-pop,
+            .reveal-fade,
+            .quick-actions .qa-card,
+            .how-band.no-pin .step-v {
+                transition: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .trust-track {
+                animation: none !important;
             }
         }
     </style>
@@ -1284,7 +1481,9 @@
 
 <body>
 
+    {% include 'partials/announcement.html' %}
     {% include 'partials/nav.html' %}
+    
 
     <!-- ================= HERO ================= -->
     <section class="hero">

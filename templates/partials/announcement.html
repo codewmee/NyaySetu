@@ -1,0 +1,31 @@
+<style>
+  .announce{
+    background:var(--cohere-black, #000); color:var(--on-dark, #fff);
+    font-family:var(--font-body, Inter, sans-serif); font-size:12px; text-align:center;
+    height:36px; display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:0 40px; position:relative;
+  }
+  .announce a{ text-decoration:underline; text-underline-offset:2px; font-weight:500; }
+  .announce-close{
+    position:absolute; right:10px; top:50%; transform:translateY(-50%);
+    color:#9a9a9a; font-size:13px; width:24px; height:24px; border-radius:50%;
+    border:none; background:none; cursor:pointer;
+  }
+  .announce-close:hover{ background:rgba(255,255,255,.1); color:#fff; }
+  .announce.hidden{ display:none; }
+</style>
+
+<div class="announce" id="announceBar">
+  🇮🇳 NyaySetu is free for every Indian citizen — no fees, ever. <a href="/know-your-rights">Learn more</a>
+  <button class="announce-close" id="announceClose" aria-label="Dismiss announcement">✕</button>
+</div>
+
+<script>
+  (function () {
+    const bar = document.getElementById('announceBar');
+    const closeBtn = document.getElementById('announceClose');
+    if (bar && closeBtn) {
+      closeBtn.addEventListener('click', () => bar.classList.add('hidden'));
+    }
+  })();
+</script>
