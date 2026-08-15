@@ -378,7 +378,7 @@ def new_issues():
 
         if not description:
             flash("Please describe your issue before submitting.")
-            return redirect(url_for("new_issues"))
+            return redirect(url_for("new_issues.html"))
 
         meta = CASE_CATEGORY_META.get(category_key, CASE_CATEGORY_META["other"])
 
