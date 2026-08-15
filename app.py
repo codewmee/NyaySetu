@@ -1,7 +1,6 @@
 import os
 import json
 import uuid
-import logging
 from datetime import datetime
 
 from dotenv import load_dotenv
@@ -13,31 +12,6 @@ import cloudinary.uploader
 
 from db import db, init_db, User, Case, CaseDocument, ChatMessage
 from legal_ai import get_legal_ai_reply
-
-# ---------------- Optional CMS/RSS/admin modules ----------------
-# These weren't in the file set. Importing them unconditionally meant the
-# whole app refused to boot the moment one was missing/renamed. They're now
-# optional: if present, everything works as before; if not, the site still
-# runs and the articles/admin routes degrade gracefully instead of crashing.
-try:
-    from articles_models import Article, FeedSource, CATEGORY_META
-except ImportError:
-    logging.warning("articles_models.py not found — /articles will show an empty list until it's added.")
-    Article = FeedSource = None
-    CATEGORY_META = {}
-
-try:
-    from rss_ingest import fetch_all_active_feeds
-except ImportError:
-    def fetch_all_active_feeds(*args, **kwargs):
-        logging.warning("rss_ingest.py not found — feed ingestion is disabled.")
-        return None
-
-try:
-    from admin_routes import admin_bp
-except ImportError:
-    logging.warning("admin_routes.py not found — admin blueprint not registered.")
-    admin_bp = None
 
 load_dotenv()
 
@@ -75,9 +49,6 @@ limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
 
 # ---------------- Neon Postgres (users + cases) ----------------
 init_db(app)
-
-if admin_bp is not None:
-    app.register_blueprint(admin_bp)
 
 # ---------------- Cloudinary (file storage: PDFs, images, etc.) ----------------
 
@@ -153,9 +124,6 @@ RECENT_ACTIVITY = [
 # Maps the value of each category radio button in the New Issue form to the
 # display label + icon styling used both on the form and on the resulting
 # Case card in the dashboard.
-# Kept as its own name — this used to be called CATEGORY_META too, which
-# silently overwrote the CATEGORY_META imported from articles_models above,
-# breaking category display on /articles and /articles/<slug>.
 CASE_CATEGORY_META = {
     "job": {"label": "Job & Employment", "icon": "💼", "icon_bg": "#e3e8ff", "icon_color": "#4a4ad9"},
     "landlord": {"label": "Landlord & Tenant", "icon": "🏠", "icon_bg": "#ffe9d6", "icon_color": "#d97706"},
@@ -170,44 +138,6 @@ CASE_CATEGORY_META = {
 @app.route("/know_rights")
 def urrights():
     return render_template("know_your_rights.html")
-
-@app.route("/articles")
-def articles_page():
-    articles = Article.query.filter_by(status="published").order_by(Article.published_at.desc()).all()
-    return render_template(
-        "admin/articles.html",
-        active_page="articles",
-        user=current_user(),
-        articles=articles,
-        category_meta=CATEGORY_META,
-    )
-
-
-@app.route("/articles/<slug>")
-def article_detail(slug):
-    article = Article.query.filter_by(slug=slug, status="published").first()
-    if not article:
-        return redirect(url_for("articles_page"))
-
-    related = (
-        Article.query.filter(
-            Article.category == article.category,
-            Article.id != article.id,
-            Article.status == "published",
-        )
-        .order_by(Article.published_at.desc())
-        .limit(2)
-        .all()
-    )
-
-    return render_template(
-        "article_detail.html",
-        article=article,
-        related=related,
-        category_meta=CATEGORY_META,
-        user=current_user(),
-        active_page="articles",
-    )
 
 
 @app.route("/")
@@ -261,7 +191,12 @@ def legal_chat_page():
 
 
 # ---------------- AI legal intake chat (Gemini) ----------------
+# Exempt from CSRFProtect: this is called via JS fetch() as JSON/multipart,
+# not a rendered <form>, so it never carries the csrf_token the global
+# CSRFProtect expects — every call was being rejected with a 400 before
+# reaching this code. Session-cookie auth (current_user()) still gates it.
 @app.route("/api/legal-chat", methods=["POST"])
+@csrf.exempt
 def legal_chat():
     """
     Accepts either:
@@ -410,8 +345,8 @@ def legal_chat():
 
 
 # ---------------- New Issue wizard ----------------
-@app.route("/new-issue", methods=["GET", "POST"])
-def new_issue():
+@app.route("/new_issues", methods=["GET", "POST"])
+def new_issues():
     user = current_user()
     if not user:
         return redirect(url_for("login_page"))
@@ -422,7 +357,7 @@ def new_issue():
 
         if not description:
             flash("Please describe your issue before submitting.")
-            return redirect(url_for("new_issue"))
+            return redirect(url_for("new_issues"))
 
         meta = CASE_CATEGORY_META.get(category_key, CASE_CATEGORY_META["other"])
 
@@ -473,7 +408,7 @@ def new_issue():
                     unique_filename=False,
                     overwrite=False,
                 )
-            except Exception as exc:  # network/credentials/quota issues, etc.
+            except Exception:  # network/credentials/quota issues, etc.
                 app.logger.exception("Cloudinary upload failed for %s", f.filename)
                 failed_count += 1
                 continue
@@ -503,7 +438,7 @@ def new_issue():
         return redirect(url_for("home"))
 
     return render_template(
-        "new_issue.html",
+        "new_issues.html",
         active_page="newissue",
         user=user,
         greeting_key=greeting_key_for_now(),
@@ -568,7 +503,10 @@ def logout():
 
 
 # ---------------- placeholder routes ----------------
+# Exempt from CSRFProtect: called via JS fetch() with no form-embedded
+# token, same reasoning as /api/legal-chat above.
 @app.route("/api/cases/<int:case_id>/resolve", methods=["POST"])
+@csrf.exempt
 def resolve_case(case_id):
     user = current_user()
     if not user:
@@ -593,7 +531,7 @@ def my_issues():
 
     return render_template(
         "dashboard.html",
-        active_page="dashboard",
+        
         user=user,
         cases=cases,
         activity=RECENT_ACTIVITY,
@@ -608,8 +546,8 @@ def document_helper():
 @app.route("/know-your-rights")
 def know_rights_redirect():
     # old placeholder path — kept alive as a redirect in case it's linked
-    # anywhere else; the real destination is now /articles
-    return redirect(url_for("articles_page"))
+    # anywhere else; the real destination is /know_rights
+    return redirect(url_for("urrights"))
 
 
 @app.route("/saved-reports")
@@ -701,5 +639,5 @@ if __name__ == "__main__":
     # debug=True exposes Werkzeug's interactive debugger (arbitrary code
     # execution) to anyone who can reach an error page. Only enable it when
     # you explicitly set FLASK_DEBUG=1 in your local .env — never in prod.
-    debug_mode = os.environ.get("FLASK_DEBUG", "0") == "1"
-    app.run(debug=debug_mode, port=9000)
+    
+    app.run(debug=True, port=9000)

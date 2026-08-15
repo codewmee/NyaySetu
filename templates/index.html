@@ -62,9 +62,6 @@
 
         html {
             font-size: 17px;
-        }
-
-        html {
             scroll-behavior: smooth;
         }
 
@@ -85,8 +82,6 @@
         .btn,
         .nav-link,
         .account-name,
-        .step h4,
-        .cat-card h3,
         .qa-card h4 {
             font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
         }
@@ -146,7 +141,7 @@
             color: #8fe3c2;
         }
 
-        /* ---- Buttons (shared: hero, nav mobile menu, cta-band all use these) ---- */
+        /* ---- Buttons (shared: hero, nav, mobile menu all use these) ---- */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -229,11 +224,6 @@
             line-height: 1.05;
             letter-spacing: -1.5px;
             color: var(--ink);
-        }
-
-        .hero h1 em {
-            font-style: normal;
-            color: var(--accent);
         }
 
         /* Hero language flip animation */
@@ -486,66 +476,6 @@
             color: #3a6b56;
         }
 
-        /* ========== TRUST STRIP ========== */
-        .trust-strip {
-            padding: 90px 0 70px;
-            min-height: 34vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .trust-strip p {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--stone);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 20px;
-        }
-
-        /* Infinite trust chip carousel */
-        .trust-marquee {
-            width: 100%;
-            overflow: hidden;
-            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-        }
-
-        .trust-track {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: max-content;
-            animation: trust-scroll 26s linear infinite;
-        }
-
-        .trust-marquee:hover .trust-track {
-            animation-play-state: paused;
-        }
-
-        @keyframes trust-scroll {
-            from {
-                transform: translateX(0);
-            }
-
-            to {
-                transform: translateX(-50%);
-            }
-        }
-
-        .trust-chip {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-full);
-            padding: 9px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-gray);
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
         /* ========== QUICK ACTIONS ========== */
         .section-head {
             text-align: center;
@@ -708,391 +638,6 @@
             color: var(--accent-amber);
         }
 
-        /* ========== DARK FEATURE BAND — HOW IT WORKS (pinned scrollytelling) ========== */
-        .how-band {
-            position: relative;
-            height: 420vh;
-            margin: 0 24px;
-        }
-
-        .how-sticky {
-            position: sticky;
-            top: 0;
-            height: 100vh;
-            height: 100dvh;
-            background: var(--band-dark);
-            color: #fff;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .how-band .section-head h2,
-        .how-band .section-head p {
-            color: #fff;
-        }
-
-        .how-band .section-head p {
-            color: var(--on-dark-muted);
-        }
-
-        .steps-stage {
-            position: relative;
-            width: 100%;
-            max-width: 980px;
-            margin: 44px auto 0;
-            height: 46vh;
-            min-height: 320px;
-        }
-
-        .steps-progress {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 28px;
-        }
-
-        .steps-progress .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.18);
-            transition: background 0.3s ease, transform 0.3s ease;
-        }
-
-        .steps-progress .dot.active {
-            background: #8fe3c2;
-            transform: scale(1.3);
-        }
-
-        .step-v {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            gap: 56px;
-            flex-wrap: wrap;
-            opacity: 0;
-            pointer-events: none;
-            will-change: transform, opacity;
-        }
-
-        .step-v[data-step="2"],
-        .step-v[data-step="4"] {
-            flex-direction: row-reverse;
-        }
-
-        .step-v-num {
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: #8fe3c2;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .step-v-content {
-            flex: 1 1 260px;
-        }
-
-        .step-v-visual {
-            flex: 1 1 340px;
-            max-width: 420px;
-        }
-
-        .step-v-card {
-            display: block;
-            width: 100%;
-            height: auto;
-            border-radius: var(--radius-lg);
-            will-change: transform;
-        }
-
-        .step-v[data-step="4"] {
-            justify-content: center;
-        }
-
-        .step-v[data-step="4"] .step-v-content {
-            flex: 0 1 480px;
-            text-align: center;
-        }
-
-        .step-v h4 {
-            font-size: 19px;
-            margin-bottom: 8px;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-        }
-
-        .step-v p {
-            font-size: 14.5px;
-            color: var(--on-dark-muted);
-            line-height: 1.55;
-            max-width: 360px;
-        }
-
-        .step-v[data-step="4"] p {
-            max-width: 100%;
-            margin: 0 auto;
-        }
-
-        .how-band.no-pin {
-            height: auto;
-        }
-
-        .how-band.no-pin .how-sticky {
-            position: static;
-            height: auto;
-            padding: 80px 0;
-        }
-
-        .how-band.no-pin .steps-stage {
-            height: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 64px;
-        }
-
-        .how-band.no-pin .step-v {
-            position: static;
-            opacity: 0;
-            transform: translateY(28px);
-            pointer-events: auto;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-
-        .how-band.no-pin .step-v.in-view {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .how-band.no-pin .steps-progress {
-            display: none;
-        }
-
-        /* ========== CATEGORY / PRODUCT CARDS ========== */
-        .category-section {
-            padding: 140px 0 120px;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .cat-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
-        }
-
-        .cat-card {
-            background: var(--bg-soft);
-            border-radius: var(--radius-sm);
-            padding: 36px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .cat-card .cat-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: var(--radius-md);
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-        }
-
-        .cat-card h3 {
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: -0.2px;
-        }
-
-        .cat-card .cat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            font-size: 14.5px;
-            color: var(--text-gray);
-        }
-
-        .cat-card .cat-list li {
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-        }
-
-        .cat-card .cat-list li::before {
-            content: "✓";
-            color: var(--accent);
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-
-        .cat-card .cat-divider {
-            border-top: 1px solid var(--border);
-            margin-top: 4px;
-        }
-
-        .cat-card .cat-link {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--ink);
-            margin-top: 10px;
-        }
-
-        /* ========== KNOW YOUR RIGHTS TEASER ========== */
-        .rights-section {
-            padding: 40px 0 140px;
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .rights-head {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            gap: 20px;
-            margin-bottom: 28px;
-            flex-wrap: wrap;
-        }
-
-        .rights-head h2 {
-            font-size: clamp(1.7rem, 3vw, 2.2rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .chip-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 26px;
-        }
-
-        .chip {
-            border: 1px solid var(--accent-amber);
-            color: var(--accent-amber);
-            background: var(--accent-amber-soft);
-            border-radius: var(--radius-full);
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .chip.active {
-            background: var(--accent-amber);
-            color: #fff;
-        }
-
-        .chip:not(.active):hover {
-            background: #fbe4c2;
-        }
-
-        .article-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
-        }
-
-        .article-card {
-            display: block;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            background: #fff;
-            cursor: pointer;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-        }
-
-        .article-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-            border-color: #cfd9d4;
-        }
-
-        .article-card:focus-visible {
-            outline: 2px solid var(--accent);
-            outline-offset: 3px;
-        }
-
-        .article-thumb {
-            height: 150px;
-            background: linear-gradient(135deg, var(--accent-soft), var(--bg-soft));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .article-thumb img {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-        }
-
-        .article-body {
-            padding: 22px 24px 26px;
-        }
-
-        .article-tag {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent-amber);
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .article-body h4 {
-            font-size: 15.5px;
-            font-weight: 700;
-            line-height: 1.35;
-            margin-bottom: 8px;
-        }
-
-        .article-meta {
-            font-size: 12px;
-            color: var(--stone);
-        }
-
-        /* ========== TESTIMONIAL ========== */
-        .quote-strip {
-            padding: 130px 0;
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .quote-strip blockquote {
-            max-width: 760px;
-            margin: 0 auto;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(1.5rem, 2.8vw, 2.1rem);
-            font-weight: 600;
-            line-height: 1.4;
-            letter-spacing: -0.3px;
-            color: var(--ink);
-        }
-
-        .quote-strip cite {
-            display: block;
-            margin-top: 20px;
-            font-style: normal;
-            font-size: 13.5px;
-            color: var(--text-gray);
-        }
-
         /* ========== FAQ ========== */
         .faq-section {
             padding: 40px 0 140px;
@@ -1150,66 +695,6 @@
             max-width: 640px;
         }
 
-        /* ========== CTA / NEWSLETTER BAND ========== */
-        .cta-band {
-            background: var(--sidebar-dark);
-            color: #fff;
-            border-radius: var(--radius-xl);
-            margin: 0 24px;
-            padding: 110px 40px;
-            min-height: 55vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .cta-band h2 {
-            font-size: clamp(1.6rem, 3vw, 2.2rem);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-
-        .cta-band p {
-            margin-top: 12px;
-            color: var(--on-dark-muted);
-            font-size: 14.5px;
-        }
-
-        .cta-form {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 26px;
-            flex-wrap: wrap;
-        }
-
-        .cta-form input {
-            width: 300px;
-            max-width: 100%;
-            padding: 13px 16px;
-            border-radius: var(--radius-full);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            background: rgba(255, 255, 255, 0.06);
-            color: #fff;
-            font-size: 14px;
-        }
-
-        .cta-form input::placeholder {
-            color: var(--on-dark-muted);
-        }
-
-        .cta-form input:focus {
-            outline: 2px solid #8fe3c2;
-            outline-offset: 1px;
-        }
-
-        .cta-legal {
-            margin-top: 16px;
-            font-size: 11.5px;
-            color: #6f8478;
-        }
-
         /* ========== RESPONSIVE (shared page layout — nav/footer have their own) ========== */
 
         /* Large tablets / small laptops */
@@ -1247,14 +732,6 @@
             .quick-actions {
                 grid-template-columns: repeat(2, 1fr);
             }
-
-            .cat-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .article-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
 
         @media (max-width: 900px) {
@@ -1275,65 +752,13 @@
                 margin-top: 44px;
             }
 
-            .trust-strip {
-                padding: 60px 0 50px;
-                min-height: auto;
-            }
-
             .actions-section {
                 min-height: auto;
                 padding: 50px 20px;
             }
 
-            .how-band {
-                margin: 0 16px;
-            }
-
-            .how-band.no-pin .step-v,
-            .how-band.no-pin .step-v[data-step="2"],
-            .how-band.no-pin .step-v[data-step="4"] {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 24px;
-            }
-
-            .how-band.no-pin .step-v[data-step="4"] {
-                align-items: center;
-            }
-
-            .step-v-visual {
-                flex: 1 1 auto;
-                max-width: 100%;
-                width: 100%;
-            }
-
-            .step-v p {
-                max-width: 100%;
-            }
-
-            .category-section {
-                padding: 70px 0 60px;
-                min-height: auto;
-            }
-
-            .rights-section {
-                padding: 20px 0 70px;
-                min-height: auto;
-            }
-
-            .quote-strip {
-                padding: 70px 0;
-                min-height: auto;
-            }
-
             .faq-section {
                 padding: 20px 0 70px;
-                min-height: auto;
-            }
-
-            .cta-band {
-                margin: 0 16px;
-                padding: 50px 24px;
                 min-height: auto;
             }
 
@@ -1348,14 +773,6 @@
             }
 
             .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .cat-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .article-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -1376,10 +793,6 @@
 
             .hero-ctas .btn-primary {
                 padding: 15px 28px;
-            }
-
-            .trust-chips {
-                gap: 8px;
             }
 
             .side-card {
@@ -1405,31 +818,9 @@
                 align-items: center;
             }
 
-            .rights-head {
-                align-items: flex-start;
-            }
-
-            .rights-head a.btn-text {
-                margin-top: 4px;
-            }
-
-            .cta-form {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .cta-form input,
-            .cta-form .btn {
-                width: 100%;
-            }
-
             .faq-q {
                 font-size: 15.5px;
                 padding: 20px 2px;
-            }
-
-            .step-v h4 {
-                font-size: 17px;
             }
         }
 
@@ -1442,21 +833,8 @@
                 padding: 0 8px;
             }
 
-            .cat-card,
             .qa-card {
                 padding: 24px 20px;
-            }
-
-            .article-body {
-                padding: 18px 18px 20px;
-            }
-
-            .cta-band {
-                padding: 40px 18px;
-            }
-
-            .quote-strip blockquote {
-                padding: 0 4px;
             }
         }
 
@@ -1465,15 +843,10 @@
 
             .reveal-pop,
             .reveal-fade,
-            .quick-actions .qa-card,
-            .how-band.no-pin .step-v {
+            .quick-actions .qa-card {
                 transition: none !important;
                 opacity: 1 !important;
                 transform: none !important;
-            }
-
-            .trust-track {
-                animation: none !important;
             }
         }
     </style>
@@ -1481,9 +854,7 @@
 
 <body>
 
-    {% include 'partials/announcement.html' %}
     {% include 'partials/nav.html' %}
-    
 
     <!-- ================= HERO ================= -->
     <section class="hero">
@@ -1499,7 +870,6 @@
                 Indian languages.</p>
             <div class="hero-ctas">
                 <a href="/new-issue" class="btn btn-primary">Describe Your Issue →</a>
-                <a href="#how-it-works" class="btn btn-text">See how it works</a>
             </div>
             <p class="hero-note">No fees. No account required to explore your rights.</p>
         </div>
@@ -1537,28 +907,6 @@
         </div>
     </section>
 
-    <!-- ================= TRUST STRIP ================= -->
-    <section class="trust-strip">
-        <div class="wrap">
-            <p>Guidance grounded in</p>
-            <div class="trust-marquee">
-                <div class="trust-track" id="trustTrack">
-                    <span class="trust-chip">Consumer Protection Act, 2019</span>
-                    <span class="trust-chip">Rent Control Acts</span>
-                    <span class="trust-chip">Right to Information Act</span>
-                    <span class="trust-chip">Labour Codes</span>
-                    <span class="trust-chip">IT Act, 2000</span>
-                    <span class="trust-chip">Bharatiya Nyaya Sanhita</span>
-                    <span class="trust-chip" aria-hidden="true">Consumer Protection Act, 2019</span>
-                    <span class="trust-chip" aria-hidden="true">Rent Control Acts</span>
-                    <span class="trust-chip" aria-hidden="true">Right to Information Act</span>
-                    <span class="trust-chip" aria-hidden="true">Labour Codes</span>
-                    <span class="trust-chip" aria-hidden="true">IT Act, 2000</span>
-                    <span class="trust-chip" aria-hidden="true">Bharatiya Nyaya Sanhita</span>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- ================= QUICK ACTIONS ================= -->
     <section class="wrap actions-section">
@@ -1568,28 +916,34 @@
         </div>
         <div class="quick-actions">
             <div class="qa-card qa-purple">
-                <div class="qa-icon"><img src="..//static/icons/nyaysetu_icons_transparent/issues.png" alt="issue icon">
+                <div class="qa-icon"><img
+                        src="{{ url_for('static', filename='icons/nyaysetu_icons_transparent/issues.png') }}"
+                        alt="issue icon">
                 </div>
                 <h4>Add New Issue</h4>
                 <p>Describe your legal issue in simple words.</p>
                 <a href="/new-issue" class="btn-text">Start Now →</a>
             </div>
             <div class="qa-card qa-green">
-                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/docs.png"
+                <div class="qa-icon"><img
+                        src="{{ url_for('static', filename='icons/nyaysetu_icons_transparent/docs.png') }}"
                         alt="doc analyze icon"></div>
                 <h4>Analyze Document</h4>
                 <p>Upload any legal document for a simple explanation.</p>
                 <a href="/document-helper" class="btn-text">Upload Document →</a>
             </div>
             <div class="qa-card qa-blue">
-                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/cases.png"
-                        alt="my caeses icon"></div>
+                <div class="qa-icon"><img
+                        src="{{ url_for('static', filename='icons/nyaysetu_icons_transparent/cases.png') }}"
+                        alt="my cases icon"></div>
                 <h4>My Cases</h4>
                 <p>View and manage all your legal cases.</p>
-                <a href="/my-issues" class="btn-text">View Cases →</a>
+                <a href="/dashboard" class="btn-text">View Cases →</a>
             </div>
             <div class="qa-card qa-amber">
-                <div class="qa-icon"><img src="../static/icons/nyaysetu_icons_transparent/rights.png" alt=""></div>
+                <div class="qa-icon"><img
+                        src="{{ url_for('static', filename='icons/nyaysetu_icons_transparent/rights.png') }}" alt="">
+                </div>
                 <h4>Know Your Rights</h4>
                 <p>Explore legal information on various topics.</p>
                 <a href="/know_rights" class="btn-text">Explore Now →</a>
@@ -1597,238 +951,6 @@
         </div>
     </section>
 
-    <!-- ================= HOW IT WORKS (pinned scroll section) ================= -->
-    <section class="how-band" id="how-it-works">
-        <div class="how-sticky">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="eyebrow on-dark">The process</span>
-                    <h2 style="margin-top:10px;">How it works</h2>
-                    <p>From a confusing situation to a clear plan — in four steps.</p>
-                </div>
-
-                <div class="steps-stage" id="stepsStage">
-                    <div class="step-v" data-step="1">
-                        <div class="step-v-content">
-                            <span class="step-v-num">Step 01</span>
-                            <h4>Tell us your issue</h4>
-                            <p>Describe in your own words, in any of 8 languages.</p>
-                        </div>
-                        <div class="step-v-visual">
-                            <img class="step-v-card" src="../static/howitworks-1.png"
-                                alt="Chat card showing a user describing a tenancy issue">
-                        </div>
-                    </div>
-
-                    <div class="step-v" data-step="2">
-                        <div class="step-v-content">
-                            <span class="step-v-num">Step 02</span>
-                            <h4>We analyze it</h4>
-                            <p>Our AI finds the relevant laws and precedent that apply.</p>
-                        </div>
-                        <div class="step-v-visual">
-                            <img class="step-v-card" src="../static/howitworks-2.png"
-                                alt="Document analysis card highlighting rights, risk, and evidence">
-                        </div>
-                    </div>
-
-                    <div class="step-v" data-step="3">
-                        <div class="step-v-content">
-                            <span class="step-v-num">Step 03</span>
-                            <h4>Get clear guidance</h4>
-                            <p>Know your rights, next steps, and the evidence you need.</p>
-                        </div>
-                        <div class="step-v-visual">
-                            <img class="step-v-card" src="../static/howitworks-3.png"
-                                alt="Guidance card with a checklist and take action button">
-                        </div>
-                    </div>
-
-                    <div class="step-v" data-step="4">
-                        <div class="step-v-content">
-                            <span class="step-v-num">Step 04</span>
-                            <h4>Take action</h4>
-                            <p>Use the guidance yourself or connect with a lawyer.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="steps-progress" id="stepsProgress">
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                    <span class="dot"></span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= CATEGORY CARDS ================= -->
-    <section class="wrap category-section">
-        <div class="section-head">
-            <h2>Explore by category</h2>
-            <p>Common situations we help with every day.</p>
-        </div>
-        <div class="cat-grid">
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png" alt="">
-                </div>
-                <h3>Tenant &amp; Property Rights</h3>
-                <ul class="cat-list">
-                    <li>Illegal eviction and notice periods</li>
-                    <li>Security deposit disputes</li>
-                    <li>Property inheritance basics</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Tenant Rights →</a>
-            </div>
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png" alt="">
-                </div>
-                <h3>Employment &amp; Labour</h3>
-                <ul class="cat-list">
-                    <li>Wrongful termination</li>
-                    <li>Unpaid wages and dues</li>
-                    <li>Workplace harassment</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Employment Rights →</a>
-            </div>
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png" alt="">
-                </div>
-                <h3>Consumer Protection</h3>
-                <ul class="cat-list">
-                    <li>Defective products and refunds</li>
-                    <li>Service deficiency claims</li>
-                    <li>E-commerce fraud</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Consumer Rights →</a>
-            </div>
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/family_right.png" alt="">
-                </div>
-                <h3>Family &amp; Marriage</h3>
-                <ul class="cat-list">
-                    <li>Divorce and maintenance</li>
-                    <li>Domestic violence protection</li>
-                    <li>Child custody basics</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Family Law →</a>
-            </div>
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/cyber_rights.png" alt="">
-                </div>
-                <h3>Cyber Crime &amp; Fraud</h3>
-                <ul class="cat-list">
-                    <li>Online financial fraud</li>
-                    <li>Identity theft and impersonation</li>
-                    <li>Harassment on social media</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Cyber Law →</a>
-            </div>
-            <div class="cat-card">
-                <div class="cat-icon"><img src="../static/icons/nyaysetu_icons_transparent/criminal_rights.png" alt="">
-                </div>
-                <h3>Criminal Justice Basics</h3>
-                <ul class="cat-list">
-                    <li>What to do if detained</li>
-                    <li>Filing an FIR correctly</li>
-                    <li>Bail and legal aid access</li>
-                </ul>
-                <div class="cat-divider"></div>
-                <a href="/know_rights" class="cat-link">Explore Criminal Justice →</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ================= KNOW YOUR RIGHTS TEASER ================= -->
-    <section class="wrap rights-section">
-        <div class="rights-head">
-            <div>
-                <span class="eyebrow">Know your rights</span>
-                <h2 style="margin-top:8px;">Recent reads</h2>
-            </div>
-            <a href="/articles" class="btn-text">View all topics →</a>
-        </div>
-        <div class="chip-row" id="chipRow">
-            <button class="chip active" data-cat="all">All</button>
-            <button class="chip" data-cat="property">Property</button>
-            <button class="chip" data-cat="employment">Employment</button>
-            <button class="chip" data-cat="consumer">Consumer</button>
-            <button class="chip" data-cat="rti">RTI</button>
-            <button class="chip" data-cat="women">Women's Rights</button>
-        </div>
-        <div class="article-grid" id="articleGrid">
-            <a class="article-card" data-cat="property" href="/articles#landlord-eviction-notice">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png"
-                        alt=""></div>
-                <div class="article-body">
-                    <span class="article-tag">Property</span>
-                    <h4>Can your landlord evict you without notice?</h4>
-                    <span class="article-meta">4 min read · Updated Jun 2026</span>
-                </div>
-            </a>
-            <a class="article-card" data-cat="rti" href="/articles#rti-application-guide">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/docs.png" alt="">
-                </div>
-                <div class="article-body">
-                    <span class="article-tag">RTI</span>
-                    <h4>Filing an RTI application: a step-by-step guide</h4>
-                    <span class="article-meta">6 min read · Updated May 2026</span>
-                </div>
-            </a>
-            <a class="article-card" data-cat="employment" href="/articles#wrongful-termination">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/employ_right.png"
-                        alt=""></div>
-                <div class="article-body">
-                    <span class="article-tag">Employment</span>
-                    <h4>What counts as wrongful termination in India?</h4>
-                    <span class="article-meta">5 min read · Updated May 2026</span>
-                </div>
-            </a>
-            <a class="article-card" data-cat="consumer" href="/articles#consumer-refund-guide">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/consumer_right.png"
-                        alt=""></div>
-                <div class="article-body">
-                    <span class="article-tag">Consumer</span>
-                    <h4>Getting a refund for a defective online order</h4>
-                    <span class="article-meta">3 min read · Updated Apr 2026</span>
-                </div>
-            </a>
-            <a class="article-card" data-cat="women" href="/articles#domestic-violence-protection">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/women_rights.png"
-                        alt=""></div>
-                <div class="article-body">
-                    <span class="article-tag">Women's Rights</span>
-                    <h4>Protection orders under the Domestic Violence Act</h4>
-                    <span class="article-meta">7 min read · Updated Apr 2026</span>
-                </div>
-            </a>
-            <a class="article-card" data-cat="property" href="/articles#security-deposit-rights">
-                <div class="article-thumb"><img src="../static/icons/nyaysetu_icons_transparent/tenents_right.png"
-                        alt=""></div>
-                <div class="article-body">
-                    <span class="article-tag">Property</span>
-                    <h4>Understanding your security deposit rights</h4>
-                    <span class="article-meta">4 min read · Updated Mar 2026</span>
-                </div>
-            </a>
-        </div>
-    </section>
-
-    <!-- ================= TESTIMONIAL ================= -->
-    <section class="quote-strip">
-        <div class="wrap">
-            <blockquote>"NyaySetu helped me understand my tenancy rights when my landlord threatened an illegal
-                eviction
-                — in Hindi, in five minutes."</blockquote>
-            — A renter, Pune
-        </div>
-    </section>
 
     <!-- ================= FAQ ================= -->
     <section class="wrap faq-section" id="faq">
@@ -1877,24 +999,8 @@
         </div>
     </section>
 
-    <!-- ================= CTA / NEWSLETTER ================= -->
-    <div class="wrap">
-        <section class="cta-band">
-            <span class="eyebrow on-dark">Stay informed</span>
-            <h2 style="margin-top:10px;">Get legal updates in your language</h2>
-            <p>New rights guides and law changes, sent monthly. No spam.</p>
-            <form class="cta-form" id="newsletterForm">
-                <input type="email" id="newsletterEmail" placeholder="you@example.com" required>
-                <button type="submit" class="btn btn-primary on-dark">Subscribe</button>
-            </form>
-            <p class="cta-legal">By subscribing, you agree to receive occasional emails from NyaySetu. Unsubscribe
-                anytime.</p>
-        </section>
-    </div>
 
-    {% include 'partials/footer.html' %}
-
-    <!-- ================= PAGE SCRIPT (sections defined on this page only) ================= -->
+    <!-- ================= PAGE SCRIPT (this page's own sections only — nav/footer wire themselves) ================= -->
     <script>
         // FAQ accordion
         document.querySelectorAll('.faq-item').forEach(item => {
@@ -1913,43 +1019,7 @@
             });
         });
 
-        // Category chip filter
-        const chipRow = document.getElementById('chipRow');
-        const articleCards = document.querySelectorAll('.article-card');
-        chipRow.addEventListener('click', (e) => {
-            const chip = e.target.closest('.chip');
-            if (!chip) return;
-            chipRow.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            chip.classList.add('active');
-            const cat = chip.dataset.cat;
-            articleCards.forEach(card => {
-                card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
-            });
-        });
-
-        // Newsletter form (mock submit) — showToast() is defined in footer.html
-        const newsletterForm = document.getElementById('newsletterForm');
-        newsletterForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('newsletterEmail').value.trim();
-            if (!email) return;
-            showToast("You're subscribed! We'll send updates to " + email);
-            newsletterForm.reset();
-        });
-
-        // Smooth-scroll for in-page anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const id = link.getAttribute('href').slice(1);
-                const target = document.getElementById(id);
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // ===== Reveal-on-view animations =====
+        // Reveal-on-view animations
         if ('IntersectionObserver' in window) {
             const revealObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -1967,7 +1037,7 @@
                 .forEach(el => el.classList.add('in-view'));
         }
 
-        // ===== Hero headline language-flip animation =====
+        // Hero headline language-flip animation
         const heroLangPhrases = [
             { text: "In your language.", lang: "en" },
             { text: "आपकी भाषा में।", lang: "hi" },
@@ -2011,106 +1081,6 @@
         setFlipWrapHeight();
 
         setInterval(cycleHeroLangFlip, 2600);
-
-        // ===== "How it works" pinned scrollytelling =====
-        const howBand = document.getElementById('how-it-works');
-        const stepsStage = document.getElementById('stepsStage');
-        const stepVEls = howBand ? Array.from(howBand.querySelectorAll('.step-v')) : [];
-        const progressDots = howBand ? Array.from(howBand.querySelectorAll('.steps-progress .dot')) : [];
-        const numSteps = stepVEls.length;
-
-        const howBandMobileQuery = window.matchMedia('(max-width: 900px)');
-        let howBandPinned = false;
-
-        function setupHowBandMode() {
-            if (!howBand || !numSteps) return;
-            howBandPinned = !howBandMobileQuery.matches;
-            howBand.classList.toggle('no-pin', !howBandPinned);
-            stepVEls.forEach(step => {
-                step.style.opacity = '';
-                step.style.transform = '';
-                step.classList.remove('in-view');
-            });
-            if (!howBandPinned && 'IntersectionObserver' in window) {
-                const stepRevealObserver = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('in-view');
-                            stepRevealObserver.unobserve(entry.target);
-                        }
-                    });
-                }, { threshold: 0.3 });
-                stepVEls.forEach(step => stepRevealObserver.observe(step));
-            } else if (!howBandPinned) {
-                stepVEls.forEach(step => step.classList.add('in-view'));
-            }
-        }
-
-        function updateHowBandPinned() {
-            if (!howBandPinned || !howBand || !numSteps) return;
-            const rect = howBand.getBoundingClientRect();
-            const vh = window.innerHeight;
-            const scrollableDistance = howBand.offsetHeight - vh;
-            let progress = scrollableDistance > 0 ? (0 - rect.top) / scrollableDistance : 0;
-            progress = Math.max(0, Math.min(1, progress));
-            const scaled = progress * numSteps;
-
-            stepVEls.forEach((step, i) => {
-                let local = scaled - i;
-                local = Math.max(-1, Math.min(2, local));
-
-                let opacity, translateY, scale;
-                if (local <= 0) {
-                    opacity = 0; translateY = 60; scale = 0.94;
-                } else if (local < 0.2) {
-                    const t = local / 0.2;
-                    opacity = t; translateY = 60 * (1 - t); scale = 0.94 + 0.06 * t;
-                } else if (local <= 0.8) {
-                    opacity = 1; scale = 1;
-                    translateY = (local - 0.5) * -20;
-                } else if (local < 1) {
-                    const t = (local - 0.8) / 0.2;
-                    opacity = 1 - t; translateY = -60 * t; scale = 1 - 0.06 * t;
-                } else {
-                    opacity = 0; translateY = -60; scale = 0.94;
-                }
-
-                step.style.opacity = opacity;
-                step.style.transform = `translateY(${translateY}px) scale(${scale})`;
-                step.style.pointerEvents = opacity > 0.5 ? 'auto' : 'none';
-
-                const img = step.querySelector('.step-v-card');
-                if (img) img.style.transform = `translateY(${translateY * 1.6}px)`;
-            });
-
-            const activeIndex = Math.max(0, Math.min(numSteps - 1, Math.floor(scaled)));
-            progressDots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
-        }
-
-        let howBandTicking = false;
-        function onScrollForHowBand() {
-            if (!howBandPinned) return;
-            if (howBandTicking) return;
-            howBandTicking = true;
-            requestAnimationFrame(() => {
-                updateHowBandPinned();
-                howBandTicking = false;
-            });
-        }
-
-        setupHowBandMode();
-        updateHowBandPinned();
-        window.addEventListener('scroll', onScrollForHowBand, { passive: true });
-        window.addEventListener('resize', () => {
-            setupHowBandMode();
-            updateHowBandPinned();
-        });
-        if (howBandMobileQuery.addEventListener) {
-            howBandMobileQuery.addEventListener('change', () => {
-                setupHowBandMode();
-                updateHowBandPinned();
-            });
-        }
     </script>
 
 </body>
