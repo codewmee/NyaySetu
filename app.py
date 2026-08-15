@@ -50,6 +50,27 @@ limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
 # ---------------- Neon Postgres (users + cases) ----------------
 init_db(app)
 
+# ---------------- Google OAuth (Authlib) ----------------
+
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
+
+if not GOOGLE_CLIENT_ID or not GOOGLE_CLIENT_SECRET:
+    raise RuntimeError(
+        "GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET env vars not set (add them to your .env)"
+    )
+
+from authlib.integrations.flask_client import OAuth
+
+oauth = OAuth(app)
+google_oauth = oauth.register(
+    name="google",
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+    client_kwargs={"scope": "openid email profile"},
+)
+
 # ---------------- Cloudinary (file storage: PDFs, images, etc.) ----------------
 
 CLOUDINARY_CLOUD_NAME = os.environ.get("CLOUDINARY_CLOUD_NAME")
@@ -502,6 +523,60 @@ def logout():
     return redirect(url_for("home"))
 
 
+# ---------------- Google OAuth login ----------------
+# Hits Google's consent screen, then bounces back to /auth/google/callback.
+# Uses a per-attempt "next" value stashed in the session so post-login
+# redirect can send the user back where they came from (login_page ->
+# just the origin of the request that hit /login).
+@app.route("/auth/google")
+@limiter.limit("20 per hour")
+def google_login():
+    if current_user():
+        return redirect(url_for("home"))
+    session["oauth_next"] = request.args.get("next") or url_for("home")
+    redirect_uri = url_for("google_callback", _external=True)
+    return google_oauth.authorize_redirect(redirect_uri)
+
+
+@app.route("/auth/google/callback")
+def google_callback():
+    try:
+        token = google_oauth.authorize_access_token()
+    except Exception:
+        app.logger.exception("Google OAuth callback failed")
+        flash("Google sign-in failed — please try again.")
+        return redirect(url_for("login_page"))
+
+    userinfo = token.get("userinfo") or google_oauth.parse_id_token(token)
+    if not userinfo or not userinfo.get("email"):
+        flash("Google didn't return an email — please try again or use another method.")
+        return redirect(url_for("login_page"))
+
+    email = userinfo["email"].strip().lower()
+    google_id = userinfo.get("sub")
+    name = userinfo.get("name") or email.split("@")[0]
+
+    # Link by google_id first (returning OAuth user), then fall back to
+    # matching an existing password-based account by email so someone who
+    # signed up locally doesn't end up with two accounts.
+    user = User.query.filter_by(google_id=google_id).first() if google_id else None
+    if not user:
+        user = User.query.filter_by(email=email).first()
+
+    if not user:
+        user = User(email=email, name=name, google_id=google_id)
+        user.password_hash = None  # OAuth-only account — no local password
+        db.session.add(user)
+    elif google_id and not user.google_id:
+        user.google_id = google_id
+
+    db.session.commit()
+
+    session["user_id"] = user.id
+    next_url = session.pop("oauth_next", None) or url_for("home")
+    return redirect(next_url)
+
+
 # ---------------- placeholder routes ----------------
 # Exempt from CSRFProtect: called via JS fetch() with no form-embedded
 # token, same reasoning as /api/legal-chat above.
@@ -636,8 +711,5 @@ def set_language(lang):
 
 
 if __name__ == "__main__":
-    # debug=True exposes Werkzeug's interactive debugger (arbitrary code
-    # execution) to anyone who can reach an error page. Only enable it when
-    # you explicitly set FLASK_DEBUG=1 in your local .env — never in prod.
     
     app.run(debug=True, port=9000)

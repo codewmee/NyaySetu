@@ -34,7 +34,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     name = db.Column(db.String(255), nullable=True)
-    password_hash = db.Column(db.String(255), nullable=False)
+    # nullable: Google-OAuth-only accounts have no local password
+    password_hash = db.Column(db.String(255), nullable=True)
+    google_id = db.Column(db.String(255), unique=True, nullable=True, index=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     cases = db.relationship(
@@ -213,3 +215,7 @@ class ChatMessage(db.Model):
     @property
     def timestamp_label(self):
         return self.created_at.strftime("%d %b %Y, %H:%M") if self.created_at else ""
+
+    def to_history_dict(self):
+        """Shape expected by the Gemini history payload / chat.html replay."""
+        return {"role": self.role, "content": self.content}
