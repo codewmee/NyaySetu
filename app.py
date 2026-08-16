@@ -712,4 +712,4 @@ def set_language(lang):
 
 if __name__ == "__main__":
     
-    app.run(debug=True, port=9000)
+    app.run(debug=True, port=9000, threaded=True)
