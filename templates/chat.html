@@ -38,6 +38,7 @@
   }
   a{ text-decoration:none; color:inherit; }
   button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  button:disabled{ cursor:default; opacity:.5; }
 
   /* ===== top bar ===== */
   .chat-topbar{
@@ -131,6 +132,7 @@
   }
   .console-input-row input::placeholder{ color:var(--dm-on-dark-soft); }
   .console-input-row input:focus{ outline:none; }
+  .console-input-row input:disabled{ opacity:.5; }
   .send-btn{
     background:var(--dm-coral); color:#fff; width:40px; height:40px; border-radius:50%;
     display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
@@ -180,22 +182,55 @@
     </div>
   </div>
 
+  <!--
+    Server data handed to the script below. Kept as a separate JSON block
+    (not inlined into the <script> tag) so the script itself contains no
+    Jinja syntax — editors/linters can parse it as plain JS, and there's
+    only one place doing template-to-JSON escaping.
+  -->
+  <script id="chat-bootstrap-data" type="application/json">
+{{ {"case_id": case.id if case else None, "history": history} | tojson }}
+  </script>
+
   <script>
     // ==========================================================================
     // Full-screen continuation of the NyaySetu intake chat. If the user typed
     // their first message on the landing page, it's handed off here via
-    // sessionStorage (see index.html) and auto-sent on load.
+    // sessionStorage (see index.html) and auto-sent on load. If a case_id was
+    // passed to this page, the conversation resumes with its prior history.
     // ==========================================================================
-    let chatHistory = []; // [{ role: 'user'|'model', content }]
+    const bootstrapData = JSON.parse(document.getElementById('chat-bootstrap-data').textContent);
+
+    let chatHistory = [];               // [{ role: 'user'|'model', content }]
+    let currentCaseId = bootstrapData.case_id;
+    let isSending = false;
     const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-    async function getAIResponse(message) {
-      const res = await fetch('/api/legal-chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-        body: JSON.stringify({ message, history: chatHistory })
-      });
-      if (!res.ok) throw new Error('Request failed: ' + res.status);
+    async function getAIResponse(message, files) {
+      let res;
+      if (files && files.length) {
+        const form = new FormData();
+        form.append('message', message);
+        form.append('history', JSON.stringify(chatHistory));
+        if (currentCaseId) form.append('case_id', currentCaseId);
+        files.forEach(f => form.append('documents', f));
+        res = await fetch('/api/legal-chat', {
+          method: 'POST',
+          headers: { 'X-CSRFToken': csrfToken },
+          body: form
+        });
+      } else {
+        res = await fetch('/api/legal-chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+          body: JSON.stringify({ message, history: chatHistory, case_id: currentCaseId })
+        });
+      }
+      if (!res.ok) {
+        let detail = '';
+        try { detail = (await res.json()).error || ''; } catch (e) {}
+        throw new Error(detail || ('Request failed: ' + res.status));
+      }
       return await res.json();
     }
 
@@ -210,6 +245,8 @@
     const resultText = document.getElementById('resultText');
 
     let pendingFiles = [];
+
+    function fileKey(f){ return f.name + '::' + f.size + '::' + f.lastModified; }
 
     function renderAttachmentTray(){
       attachmentTray.innerHTML = '';
@@ -229,7 +266,10 @@
 
     attachBtn.addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', () => {
-      pendingFiles = pendingFiles.concat(Array.from(fileInput.files));
+      const existing = new Set(pendingFiles.map(fileKey));
+      Array.from(fileInput.files).forEach(f => {
+        if (!existing.has(fileKey(f))) { pendingFiles.push(f); existing.add(fileKey(f)); }
+      });
       fileInput.value = '';
       renderAttachmentTray();
     });
@@ -243,8 +283,15 @@
       return div;
     }
 
-    async function sendToAI(text){
-      sendBtn.disabled = true;
+    function setSending(state){
+      isSending = state;
+      sendBtn.disabled = state;
+      chatInput.disabled = state;
+      attachBtn.disabled = state;
+    }
+
+    async function sendToAI(text, files){
+      setSending(true);
       const typing = document.createElement('div');
       typing.className = 'typing-dots';
       typing.innerHTML = '<span></span><span></span><span></span>';
@@ -252,12 +299,14 @@
       chatLog.scrollTop = chatLog.scrollHeight;
 
       try {
-        const result = await getAIResponse(text);
+        const result = await getAIResponse(text, files);
         typing.remove();
         addBubble(result.reply, 'ai');
 
         if (text) chatHistory.push({ role: 'user', content: text });
         chatHistory.push({ role: 'model', content: result.reply });
+
+        if (result.case_id) currentCaseId = result.case_id;
 
         if (result.category) {
           resultBadge.textContent = result.category;
@@ -272,28 +321,43 @@
         typing.remove();
         addBubble('Something went wrong reaching the AI: ' + err.message, 'ai');
       } finally {
-        sendBtn.disabled = false;
+        setSending(false);
+        chatInput.focus();
       }
     }
 
     async function handleSend(){
+      if (isSending) return;
       const text = chatInput.value.trim();
       if (!text && pendingFiles.length === 0) return;
 
       if (text) addBubble(text, 'user');
       pendingFiles.forEach(f => addBubble('📎 ' + f.name, 'user'));
+      const filesToSend = pendingFiles;
       pendingFiles = [];
       renderAttachmentTray();
       chatInput.value = '';
 
-      await sendToAI(text);
+      await sendToAI(text, filesToSend);
     }
 
     sendBtn.addEventListener('click', handleSend);
-    chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') handleSend(); });
+    chatInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.isComposing) { e.preventDefault(); handleSend(); }
+    });
 
-    // ---- bootstrap: pick up the handed-off first message, or show a welcome ----
+    // ---- bootstrap: replay resumed history, pick up handed-off first message, or show welcome ----
     (function bootstrap(){
+      const serverHistory = bootstrapData.history || [];
+
+      if (serverHistory.length) {
+        addBubble('Session resumed', 'system');
+        serverHistory.forEach(m => addBubble(m.content, m.role === 'user' ? 'user' : 'ai'));
+        chatHistory = serverHistory.map(m => ({ role: m.role, content: m.content }));
+        chatInput.focus();
+        return;
+      }
+
       let initialMessage = null;
       try { initialMessage = sessionStorage.getItem('nyaysetu_initial_message'); } catch(e){}
 
@@ -301,7 +365,7 @@
         try { sessionStorage.removeItem('nyaysetu_initial_message'); } catch(e){}
         addBubble('Session started', 'system');
         addBubble(initialMessage, 'user');
-        sendToAI(initialMessage);
+        sendToAI(initialMessage, []);
       } else {
         addBubble('Session started', 'system');
         addBubble("Hi — I'm here to help you understand your legal situation. Go ahead and describe what happened, in your own words.", 'ai');

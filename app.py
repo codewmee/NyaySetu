@@ -378,7 +378,7 @@ def new_issues():
 
         if not description:
             flash("Please describe your issue before submitting.")
-            return redirect(url_for("new_issues.html"))
+            return redirect(url_for("new_issues"))
 
         meta = CASE_CATEGORY_META.get(category_key, CASE_CATEGORY_META["other"])
 
@@ -712,4 +712,4 @@ def set_language(lang):
 
 if __name__ == "__main__":
     
-    app.run(debug=True, port=9000, threaded=True)
+    app.run(debug=True, port=9000)
