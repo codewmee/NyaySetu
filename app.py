@@ -1,10 +1,20 @@
 import os
 import json
 import uuid
+import secrets
 from datetime import datetime
 
 from dotenv import load_dotenv
-from flask import Flask, render_template, session, redirect, url_for, request, flash, jsonify
+from flask import (
+    Flask,
+    render_template,
+    session,
+    redirect,
+    url_for,
+    request,
+    flash,
+    jsonify,
+)
 from werkzeug.utils import secure_filename
 from werkzeug.middleware.proxy_fix import ProxyFix
 import cloudinary
@@ -16,7 +26,9 @@ from legal_ai import get_legal_ai_reply
 load_dotenv()
 
 app = Flask(__name__)
-app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1)  # correct client IP/scheme behind Render/Railway/etc.
+app.wsgi_app = ProxyFix(
+    app.wsgi_app, x_for=1, x_proto=1
+)  # correct client IP/scheme behind Render/Railway/etc.
 
 # ---------------- Secret key (REQUIRED from .env, no hardcoded fallback) ----------------
 SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -30,21 +42,25 @@ app.secret_key = SECRET_KEY
 # ---------------- Session / cookie hardening ----------------
 IS_PRODUCTION = os.environ.get("FLASK_ENV", "production").lower() == "production"
 app.config.update(
-    SESSION_COOKIE_HTTPONLY=True,         # JS can't read the session cookie (mitigates XSS token theft)
-    SESSION_COOKIE_SAMESITE="Lax",        # basic CSRF mitigation for cross-site requests
+    SESSION_COOKIE_HTTPONLY=True,  # JS can't read the session cookie (mitigates XSS token theft)
+    SESSION_COOKIE_SAMESITE="Lax",  # basic CSRF mitigation for cross-site requests
     SESSION_COOKIE_SECURE=IS_PRODUCTION,  # only send cookie over HTTPS in prod; set FLASK_ENV=development locally
-    MAX_CONTENT_LENGTH=25 * 1024 * 1024,  # 25MB cap on request body — stops giant-file DoS uploads
+    MAX_CONTENT_LENGTH=25
+    * 1024
+    * 1024,  # 25MB cap on request body — stops giant-file DoS uploads
 )
 
 # ---------------- CSRF protection ----------------
 # Requires: pip install flask-wtf
 from flask_wtf import CSRFProtect
+
 csrf = CSRFProtect(app)
 
 # ---------------- Rate limiting (brute-force protection) ----------------
 # Requires: pip install flask-limiter
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per hour"])
 
 # ---------------- Neon Postgres (users + cases) ----------------
@@ -144,17 +160,60 @@ RECENT_ACTIVITY = [
 
 # Maps the value of each category radio button in the New Issue form to the
 # display label + icon styling used both on the form and on the resulting
-# Case card in the dashboard.
+# Case card in the dashboard. Also used to normalize categories that come
+# back from Gemini in the chat flow (see legal_chat()) so both entry points
+# produce cases with consistent labels/icons.
 CASE_CATEGORY_META = {
-    "job": {"label": "Job & Employment", "icon": "💼", "icon_bg": "#e3e8ff", "icon_color": "#4a4ad9"},
-    "landlord": {"label": "Landlord & Tenant", "icon": "🏠", "icon_bg": "#ffe9d6", "icon_color": "#d97706"},
-    "consumer": {"label": "Consumer Complaint", "icon": "🛒", "icon_bg": "#ffe1e1", "icon_color": "#dc2626"},
-    "cyber": {"label": "Cyber Crime", "icon": "🔒", "icon_bg": "#d8ecff", "icon_color": "#0d6ec7"},
-    "loan": {"label": "Loan & Recovery", "icon": "💰", "icon_bg": "#dafbe8", "icon_color": "#16a34a"},
-    "family": {"label": "Family & Personal", "icon": "👪", "icon_bg": "#ede4ff", "icon_color": "#7c3aed"},
-    "property": {"label": "Property Dispute", "icon": "🏢", "icon_bg": "#ffe3ec", "icon_color": "#db2777"},
-    "other": {"label": "Other", "icon": "•••", "icon_bg": "#f3f4f6", "icon_color": "#4b5563"},
+    "job": {
+        "label": "Job & Employment",
+        "icon": "💼",
+        "icon_bg": "#e3e8ff",
+        "icon_color": "#4a4ad9",
+    },
+    "landlord": {
+        "label": "Landlord & Tenant",
+        "icon": "🏠",
+        "icon_bg": "#ffe9d6",
+        "icon_color": "#d97706",
+    },
+    "consumer": {
+        "label": "Consumer Complaint",
+        "icon": "🛒",
+        "icon_bg": "#ffe1e1",
+        "icon_color": "#dc2626",
+    },
+    "cyber": {
+        "label": "Cyber Crime",
+        "icon": "🔒",
+        "icon_bg": "#d8ecff",
+        "icon_color": "#0d6ec7",
+    },
+    "loan": {
+        "label": "Loan & Recovery",
+        "icon": "💰",
+        "icon_bg": "#dafbe8",
+        "icon_color": "#16a34a",
+    },
+    "family": {
+        "label": "Family & Personal",
+        "icon": "👪",
+        "icon_bg": "#ede4ff",
+        "icon_color": "#7c3aed",
+    },
+    "property": {
+        "label": "Property Dispute",
+        "icon": "🏢",
+        "icon_bg": "#ffe3ec",
+        "icon_color": "#db2777",
+    },
+    "other": {
+        "label": "Other",
+        "icon": "•••",
+        "icon_bg": "#f3f4f6",
+        "icon_color": "#4b5563",
+    },
 }
+
 
 @app.route("/know_rights")
 def urrights():
@@ -318,15 +377,17 @@ def legal_chat():
             failed_count += 1
             continue
 
-        db.session.add(CaseDocument(
-            case_id=case.id,
-            file_name=f.filename,
-            cloudinary_public_id=upload_result.get("public_id"),
-            cloudinary_url=upload_result.get("secure_url"),
-            resource_type=upload_result.get("resource_type"),
-            content_type=content_type,
-            bytes=upload_result.get("bytes"),
-        ))
+        db.session.add(
+            CaseDocument(
+                case_id=case.id,
+                file_name=f.filename,
+                cloudinary_public_id=upload_result.get("public_id"),
+                cloudinary_url=upload_result.get("secure_url"),
+                resource_type=upload_result.get("resource_type"),
+                content_type=content_type,
+                bytes=upload_result.get("bytes"),
+            )
+        )
         uploaded_count += 1
 
     db.session.commit()
@@ -343,15 +404,27 @@ def legal_chat():
             "strength": None,
         }
 
-    db.session.add(ChatMessage(case_id=case.id, role="model", content=result.get("reply", "")))
+    db.session.add(
+        ChatMessage(case_id=case.id, role="model", content=result.get("reply", ""))
+    )
 
     # Keep the Case row in sync with whatever Gemini has inferred so far.
+    # FIX: previously this wrote result["category"] straight onto case.category
+    # with no icon/icon_bg/icon_color set at all — chat-created cases rendered
+    # with broken/missing icons on the dashboard and a category string that
+    # didn't match the labels the /new_issues flow produces. Route it through
+    # the same CASE_CATEGORY_META lookup so both entry points stay consistent.
     if result.get("category"):
-        case.category = result["category"]
+        meta = CASE_CATEGORY_META.get(result["category"], CASE_CATEGORY_META["other"])
+        case.category = meta["label"]
+        case.icon = meta["icon"]
+        case.icon_bg = meta["icon_bg"]
+        case.icon_color = meta["icon_color"]
     if result.get("summary"):
         case.description = result["summary"]
         case.title = (
-            result["summary"] if len(result["summary"]) <= 60
+            result["summary"]
+            if len(result["summary"]) <= 60
             else result["summary"][:60].rstrip() + "…"
         )
     if result.get("strength") is not None:
@@ -383,7 +456,9 @@ def new_issues():
         meta = CASE_CATEGORY_META.get(category_key, CASE_CATEGORY_META["other"])
 
         # A short, human-readable title derived from the free-text description.
-        title = description if len(description) <= 60 else description[:60].rstrip() + "…"
+        title = (
+            description if len(description) <= 60 else description[:60].rstrip() + "…"
+        )
 
         case = Case(
             user_id=user.id,
@@ -450,9 +525,13 @@ def new_issues():
             db.session.commit()
 
         if failed_count:
-            flash(f"Issue submitted. {uploaded_count} document(s) uploaded, {failed_count} failed — please retry those.")
+            flash(
+                f"Issue submitted. {uploaded_count} document(s) uploaded, {failed_count} failed — please retry those."
+            )
         elif uploaded_count:
-            flash(f"Your issue was submitted with {uploaded_count} document(s) attached.")
+            flash(
+                f"Your issue was submitted with {uploaded_count} document(s) attached."
+            )
         else:
             flash("Your issue has been submitted.")
 
@@ -528,14 +607,24 @@ def logout():
 # Uses a per-attempt "next" value stashed in the session so post-login
 # redirect can send the user back where they came from (login_page ->
 # just the origin of the request that hit /login).
+#
+# FIX: this previously never generated/passed a nonce. Authlib's automatic
+# ID-token parsing (triggered by the "openid" scope) needs a nonce to
+# validate the token, and without one the callback either failed validation
+# or fell through to the unguarded `google_oauth.parse_id_token(token)` call
+# below — which raises TypeError because `nonce` is a required argument in
+# current Authlib versions. That crash wasn't caught, so it surfaced as a
+# raw 500 instead of the intended "Google sign-in failed" flash.
 @app.route("/auth/google")
 @limiter.limit("20 per hour")
 def google_login():
     if current_user():
         return redirect(url_for("home"))
     session["oauth_next"] = request.args.get("next") or url_for("home")
+    nonce = secrets.token_urlsafe(24)
+    session["oauth_nonce"] = nonce
     redirect_uri = url_for("google_callback", _external=True)
-    return google_oauth.authorize_redirect(redirect_uri)
+    return google_oauth.authorize_redirect(redirect_uri, nonce=nonce)
 
 
 @app.route("/auth/google/callback")
@@ -547,7 +636,16 @@ def google_callback():
         flash("Google sign-in failed — please try again.")
         return redirect(url_for("login_page"))
 
-    userinfo = token.get("userinfo") or google_oauth.parse_id_token(token)
+    nonce = session.pop("oauth_nonce", None)
+    userinfo = token.get("userinfo")
+    if not userinfo:
+        try:
+            userinfo = google_oauth.parse_id_token(token, nonce=nonce)
+        except Exception:
+            app.logger.exception("Failed to parse Google ID token")
+            flash("Google sign-in failed — please try again.")
+            return redirect(url_for("login_page"))
+
     if not userinfo or not userinfo.get("email"):
         flash("Google didn't return an email — please try again or use another method.")
         return redirect(url_for("login_page"))
@@ -593,7 +691,9 @@ def resolve_case(case_id):
 
     case.status = "resolved"
     db.session.commit()
-    return jsonify({"ok": True, "status": case.status, "status_label": case.status_label})
+    return jsonify(
+        {"ok": True, "status": case.status, "status_label": case.status_label}
+    )
 
 
 @app.route("/dashboard")
@@ -606,7 +706,6 @@ def my_issues():
 
     return render_template(
         "dashboard.html",
-        
         user=user,
         cases=cases,
         activity=RECENT_ACTIVITY,
@@ -615,7 +714,7 @@ def my_issues():
 
 @app.route("/document-helper")
 def document_helper():
-    return "Document Helper page (coming soon)"
+    return render_template("document_helper")
 
 
 @app.route("/know-your-rights")
@@ -711,5 +810,4 @@ def set_language(lang):
 
 
 if __name__ == "__main__":
-    
     app.run(debug=True, port=9000)
